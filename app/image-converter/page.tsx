@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Download, Image } from 'lucide-react';
 
 export default function ImageConverterPage() {
@@ -22,10 +22,10 @@ export default function ImageConverterPage() {
       alert("Please upload an image first.");
       return;
     }
-    
+
     setIsConverting(true);
-    
-    // FIX: Vercel build error को ठीक करने के लिए 'new Image()' की जगह 'new window.Image()' का इस्तेमाल करें
+
+    // FINAL FIX: Vercel build error को ठीक करने के लिए 'new window.Image()' का इस्तेमाल करें
     const img = new window.Image();
 
     img.src = originalImageUrl;
@@ -33,10 +33,13 @@ export default function ImageConverterPage() {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
       canvas.height = img.height;
-      const ctx = canvas.getContext('d');
+
+      // FIX: getContext('2d') होना चाहिए
+      const ctx = canvas.getContext('2d');
+
       if (ctx) {
         ctx.drawImage(img, 0, 0);
-        const convertedDataUrl = canvas.toDataURL(targetFormat, 0.95); // 0.95 quality for JPG/WEBP
+        const convertedDataUrl = canvas.toDataURL(targetFormat, 0.95);
 
         const link = document.createElement('a');
         const extension = targetFormat.split('/')[1];
@@ -92,10 +95,6 @@ export default function ImageConverterPage() {
           {isConverting ? 'Converting...' : 'Convert & Download'}
         </button>
       </div>
-
-      <footer className="text-center text-gray-500 text-base mt-10 bg-gradient-to-r from-blue-100 to-pink-100 py-4 rounded-t-xl shadow-inner">
-        &copy; {new Date().getFullYear()} PDF & Text Tools. All rights reserved.
-      </footer>
     </main>
   );
 }
