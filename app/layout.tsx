@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from 'next/link';
+import Script from 'next/script'; // Analytics के लिए यह इम्पोर्ट ज़रूरी है
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,6 +19,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google Analytics Script - Aapke ID (G-77KYKEPNM0) ke saath */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-77KYKEPNM0"
+        ></Script>
+        <Script id="google-analytics">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-77KYKEPNM0');
+          `}
+        </Script>
+      </head>
       <body className="bg-gray-50 text-gray-800">
         
         {/* Your page content will be displayed here */}
