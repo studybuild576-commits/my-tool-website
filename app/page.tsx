@@ -9,7 +9,7 @@ export default function HomePage() {
           <p className="mt-4 text-lg text-gray-600">
             Your one-stop solution for all PDF, Image, and Text manipulation needs. Fast, free, and secure.
           </p>
-          <p className="mt-2 text-green-600 font-semibold">यह लाइन टेस्ट के लिए जोड़ी गई है - अगर यह Vercel पर दिखे तो सब सही है।</p>
+          <p className="mt-2 font-bold text-white bg-gradient-to-r from-green-400 to-blue-500 border-4 border-yellow-400 rounded-xl p-4 shadow-lg">यह लाइन डिज़ाइन टेस्ट के लिए जोड़ी गई है - अगर यह रंगीन बॉक्स में दिखे तो Tailwind CSS live है।</p>
         </header>
 
         <section>
