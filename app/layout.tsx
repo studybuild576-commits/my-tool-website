@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from 'next/link';
-import Script from 'next/script'; // Analytics के लिए यह इम्पोर्ट ज़रूरी है
+import Script from 'next/script'; // Analytics के लिए
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -36,21 +36,25 @@ export default function RootLayout({
       </head>
       <body className="bg-gray-50 text-gray-800">
         
-        {/* Your page content will be displayed here */}
         {children}
 
-        {/* This is the Footer that will appear on every page */}
+        {/* --- फुटर को अपडेट किया गया है --- */}
         <footer className="text-center py-8 mt-12 border-t border-gray-200 bg-white">
           <div className="container mx-auto px-4">
-            <div className="flex justify-center space-x-6 mb-4">
+            <div className="flex justify-center items-center space-x-4 md:space-x-6 mb-4">
               <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
                 About Us
               </Link>
+              <span className="text-gray-300">|</span>
+              <Link href="/blog" className="text-gray-600 hover:text-blue-600 transition-colors">
+                Blog
+              </Link>
+              <span className="text-gray-300">|</span>
               <Link href="/privacy-policy" className="text-gray-600 hover:text-blue-600 transition-colors">
                 Privacy Policy
               </Link>
             </div>
-            <p className="text-gray-500">&copy; {new Date().getFullYear()} Free Online Tools. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Free Online Tools. All rights reserved.</p>
           </div>
         </footer>
 
