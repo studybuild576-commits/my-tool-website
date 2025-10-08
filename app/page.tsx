@@ -13,7 +13,6 @@ export default function HomePage() {
           <p className="mt-2 text-lg text-gray-600 font-medium">
             Free online tools for PDF, images, and text. Fast, secure, and easy to use.
           </p>
-          <p className="mt-4 font-bold text-white bg-gradient-to-r from-pink-400 to-blue-500 border-4 border-yellow-400 rounded-xl p-4 shadow-lg inline-block">यह लाइन डिज़ाइन टेस्ट के लिए जोड़ी गई है - अगर यह रंगीन बॉक्स में दिखे तो Tailwind CSS live है।</p>
         </header>
 
         <section>
@@ -39,7 +38,7 @@ export default function HomePage() {
   );
 }
 
-// एक सहायक कंपोनेंट ताकि कोड साफ़ रहे
+// एक सहायक कंपोनेंट ताकि कोड साफ़ रहे
 function ToolCard({ href, title, description, icon }: { href: string; title: string; description: string; icon: React.ReactNode; }) {
   return (
     <Link href={href} className="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition-transform duration-300 ease-in-out border border-gray-100">
