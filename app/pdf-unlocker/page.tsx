@@ -49,52 +49,47 @@ export default function PdfUnlockerPage() {
   };
 
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: '800px', margin: 'auto' }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>PDF Password Remover</h1>
-        <p style={{ marginTop: '0.5rem', color: '#555' }}>Remove the password from your PDF file (password required).</p>
-      </div>
+    <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">PDF Password Remover</h1>
+        <p className="text-gray-600 text-lg">Remove the password from your PDF file (password required).</p>
+      </header>
 
-      <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid #ddd', borderRadius: '8px', display: 'grid', gap: '1.5rem' }}>
+      <section className="bg-white rounded-lg shadow p-6 mb-8 grid gap-6">
         <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>1. Upload Locked PDF</label>
+          <label className="block font-semibold mb-2 text-gray-700">1. Upload Locked PDF</label>
           <input 
             type="file" 
             accept="application/pdf"
             onChange={handleFileChange} 
-            style={{ fontSize: '1rem' }}
+            className="block w-full text-base border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-        
         <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>2. Enter PDF Password</label>
+          <label className="block font-semibold mb-2 text-gray-700">2. Enter PDF Password</label>
           <input 
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter current password"
-            style={{ fontSize: '1rem', padding: '10px', width: '100%', boxSizing: 'border-box', borderRadius: '5px', border: '1px solid #ccc' }}
+            className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
-      </div>
-      
-      <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+      </section>
+
+      <div className="text-center mt-6">
         <button 
           onClick={handleUnlockPdf}
           disabled={isUnlocking || !pdfFile || !password}
-          style={{ 
-            padding: '12px 25px', 
-            fontSize: '1.2rem', 
-            cursor: 'pointer', 
-            border: 'none', 
-            borderRadius: '5px', 
-            backgroundColor: isUnlocking || !pdfFile || !password ? '#ccc' : '#dc3545', 
-            color: 'white' 
-          }}
+          className={`px-6 py-3 text-lg font-semibold rounded transition text-white ${isUnlocking || !pdfFile || !password ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
         >
           {isUnlocking ? 'Unlocking...' : 'Unlock & Download PDF'}
         </button>
       </div>
+
+      <footer className="text-center text-gray-400 text-sm mt-10">
+        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      </footer>
     </main>
   );
 }

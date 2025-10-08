@@ -59,45 +59,45 @@ export default function ImageResizerPage() {
   };
 
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: '800px', margin: 'auto' }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Image Resizer</h1>
-        <p style={{ marginTop: '0.5rem', color: '#555' }}>Easily resize your images online.</p>
-      </div>
+    <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Image Resizer</h1>
+        <p className="text-gray-600 text-lg">Easily resize your images online.</p>
+      </header>
 
-      <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid #ddd', borderRadius: '8px' }}>
-        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>1. Upload Image</label>
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
-      </div>
+      <section className="bg-white rounded-lg shadow p-6 mb-8">
+        <label className="block font-semibold mb-2 text-gray-700">1. Upload Image</label>
+        <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-base border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </section>
 
       {originalImage && (
-        <div style={{ marginTop: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem' }}>2. Set New Dimensions:</h2>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-gray-700 mb-4">2. Set New Dimensions:</h2>
+          <div className="flex flex-wrap items-center gap-4">
             <div>
-              <label>Width: </label>
-              <input type="number" value={width} onChange={(e) => setWidth(parseInt(e.target.value, 10))} style={inputStyle} />
+              <label className="mr-2">Width:</label>
+              <input type="number" value={width} onChange={(e) => setWidth(parseInt(e.target.value, 10))} className="w-24 p-2 border border-gray-300 rounded" />
             </div>
             <div>
-              <label>Height: </label>
-              <input type="number" value={height} onChange={(e) => setHeight(parseInt(e.target.value, 10))} style={inputStyle} />
+              <label className="mr-2">Height:</label>
+              <input type="number" value={height} onChange={(e) => setHeight(parseInt(e.target.value, 10))} className="w-24 p-2 border border-gray-300 rounded" />
             </div>
-            <button onClick={handleResize} style={{ padding: '10px 20px', fontSize: '1rem', cursor: 'pointer', border: 'none', borderRadius: '5px', backgroundColor: '#0070f3', color: 'white' }}>
-              Resize Image
-            </button>
+            <button onClick={handleResize} className="px-5 py-2 text-base font-semibold rounded bg-blue-600 text-white hover:bg-blue-700 transition">Resize Image</button>
           </div>
-        </div>
+        </section>
       )}
 
       {resizedImage && (
-        <div style={{ marginTop: '2rem' }}>
-          <h2 style={{ fontSize: '1.5rem' }}>3. Your Resized Image:</h2>
-          <img src={resizedImage} alt="Resized" style={{ maxWidth: '100%', marginTop: '1rem', border: '1px solid #ccc' }} />
-          <a href={resizedImage} download={`resized-${originalFileRef.current?.name || 'image'}`} style={{ display: 'block', marginTop: '1rem', padding: '10px 20px', textAlign: 'center', fontSize: '1rem', cursor: 'pointer', border: 'none', borderRadius: '5px', backgroundColor: '#28a745', color: 'white', textDecoration: 'none' }}>
-            Download Resized Image
-          </a>
-        </div>
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-gray-700 mb-4">3. Your Resized Image:</h2>
+          <img src={resizedImage} alt="Resized" className="max-w-full mt-4 border border-gray-300 rounded" />
+          <a href={resizedImage} download={`resized-${originalFileRef.current?.name || 'image'}`} className="block mt-4 px-5 py-2 text-center text-base font-semibold rounded bg-green-600 text-white hover:bg-green-700 transition">Download Resized Image</a>
+        </section>
       )}
+
+      <footer className="text-center text-gray-400 text-sm mt-10">
+        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      </footer>
     </main>
   );
 }

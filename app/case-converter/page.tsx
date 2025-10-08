@@ -39,40 +39,30 @@ export default function CaseConverterPage() {
   };
 
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: '800px', margin: 'auto' }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Case Converter</h1>
-        <p style={{ marginTop: '0.5rem', color: '#555' }}>Easily convert text between different letter cases.</p>
-      </div>
-      
+    <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Case Converter</h1>
+        <p className="text-gray-600 text-lg">Easily convert text between different letter cases.</p>
+      </header>
+
       <textarea
-        style={{ 
-          width: '100%', 
-          minHeight: '250px', 
-          marginTop: '2rem', 
-          padding: '1rem', 
-          fontSize: '1.1rem', 
-          border: '1px solid #ccc', 
-          borderRadius: '8px',
-          boxSizing: 'border-box'
-        }}
+        className="w-full min-h-[200px] mt-8 p-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition mb-6"
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Type or paste your text here..."
+        aria-label="Text area for case conversion"
       ></textarea>
 
-      <div style={{ 
-        marginTop: '1.5rem', 
-        display: 'flex', 
-        gap: '1rem', 
-        justifyContent: 'center',
-        flexWrap: 'wrap'
-      }}>
-        <button onClick={handleUpperCase} style={buttonStyle}>UPPERCASE</button>
-        <button onClick={handleLowerCase} style={buttonStyle}>lowercase</button>
-        <button onClick={handleCapitalizedCase} style={buttonStyle}>Capitalized Case</button>
-        <button onClick={handleSentenceCase} style={buttonStyle}>Sentence case</button>
+      <div className="flex flex-wrap gap-4 justify-center mt-6">
+        <button onClick={handleUpperCase} className="px-5 py-2 text-base font-semibold rounded bg-blue-600 text-white hover:bg-blue-700 transition">UPPERCASE</button>
+        <button onClick={handleLowerCase} className="px-5 py-2 text-base font-semibold rounded bg-green-600 text-white hover:bg-green-700 transition">lowercase</button>
+        <button onClick={handleCapitalizedCase} className="px-5 py-2 text-base font-semibold rounded bg-purple-600 text-white hover:bg-purple-700 transition">Capitalized Case</button>
+        <button onClick={handleSentenceCase} className="px-5 py-2 text-base font-semibold rounded bg-yellow-500 text-white hover:bg-yellow-600 transition">Sentence case</button>
       </div>
+
+      <footer className="text-center text-gray-400 text-sm mt-10">
+        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      </footer>
     </main>
   );
 }

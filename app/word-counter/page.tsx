@@ -1,6 +1,7 @@
 "use client"; // यह लाइन ज़रूरी है क्योंकि यह एक इंटरैक्टिव पेज है
 
 import { useState } from 'react';
+import Head from 'next/head';
 
 // इस पेज का अपना अलग SEO टाइटल और डिस्क्रिप्शन होगा
 // export const metadata = {
@@ -16,26 +17,43 @@ export default function WordCounterPage() {
   const charCount = text.length;
 
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: '800px', margin: 'auto' }}>
-      <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', textAlign: 'center' }}>Online Word and Character Counter</h1>
+    <>
+      <Head>
+        <title>Word & Character Counter Online | Free Text Analysis Tool</title>
+        <meta name="description" content="Count words, characters, sentences, and paragraphs in your text instantly. Free online word counter and text analysis tool for writers, students, and professionals." />
+        <meta name="keywords" content="word counter, character counter, text analysis, online word count, free word counter, SEO tools, writing tools, content analysis, sentence counter, paragraph counter" />
+      </Head>
+      <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Online Word and Character Counter</h1>
+          <p className="text-gray-600 text-lg">Count words, characters, sentences, and paragraphs in your text instantly.</p>
+        </header>
 
-      <textarea
-        style={{ width: '100%', height: '250px', marginTop: '2rem', padding: '1rem', fontSize: '1rem', border: '1px solid #ccc', borderRadius: '8px' }}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Type or paste your text here..."
-      ></textarea>
+        <label htmlFor="word-counter-textarea" className="block font-semibold mb-2 text-gray-700">Enter your text below:</label>
+        <textarea
+          id="word-counter-textarea"
+          className="w-full min-h-[200px] p-4 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition mb-6"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type or paste your text here..."
+          aria-label="Text area for word and character counting"
+        ></textarea>
 
-      <div style={{ marginTop: '2rem', display: 'flex', gap: '2rem', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: '1.5rem' }}>{wordCount}</h2>
-          <p style={{ color: '#555' }}>Words</p>
+        <div className="flex flex-col sm:flex-row gap-6 justify-center mt-6">
+          <div className="flex-1 bg-white rounded-lg shadow p-6 text-center">
+            <h2 className="text-2xl font-bold text-blue-600">{wordCount}</h2>
+            <p className="text-gray-500 mt-2">Words</p>
+          </div>
+          <div className="flex-1 bg-white rounded-lg shadow p-6 text-center">
+            <h2 className="text-2xl font-bold text-green-600">{charCount}</h2>
+            <p className="text-gray-500 mt-2">Characters</p>
+          </div>
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: '1.5rem' }}>{charCount}</h2>
-          <p style={{ color: '#555' }}>Characters</p>
-        </div>
-      </div>
-    </main>
+
+        <footer className="text-center text-gray-400 text-sm mt-10">
+          &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+        </footer>
+      </main>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Head from 'next/head';
 import { PDFDocument } from 'pdf-lib';
 
 export default function JpgToPdfPage() {
@@ -62,41 +63,44 @@ export default function JpgToPdfPage() {
   };
 
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: '800px', margin: 'auto' }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>JPG/PNG to PDF Converter</h1>
-        <p style={{ marginTop: '0.5rem', color: '#555' }}>Combine multiple images into a single PDF file.</p>
-      </div>
+    <>
+      <Head>
+        <title>JPG/PNG to PDF Converter | Free Online Tool</title>
+        <meta name="description" content="Convert JPG and PNG images to PDF online. Combine multiple images into a single PDF file. Fast, free, and secure image to PDF converter." />
+        <meta name="keywords" content="jpg to pdf, png to pdf, image to pdf, convert images to pdf, online pdf converter, free pdf tool, combine images pdf, photo to pdf" />
+      </Head>
+    <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">JPG/PNG to PDF Converter</h1>
+        <p className="text-gray-600 text-lg">Combine multiple images into a single PDF file.</p>
+      </header>
 
-      <div style={{ marginTop: '2rem', padding: '2rem', border: '2px dashed #ccc', borderRadius: '8px', textAlign: 'center' }}>
+      <section className="bg-white rounded-lg shadow p-6 mb-8 text-center border-2 border-dashed border-gray-300">
         <input 
           type="file" 
           accept="image/jpeg,image/png" 
-          multiple // यह एक साथ कई फाइलें चुनने की अनुमति देता है
+          multiple
           onChange={handleFileChange} 
-          style={{ fontSize: '1rem' }}
+          className="block w-full text-base border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mx-auto"
         />
-        {selectedImages && <p style={{ marginTop: '1rem' }}>{selectedImages.length} image(s) selected.</p>}
-      </div>
-      
-      <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+        {selectedImages && <p className="mt-4 text-gray-700">{selectedImages.length} image(s) selected.</p>}
+      </section>
+
+      <div className="text-center mt-6">
         <button 
           onClick={handleConvertToPdf}
           disabled={isConverting || !selectedImages}
-          style={{ 
-            padding: '12px 25px', 
-            fontSize: '1.2rem', 
-            cursor: 'pointer', 
-            border: 'none', 
-            borderRadius: '5px', 
-            backgroundColor: isConverting || !selectedImages ? '#ccc' : '#0070f3', 
-            color: 'white' 
-          }}
+          className={`px-6 py-3 text-lg font-semibold rounded transition text-white ${isConverting || !selectedImages ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
           {isConverting ? 'Converting...' : 'Convert to PDF'}
         </button>
       </div>
+
+      <footer className="text-center text-gray-400 text-sm mt-10">
+        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      </footer>
     </main>
+    </>
   );
 }
 

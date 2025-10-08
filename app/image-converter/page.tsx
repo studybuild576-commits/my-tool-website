@@ -57,48 +57,44 @@ export default function ImageConverterPage() {
   };
 
   return (
-    <main style={{ fontFamily: 'sans-serif', padding: '2rem', maxWidth: '800px', margin: 'auto' }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Image Format Converter</h1>
-        <p style={{ marginTop: '0.5rem', color: '#555' }}>Convert your images to JPG, PNG, or WEBP.</p>
-      </div>
+    <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Image Format Converter</h1>
+        <p className="text-gray-600 text-lg">Convert your images to JPG, PNG, or WEBP.</p>
+      </header>
 
-      <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid #ddd', borderRadius: '8px', display: 'grid', gap: '1.5rem' }}>
+      <section className="bg-white rounded-lg shadow p-6 mb-8 grid gap-6">
         <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>1. Upload Image</label>
-          <input type="file" accept="image/*" onChange={handleImageUpload} />
+          <label className="block font-semibold mb-2 text-gray-700">1. Upload Image</label>
+          <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-base border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
         </div>
-        {originalImageUrl && <img src={originalImageUrl} alt="Preview" style={{ maxWidth: '100%', marginTop: '1rem' }} />}
-      </div>
+        {originalImageUrl && <img src={originalImageUrl} alt="Preview" className="max-w-full mt-4 rounded border border-gray-200" />}
+      </section>
 
       {originalFile && (
-        <div style={{ marginTop: '2rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>2. Choose Format to Convert to:</label>
-          <select value={targetFormat} onChange={(e) => setTargetFormat(e.target.value)} style={selectStyle}>
+        <section className="mb-8">
+          <label className="block font-semibold mb-2 text-gray-700">2. Choose Format to Convert to:</label>
+          <select value={targetFormat} onChange={(e) => setTargetFormat(e.target.value)} className="p-2 border border-gray-300 rounded">
             <option value="image/png">PNG</option>
             <option value="image/jpeg">JPG</option>
             <option value="image/webp">WEBP</option>
           </select>
-        </div>
+        </section>
       )}
 
-      <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+      <div className="text-center mt-6">
         <button 
           onClick={handleConvert}
           disabled={isConverting || !originalFile}
-          style={{ 
-            padding: '12px 25px', 
-            fontSize: '1.2rem', 
-            cursor: 'pointer', 
-            border: 'none', 
-            borderRadius: '5px', 
-            backgroundColor: isConverting || !originalFile ? '#ccc' : '#0070f3', 
-            color: 'white' 
-          }}
+          className={`px-6 py-3 text-lg font-semibold rounded transition text-white ${isConverting || !originalFile ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
           {isConverting ? 'Converting...' : 'Convert & Download'}
         </button>
       </div>
+
+      <footer className="text-center text-gray-400 text-sm mt-10">
+        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      </footer>
     </main>
   );
 }
