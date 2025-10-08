@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-2xl font-bold text-gray-800">Contact Us</h2>
           <p>
             If you have any questions about our Privacy Policy, please contact us at:
-            <strong>[यहाँ अपना ईमेल एड्रेस डालें]</strong>
+            <strong>[rajputr51903@gmail.com]</strong>
           </p>
         </div>
       </div>
