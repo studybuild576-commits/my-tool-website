@@ -1,13 +1,21 @@
 import Link from 'next/link';
-import { FileText, Image, SplitSquareHorizontal, Unlock, Type, ArrowUpAZ, Palette } from 'lucide-react';
+import Image from 'next/image'; // Next.js का इमेज कंपोनेंट
+import { FileText, Image as ImageIcon, SplitSquareHorizontal, Unlock, Type, ArrowUpAZ } from 'lucide-react'; // lucide-react वाले Image आइकॉन का नाम बदला
 
 export default function HomePage() {
   return (
     <div className="bg-gradient-to-br from-blue-50 via-pink-50 to-purple-100 min-h-screen">
       <main className="container mx-auto px-4 py-12">
         <header className="text-center mb-12">
-          <div className="flex justify-center items-center gap-3 mb-4">
-            <Palette className="w-12 h-12 text-pink-500 drop-shadow" />
+          <div className="flex justify-center items-center gap-4 mb-4">
+            {/* --- यहाँ बदलाव किया गया है: लोगो जोड़ा गया है --- */}
+            <Image
+              src="/logo.png"
+              alt="PDF & Text Tools Logo"
+              width={50}
+              height={50}
+              className="drop-shadow-md"
+            />
             <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800">PDF & Text Tools</h1>
           </div>
           <p className="mt-2 text-lg text-gray-600 font-medium">
@@ -21,8 +29,8 @@ export default function HomePage() {
             Our Tools
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <ToolCard href="/image-resizer" title="Image Resizer" description="Resize the dimensions of your images (JPG, PNG) quickly." icon={<Image className="w-8 h-8 text-pink-500" />} />
-            <ToolCard href="/image-converter" title="Image Format Converter" description="Convert images to different formats like PNG, JPG, or WEBP." icon={<Image className="w-8 h-8 text-blue-500" />} />
+            <ToolCard href="/image-resizer" title="Image Resizer" description="Resize the dimensions of your images (JPG, PNG) quickly." icon={<ImageIcon className="w-8 h-8 text-pink-500" />} />
+            <ToolCard href="/image-converter" title="Image Format Converter" description="Convert images to different formats like PNG, JPG, or WEBP." icon={<ImageIcon className="w-8 h-8 text-blue-500" />} />
             <ToolCard href="/jpg-to-pdf" title="JPG/PNG to PDF Converter" description="Combine multiple images into a single PDF file." icon={<FileText className="w-8 h-8 text-purple-500" />} />
             <ToolCard href="/pdf-splitter" title="PDF Splitter" description="Extract specific pages from a PDF file into a new PDF." icon={<SplitSquareHorizontal className="w-8 h-8 text-yellow-500" />} />
             <ToolCard href="/pdf-unlocker" title="PDF Password Remover" description="Remove the password from a PDF file if you know the password." icon={<Unlock className="w-8 h-8 text-green-500" />} />
