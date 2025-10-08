@@ -18,19 +18,22 @@ export default function ImageConverterPage() {
   };
 
   const handleConvert = () => {
-    if (!originalFile) {
+    if (!originalFile || !originalImageUrl) {
       alert("Please upload an image first.");
       return;
     }
     
     setIsConverting(true);
-    const img = new Image();
-    img.src = originalImageUrl!;
+    
+    // FIX: Vercel build error को ठीक करने के लिए 'new Image()' की जगह 'new window.Image()' का इस्तेमाल करें
+    const img = new window.Image();
+
+    img.src = originalImageUrl;
     img.onload = () => {
       const canvas = document.createElement('canvas');
       canvas.width = img.width;
       canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('d');
       if (ctx) {
         ctx.drawImage(img, 0, 0);
         const convertedDataUrl = canvas.toDataURL(targetFormat, 0.95); // 0.95 quality for JPG/WEBP
@@ -48,13 +51,6 @@ export default function ImageConverterPage() {
       alert("Could not load image. Please try another file.");
       setIsConverting(false);
     }
-  };
-
-  const selectStyle = {
-    padding: '10px',
-    fontSize: '1rem',
-    border: '1px solid #ccc',
-    borderRadius: '5px'
   };
 
   return (
