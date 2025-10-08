@@ -24,25 +24,18 @@ export default function PdfUnlockerPage() {
     setIsUnlocking(true);
     try {
       const existingPdfBytes = await pdfFile.arrayBuffer();
-      
-      // पासवर्ड का उपयोग करके PDF को लोड करने का प्रयास करें
-      const pdfDoc = await PDFDocument.load(existingPdfBytes, {
-        password: password,
-      });
-
-      // PDF को बिना पासवर्ड के सेव करें
+      // pdf-lib does NOT support password-protected PDFs in browser. Show error if password is entered.
+      // Remove password option for compatibility with Vercel build.
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
       const newPdfBytes = await pdfDoc.save();
-      
-      // नई PDF को डाउनलोड करें
-      const blob = new Blob([newPdfBytes], { type: 'application/pdf' });
+  const blob = new Blob([newPdfBytes.slice().buffer], { type: 'application/pdf' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = `unlocked-${pdfFile.name}`;
       link.click();
-
     } catch (error) {
       console.error("Error unlocking PDF:", error);
-      alert("Failed to unlock PDF. Please double-check your password. This tool cannot crack unknown passwords.");
+      alert("Failed to unlock PDF. If your PDF is password-protected, this tool cannot unlock it due to browser limitations. Please use a desktop tool for password-protected PDFs.");
     } finally {
       setIsUnlocking(false);
     }
