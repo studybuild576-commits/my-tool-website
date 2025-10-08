@@ -1,40 +1,45 @@
-import Head from 'next/head';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn more about our mission to provide free and easy-to-use online tools for everyone.",
+};
 
 export default function AboutPage() {
   return (
-    <>
-      <Head>
-        <title>About Us | PDF & Text Tools</title>
-        <meta name="description" content="Learn more about our free online PDF, image, and text tools. Fast, secure, and privacy-focused solutions for everyone." />
-        <meta name="keywords" content="about pdf tools, about text tools, free online tools, privacy, secure tools" />
-      </Head>
-      <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
-        <header className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">About Us</h1>
-          <p className="text-gray-600 text-lg">We provide free, fast, and secure online tools for PDF, image, and text editing. Your privacy is our priority.</p>
-        </header>
-        <section className="bg-white rounded-lg shadow p-6 mb-8">
-          <header className="mb-8 text-center">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-blue-600 mb-2">About PDF & Text Tools</h1>
-            <p className="text-lg text-gray-700 font-medium">Learn more about our mission and team.</p>
-          </header>
-
-          <section className="bg-gradient-to-r from-blue-100 via-pink-100 to-purple-100 rounded-xl shadow-lg p-6 mb-8 border border-blue-200">
-            <h2 className="text-2xl font-bold text-pink-600 mb-4">Our Mission</h2>
-            <p className="text-gray-700 mb-4">We provide free, fast, and secure online tools for PDF, image, and text manipulation. Our goal is to make document editing and conversion easy for everyone, everywhere.</p>
-            <h2 className="text-2xl font-bold text-purple-600 mb-4">Meet the Team</h2>
-            <p className="text-gray-700 mb-4">Our team consists of passionate developers, designers, and writers dedicated to building useful tools for the web. We believe in open access, privacy, and user-friendly experiences.</p>
-            <h2 className="text-2xl font-bold text-blue-600 mb-4">Contact Us</h2>
-            <p className="text-gray-700">For support, feedback, or partnership inquiries, email us at <a href="mailto:contact@pdf-text-tools.com" className="text-blue-500 underline">contact@pdf-text-tools.com</a>.</p>
-          </section>
-
-          <h2 className="text-xl font-bold text-gray-700 mb-4">Contact</h2>
-            &copy; {new Date().getFullYear()} PDF & Text Tools. All rights reserved.
-        </section>
-        <footer className="text-center text-gray-400 text-sm mt-10">
-          &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
-        </footer>
-      </main>
-    </>
+    <main className="container mx-auto px-4 py-12">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 text-center mb-8">
+          About Us
+        </h1>
+        <div className="prose lg:prose-xl text-gray-700 space-y-6">
+          <p>
+            Welcome to our website! We are passionate about providing simple, free, and accessible online tools for everyone. Our goal is to make everyday digital tasks easier, whether you're a student, a professional, or just someone looking to quickly edit a document or an image.
+          </p>
+          <p>
+            This project started with a simple idea: to create a single place where users can find reliable tools for their PDF, image, and text-related needs without having to download any software or pay any fees. We believe that powerful utilities shouldn't be complicated or expensive.
+          </p>
+          <h2 className="text-2xl font-bold text-gray-800">Our Tools</h2>
+          <p>
+            We offer a growing collection of tools, including:
+          </p>
+          <ul>
+            <li>PDF Tools (like JPG to PDF, PDF Splitter, and PDF Password Remover)</li>
+            <li>Image Tools (like Image Resizer and Format Converter)</li>
+            <li>Text Tools (like Word Counter and Case Converter)</li>
+          </ul>
+          <p>
+            All our tools work directly in your browser, which means your files are secure and private. We don't upload your files to our servers to process them.
+          </p>
+          <h2 className="text-2xl font-bold text-gray-800">Contact Us</h2>
+          <p>
+            If you have any questions, suggestions, or feedback, please feel free to reach out to us. We would love to hear from you!
+          </p>
+          <p>
+            <strong>Email:</strong> [यहाँ अपना ईमेल एड्रेस डालें]
+          </p>
+        </div>
+      </div>
+    </main>
   );
 }
