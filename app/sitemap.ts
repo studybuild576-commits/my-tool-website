@@ -1,7 +1,10 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://pdf-macker-ai.vercel.app'; // यहाँ अपनी वेबसाइट का सही URL डालें
+  // यह अपने-आप पता लगाएगा कि वेबसाइट का URL क्या है
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'http://localhost:3000';
 
   const pages = [
     '/',
