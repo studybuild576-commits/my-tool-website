@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { PDFDocument } from 'pdf-lib';
+import { Unlock, Download } from 'lucide-react';
 
 export default function PdfUnlockerPage() {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -44,44 +45,48 @@ export default function PdfUnlockerPage() {
   return (
     <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
       <header className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">PDF Password Remover</h1>
-        <p className="text-gray-600 text-lg">Remove the password from your PDF file (password required).</p>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-red-600 mb-2 flex items-center justify-center gap-3">
+          <Unlock className="w-10 h-10 text-pink-400 drop-shadow" />
+          PDF Password Remover
+        </h1>
+        <p className="text-lg text-gray-700 font-medium">Remove the password from your PDF file (password required).</p>
       </header>
 
-      <section className="bg-white rounded-lg shadow p-6 mb-8 grid gap-6">
+      <section className="bg-gradient-to-r from-red-100 via-pink-100 to-blue-100 rounded-xl shadow-lg p-6 mb-8 border border-red-200 grid gap-6">
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">1. Upload Locked PDF</label>
+          <label className="block font-semibold mb-2 text-red-700">1. Upload Locked PDF</label>
           <input 
             type="file" 
             accept="application/pdf"
             onChange={handleFileChange} 
-            className="block w-full text-base border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="block w-full text-base border border-red-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white"
           />
         </div>
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">2. Enter PDF Password</label>
+          <label className="block font-semibold mb-2 text-red-700">2. Enter PDF Password</label>
           <input 
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter current password"
-            className="w-full p-2 border border-gray-300 rounded"
+            className="w-full p-2 border border-red-300 rounded bg-white"
           />
         </div>
       </section>
 
-      <div className="text-center mt-6">
+      <div className="flex justify-center mt-6">
         <button 
           onClick={handleUnlockPdf}
           disabled={isUnlocking || !pdfFile || !password}
-          className={`px-6 py-3 text-lg font-semibold rounded transition text-white ${isUnlocking || !pdfFile || !password ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-red-400 to-pink-400 text-white font-bold shadow-lg hover:scale-105 transition border-2 border-red-500 text-lg ${isUnlocking || !pdfFile || !password ? 'bg-gray-400 cursor-not-allowed' : ''}`}
         >
+          <Download className="w-6 h-6" />
           {isUnlocking ? 'Unlocking...' : 'Unlock & Download PDF'}
         </button>
       </div>
 
-      <footer className="text-center text-gray-400 text-sm mt-10">
-        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      <footer className="text-center text-gray-500 text-base mt-10 bg-gradient-to-r from-blue-100 to-pink-100 py-4 rounded-t-xl shadow-inner">
+        &copy; {new Date().getFullYear()} PDF & Text Tools. All rights reserved.
       </footer>
     </main>
   );

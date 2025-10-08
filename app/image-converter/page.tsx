@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from 'react';
+import { Download, Image } from 'lucide-react';
 
 export default function ImageConverterPage() {
   const [originalFile, setOriginalFile] = useState<File | null>(null);
@@ -59,22 +60,25 @@ export default function ImageConverterPage() {
   return (
     <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
       <header className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Image Format Converter</h1>
-        <p className="text-gray-600 text-lg">Convert your images to JPG, PNG, or WEBP.</p>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-pink-600 mb-2 flex items-center justify-center gap-3">
+          <Image className="w-10 h-10 text-blue-400 drop-shadow" />
+          Image Format Converter
+        </h1>
+        <p className="text-lg text-gray-700 font-medium">Convert your images to JPG, PNG, or WEBP.</p>
       </header>
 
-      <section className="bg-white rounded-lg shadow p-6 mb-8 grid gap-6">
+      <section className="bg-gradient-to-r from-pink-100 via-blue-100 to-purple-100 rounded-xl shadow-lg p-6 mb-8 border border-pink-200 grid gap-6">
         <div>
-          <label className="block font-semibold mb-2 text-gray-700">1. Upload Image</label>
-          <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-base border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <label className="block font-semibold mb-2 text-pink-700">1. Upload Image</label>
+          <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-base border border-pink-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white" />
         </div>
-        {originalImageUrl && <img src={originalImageUrl} alt="Preview" className="max-w-full mt-4 rounded border border-gray-200" />}
+        {originalImageUrl && <img src={originalImageUrl} alt="Preview" className="max-w-full mt-4 rounded-xl border-2 border-blue-200 shadow" />}
       </section>
 
       {originalFile && (
         <section className="mb-8">
-          <label className="block font-semibold mb-2 text-gray-700">2. Choose Format to Convert to:</label>
-          <select value={targetFormat} onChange={(e) => setTargetFormat(e.target.value)} className="p-2 border border-gray-300 rounded">
+          <label className="block font-semibold mb-2 text-blue-700">2. Choose Format to Convert to:</label>
+          <select value={targetFormat} onChange={(e) => setTargetFormat(e.target.value)} className="p-2 border border-blue-300 rounded bg-white">
             <option value="image/png">PNG</option>
             <option value="image/jpeg">JPG</option>
             <option value="image/webp">WEBP</option>
@@ -82,18 +86,19 @@ export default function ImageConverterPage() {
         </section>
       )}
 
-      <div className="text-center mt-6">
+      <div className="flex justify-center mt-6">
         <button 
           onClick={handleConvert}
           disabled={isConverting || !originalFile}
-          className={`px-6 py-3 text-lg font-semibold rounded transition text-white ${isConverting || !originalFile ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-blue-400 to-pink-400 text-white font-bold shadow-lg hover:scale-105 transition border-2 border-blue-500 text-lg ${isConverting || !originalFile ? 'bg-gray-400 cursor-not-allowed' : ''}`}
         >
+          <Download className="w-6 h-6" />
           {isConverting ? 'Converting...' : 'Convert & Download'}
         </button>
       </div>
 
-      <footer className="text-center text-gray-400 text-sm mt-10">
-        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      <footer className="text-center text-gray-500 text-base mt-10 bg-gradient-to-r from-blue-100 to-pink-100 py-4 rounded-t-xl shadow-inner">
+        &copy; {new Date().getFullYear()} PDF & Text Tools. All rights reserved.
       </footer>
     </main>
   );

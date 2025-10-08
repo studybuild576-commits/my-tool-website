@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from 'react';
+import { Download } from 'lucide-react';
 
 export default function ImageResizerPage() {
   const [originalImage, setOriginalImage] = useState<string | null>(null);
@@ -61,42 +62,50 @@ export default function ImageResizerPage() {
   return (
     <main className="font-sans px-4 py-10 max-w-2xl mx-auto">
       <header className="mb-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">Image Resizer</h1>
-        <p className="text-gray-600 text-lg">Easily resize your images online.</p>
+        <h1 className="text-4xl md:text-5xl font-extrabold text-pink-600 mb-2 flex items-center justify-center gap-3">
+          <Download className="w-10 h-10 text-blue-400 drop-shadow" />
+          Image Resizer
+        </h1>
+        <p className="text-lg text-gray-700 font-medium">Resize your images online in seconds!</p>
       </header>
 
-      <section className="bg-white rounded-lg shadow p-6 mb-8">
-        <label className="block font-semibold mb-2 text-gray-700">1. Upload Image</label>
-        <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-base border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <section className="bg-gradient-to-r from-pink-100 via-blue-100 to-purple-100 rounded-xl shadow-lg p-6 mb-8 border border-pink-200">
+        <label className="block font-semibold mb-2 text-pink-700">1. Upload Image</label>
+        <input type="file" accept="image/*" onChange={handleImageUpload} className="block w-full text-base border border-pink-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white" />
       </section>
 
       {originalImage && (
         <section className="mb-8">
-          <h2 className="text-xl font-bold text-gray-700 mb-4">2. Set New Dimensions:</h2>
+          <h2 className="text-xl font-bold text-blue-600 mb-4">2. Set New Dimensions:</h2>
           <div className="flex flex-wrap items-center gap-4">
             <div>
-              <label className="mr-2">Width:</label>
-              <input type="number" value={width} onChange={(e) => setWidth(parseInt(e.target.value, 10))} className="w-24 p-2 border border-gray-300 rounded" />
+              <label className="mr-2 text-purple-600 font-semibold">Width:</label>
+              <input type="number" value={width} onChange={(e) => setWidth(parseInt(e.target.value, 10))} className="w-24 p-2 border border-purple-300 rounded bg-white" />
             </div>
             <div>
-              <label className="mr-2">Height:</label>
-              <input type="number" value={height} onChange={(e) => setHeight(parseInt(e.target.value, 10))} className="w-24 p-2 border border-gray-300 rounded" />
+              <label className="mr-2 text-purple-600 font-semibold">Height:</label>
+              <input type="number" value={height} onChange={(e) => setHeight(parseInt(e.target.value, 10))} className="w-24 p-2 border border-purple-300 rounded bg-white" />
             </div>
-            <button onClick={handleResize} className="px-5 py-2 text-base font-semibold rounded bg-blue-600 text-white hover:bg-blue-700 transition">Resize Image</button>
+            <button onClick={handleResize} className="px-5 py-2 text-base font-semibold rounded-xl bg-gradient-to-r from-pink-400 to-blue-400 text-white shadow hover:scale-105 transition">Resize Image</button>
           </div>
         </section>
       )}
 
       {resizedImage && (
         <section className="mb-8">
-          <h2 className="text-xl font-bold text-gray-700 mb-4">3. Your Resized Image:</h2>
-          <img src={resizedImage} alt="Resized" className="max-w-full mt-4 border border-gray-300 rounded" />
-          <a href={resizedImage} download={`resized-${originalFileRef.current?.name || 'image'}`} className="block mt-4 px-5 py-2 text-center text-base font-semibold rounded bg-green-600 text-white hover:bg-green-700 transition">Download Resized Image</a>
+          <h2 className="text-xl font-bold text-green-600 mb-4">3. Your Resized Image:</h2>
+          <img src={resizedImage} alt="Resized" className="max-w-full mt-4 border-2 border-green-300 rounded-xl shadow" />
+          <div className="flex justify-center mt-6">
+            <a href={resizedImage} download={`resized-${originalFileRef.current?.name || 'image'}`} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-400 to-blue-400 text-white font-bold shadow-lg hover:scale-105 transition border-2 border-green-500">
+              <Download className="w-6 h-6" />
+              Download
+            </a>
+          </div>
         </section>
       )}
 
-      <footer className="text-center text-gray-400 text-sm mt-10">
-        &copy; {new Date().getFullYear()} pdf-text-tools. All rights reserved.
+      <footer className="text-center text-gray-500 text-base mt-10 bg-gradient-to-r from-blue-100 to-pink-100 py-4 rounded-t-xl shadow-inner">
+        &copy; {new Date().getFullYear()} PDF & Text Tools. All rights reserved.
       </footer>
     </main>
   );
