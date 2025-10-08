@@ -9,6 +9,7 @@ export default function HomePage() {
           <p className="mt-4 text-lg text-gray-600">
             Your one-stop solution for all PDF, Image, and Text manipulation needs. Fast, free, and secure.
           </p>
+          <p className="mt-2 text-green-600 font-semibold">यह लाइन टेस्ट के लिए जोड़ी गई है - अगर यह Vercel पर दिखे तो सब सही है।</p>
         </header>
 
         <section>
