@@ -47,8 +47,11 @@ export default function JpgToPdfPage() {
       }
 
       // PDF को सेव और डाउनलोड करें
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+  const pdfBytes = await pdfDoc.save();
+  const ab = new ArrayBuffer(pdfBytes.length);
+  const view = new Uint8Array(ab);
+  view.set(pdfBytes);
+  const blob = new Blob([ab], { type: 'application/pdf' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = 'converted.pdf';

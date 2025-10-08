@@ -62,8 +62,11 @@ export default function PdfSplitterPage() {
       const copiedPages = await newPdfDoc.copyPages(pdfDoc, pagesToExtract);
       copiedPages.forEach(page => newPdfDoc.addPage(page));
 
-      const newPdfBytes = await newPdfDoc.save();
-      const blob = new Blob([newPdfBytes], { type: 'application/pdf' });
+  const newPdfBytes = await newPdfDoc.save();
+  const ab = new ArrayBuffer(newPdfBytes.length);
+  const view = new Uint8Array(ab);
+  view.set(newPdfBytes);
+  const blob = new Blob([ab], { type: 'application/pdf' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = `split-${pdfFile.name}`;
