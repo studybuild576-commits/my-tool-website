@@ -1,7 +1,4 @@
 
-body {
-	background: pink;
-}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
