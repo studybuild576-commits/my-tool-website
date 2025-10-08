@@ -36,7 +36,7 @@ export default function AboutPage() {
             If you have any questions, suggestions, or feedback, please feel free to reach out to us. We would love to hear from you!
           </p>
           <p>
-            <strong>Email:</strong> [यहाँ अपना ईमेल एड्रेस डालें]
+            <strong>Email:</strong> [rajputr51903@gmail.com]
           </p>
         </div>
       </div>
