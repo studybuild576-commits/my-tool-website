@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import Image from 'next/image'; // Next.js का इमेज कंपोनेंट
-import { FileText, Image as ImageIcon, SplitSquareHorizontal, Unlock, Type, ArrowUpAZ } from 'lucide-react'; // lucide-react वाले Image आइकॉन का नाम बदला
+import Image from 'next/image';
+import { FileText, Image as ImageIcon, SplitSquareHorizontal, Unlock, Type, ArrowUpAZ } from 'lucide-react';
 
 export default function HomePage() {
   return (
@@ -8,7 +8,6 @@ export default function HomePage() {
       <main className="container mx-auto px-4 py-12">
         <header className="text-center mb-12">
           <div className="flex justify-center items-center gap-4 mb-4">
-            {/* --- यहाँ बदलाव किया गया है: लोगो जोड़ा गया है --- */}
             <Image
               src="/logo.png"
               alt="PDF & Text Tools Logo"
@@ -39,14 +38,12 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-      <footer className="text-center py-8 mt-12 bg-gradient-to-r from-blue-100 to-pink-100 rounded-t-xl shadow-inner">
-        <p className="text-gray-600 font-medium">&copy; {new Date().getFullYear()} PDF & Text Tools. All rights reserved.</p>
-      </footer>
+      {/* --- फुटर यहाँ से हटा दिया गया है --- */}
     </div>
   );
 }
 
-// एक सहायक कंपोनेंट ताकि कोड साफ़ रहे
+// सहायक कंपोनेंट
 function ToolCard({ href, title, description, icon }: { href: string; title: string; description: string; icon: React.ReactNode; }) {
   return (
     <Link href={href} className="block p-6 bg-white rounded-2xl shadow-lg hover:shadow-2xl hover:scale-105 transition-transform duration-300 ease-in-out border border-gray-100">
