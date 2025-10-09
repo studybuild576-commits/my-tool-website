@@ -1,22 +1,21 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // यह अपने-आप पता लगाएगा कि वेबसाइट का URL क्या है
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'http://localhost:3000';
+  const baseUrl = 'https://pdf-macker-ai.vercel.app';
 
   const pages = [
     '/',
-    '/word-counter',
-    '/case-converter',
+    '/image-resizer',
+    '/image-converter',
     '/jpg-to-pdf',
     '/pdf-splitter',
     '/pdf-unlocker',
-    '/image-resizer',
-    '/image-converter',
+    '/word-counter',
+    '/case-converter',
     '/about',
-    '/privacy-policy'
+    '/privacy-policy',
+    '/blog',
+    '/blog/seo-tips'
   ];
 
   const sitemapEntries = pages.map((page) => ({
