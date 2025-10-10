@@ -55,7 +55,6 @@ export default function HomePage() {
             <ToolCard href="/image-converter" title="Image Format Converter" description="Convert images to different formats." icon={<ImageIcon className="w-8 h-8 text-blue-500" />} />
             <ToolCard href="/jpg-to-pdf" title="JPG/PNG to PDF Converter" description="Combine multiple images into one PDF." icon={<FileText className="w-8 h-8 text-purple-500" />} />
             <ToolCard href="/pdf-splitter" title="PDF Splitter" description="Extract specific pages from a PDF file." icon={<SplitSquareHorizontal className="w-8 h-8 text-yellow-500" />} />
-            <ToolCard href="/pdf-unlocker" title="PDF Password Remover" description="Remove a PDF password if you know it." icon={<Unlock className="w-8 h-8 text-green-500" />} />
             <ToolCard href="/word-counter" title="Word & Character Counter" description="Count words and characters in text." icon={<Type className="w-8 h-8 text-blue-400" />} />
             <ToolCard href="/case-converter" title="Case Converter" description="Change text to different letter cases." icon={<ArrowUpAZ className="w-8 h-8 text-pink-400" />} />
           </div>
