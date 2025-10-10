@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://pdf-macker-ai.vercel.app';
+  // URL को आपके नए डोमेन से अपडेट कर दिया गया है
+  const baseUrl = 'https://pdfmakerai.shop';
 
   const pages = [
     '/',
@@ -9,7 +10,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/image-converter',
     '/jpg-to-pdf',
     '/pdf-splitter',
-    '/pdf-unlocker',
     '/word-counter',
     '/case-converter',
     '/about',
