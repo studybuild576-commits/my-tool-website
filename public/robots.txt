@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pdf-macker-ai.vercel.app/sitemap.xml
+Sitemap: https://pdfmakerai.shop/sitemap.xml
