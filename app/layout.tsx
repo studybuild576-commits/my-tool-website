@@ -34,11 +34,11 @@ export default function RootLayout({
           `}
         </Script>
       </head>
+
       <body className="bg-gray-50 text-gray-800">
-        
         {children}
 
-        {/* --- फुटर को अपडेट किया गया है --- */}
+        {/* --- Updated Footer --- */}
         <footer className="text-center py-8 mt-12 border-t border-gray-200 bg-white">
           <div className="container mx-auto px-4">
             <div className="flex justify-center items-center space-x-4 md:space-x-6 mb-4">
@@ -53,11 +53,17 @@ export default function RootLayout({
               <Link href="/privacy-policy" className="text-gray-600 hover:text-blue-600 transition-colors">
                 Privacy Policy
               </Link>
+              <span className="text-gray-300">|</span>
+              {/* ✅ नया Disclaimer लिंक */}
+              <Link href="/disclaimer" className="text-gray-600 hover:text-blue-600 transition-colors">
+                Disclaimer
+              </Link>
             </div>
-            <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Free Online Tools. All rights reserved.</p>
+            <p className="text-gray-500 text-sm">
+              &copy; {new Date().getFullYear()} Free Online Tools. All rights reserved.
+            </p>
           </div>
         </footer>
-
       </body>
     </html>
   );
