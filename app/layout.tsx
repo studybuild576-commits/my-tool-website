@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from 'next/link';
-import Script from 'next/script'; // Analytics के लिए
+import Script from 'next/script';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google Analytics Script - Aapke ID (G-77KYKEPNM0) ke saath */}
+        {/* Google Analytics Script */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-77KYKEPNM0"
@@ -41,24 +41,33 @@ export default function RootLayout({
         {/* --- Updated Footer --- */}
         <footer className="text-center py-8 mt-12 border-t border-gray-200 bg-white">
           <div className="container mx-auto px-4">
-            <div className="flex justify-center items-center space-x-4 md:space-x-6 mb-4">
+            <div className="flex justify-center items-center space-x-4 md:space-x-6 mb-4 flex-wrap">
               <Link href="/about" className="text-gray-600 hover:text-blue-600 transition-colors">
                 About Us
               </Link>
               <span className="text-gray-300">|</span>
+
               <Link href="/blog" className="text-gray-600 hover:text-blue-600 transition-colors">
                 Blog
               </Link>
               <span className="text-gray-300">|</span>
+
               <Link href="/privacy-policy" className="text-gray-600 hover:text-blue-600 transition-colors">
                 Privacy Policy
               </Link>
               <span className="text-gray-300">|</span>
-              {/* ✅ नया Disclaimer लिंक */}
+
               <Link href="/disclaimer" className="text-gray-600 hover:text-blue-600 transition-colors">
                 Disclaimer
               </Link>
+              <span className="text-gray-300">|</span>
+
+              {/* ✅ नया Contact Us लिंक */}
+              <Link href="/contact" className="text-gray-600 hover:text-blue-600 transition-colors">
+                Contact Us
+              </Link>
             </div>
+
             <p className="text-gray-500 text-sm">
               &copy; {new Date().getFullYear()} Free Online Tools. All rights reserved.
             </p>
