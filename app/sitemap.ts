@@ -1,27 +1,29 @@
-import { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  // URL को आपके नए डोमेन से अपडेट कर दिया गया है
-  const baseUrl = 'https://pdfmakerai.shop';
+  const baseUrl = "https://pdfmakerai.shop";
 
   const pages = [
-    '/',
-    '/image-resizer',
-    '/image-converter',
-    '/jpg-to-pdf',
-    '/pdf-splitter',
-    '/word-counter',
-    '/case-converter',
-    '/about',
-    '/privacy-policy',
-    '/blog',
-    '/blog/seo-tips'
+    "/", // homepage
+    "/image-resizer",
+    "/image-converter",
+    "/jpg-to-pdf",
+    "/pdf-splitter",
+    "/word-counter",
+    "/case-converter",
+    "/about",
+    "/privacy-policy",
+    "/disclaimer",
+    "/contact",
+    "/blog",
+    "/blog/seo-tips",
+    "/terms-and-conditions",
   ];
 
-  const sitemapEntries = pages.map((page) => ({
+  return pages.map((page) => ({
     url: `${baseUrl}${page}`,
-    lastModified: new Date(),
+    lastModified: new Date().toISOString(),
+    changeFrequency: "weekly",
+    priority: page === "/" ? 1.0 : 0.8,
   }));
-
-  return sitemapEntries;
 }
