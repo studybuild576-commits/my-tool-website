@@ -8,8 +8,10 @@ export const metadata: Metadata = {
     default: "Free PDF, Image & Text Tools - Edit & Convert Online",
     template: "%s | Free Online Tools",
   },
-  description: "A complete suite of free online tools to convert and edit PDFs, resize and convert images, count words, change text case, and much more. Fast, secure, and easy to use.",
-  keywords: "pdf tools, image resizer, text tools, word counter, case converter, jpg to pdf, pdf splitter, online tools",
+  description:
+    "A complete suite of free online tools to convert and edit PDFs, resize and convert images, count words, change text case, and much more. Fast, secure, and easy to use.",
+  keywords:
+    "pdf tools, image resizer, text tools, word counter, case converter, jpg to pdf, pdf splitter, online tools",
 };
 
 export default function RootLayout({
@@ -20,6 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* ✅ Google AdSense verification meta tag */}
+        <meta name="google-adsense-account" content="ca-pub-5651433387585320" />
+
         {/* Google Analytics Script */}
         <Script
           async
@@ -62,7 +67,6 @@ export default function RootLayout({
               </Link>
               <span className="text-gray-300">|</span>
 
-              {/* ✅ नया Contact Us लिंक */}
               <Link href="/contact" className="text-gray-600 hover:text-blue-600 transition-colors">
                 Contact Us
               </Link>
