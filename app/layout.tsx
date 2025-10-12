@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from 'next/link';
 import Script from 'next/script';
+import { useEffect } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,13 +20,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  // ✅ Auto Google Index trigger
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    fetch("/api/index", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: currentUrl }),
+    })
+      .then(() => console.log("📢 Sent to Google Indexing API:", currentUrl))
+      .catch((err) => console.error("❌ Indexing API failed", err));
+  }, []);
+
   return (
     <html lang="en">
       <head>
         {/* ✅ Google AdSense verification meta tag */}
         <meta name="google-adsense-account" content="ca-pub-5651433387585320" />
 
-        {/* Google Analytics Script */}
+        {/* ✅ Google Analytics Script */}
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-77KYKEPNM0"
