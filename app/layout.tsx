@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from 'next/link';
 import Script from 'next/script';
-import { useEffect } from "react";
 import "./globals.css";
+import AutoIndexer from "@/components/AutoIndexer"; // ✅ Added
 
 export const metadata: Metadata = {
   title: {
@@ -20,19 +20,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  // ✅ Auto Google Index trigger
-  useEffect(() => {
-    const currentUrl = window.location.href;
-    fetch("/api/index", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: currentUrl }),
-    })
-      .then(() => console.log("📢 Sent to Google Indexing API:", currentUrl))
-      .catch((err) => console.error("❌ Indexing API failed", err));
-  }, []);
-
   return (
     <html lang="en">
       <head>
@@ -55,6 +42,9 @@ export default function RootLayout({
       </head>
 
       <body className="bg-gray-50 text-gray-800">
+        {/* ✅ This triggers indexing on each page load */}
+        <AutoIndexer />
+
         {children}
 
         {/* --- Updated Footer --- */}
