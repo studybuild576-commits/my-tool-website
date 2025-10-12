@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from 'next/link';
 import Script from 'next/script';
 import "./globals.css";
-import AutoIndexer from "@/components/AutoIndexer"; // ✅ Added
+import AutoIndexer from "./components/AutoIndexer";
 
 export const metadata: Metadata = {
   title: {
