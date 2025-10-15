@@ -1,20 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Copy, Maximize2, Minimize2, Type, Sigma } from 'lucide-react'; // नए आइकन्स जोड़े गए
-
-// Metadata (यह कोड 'use client' के कारण यहीं पर नहीं हो सकता, इसलिए इसे
-// app/case-converter/layout.tsx (अगर मौजूद हो) में होना चाहिए।
-// लेकिन चूंकि यह एक सिंगल फाइल है, हम इसे टूल के ऊपर कमेंट में दर्शा रहे हैं।)
-
-// Next.js App Router में, Metadata को layout.tsx या page.tsx के export में सेट किया जाता है।
-// चूंकि यह 'use client' है, इसलिए Metadata को layout.tsx में सेट करना सबसे अच्छा है।
-/*
-export const metadata = {
-  title: "Free Case Converter Online - Convert to UPPERCASE, lowercase, Title Case",
-  description: "Easily convert text to different letter cases like uppercase, lowercase, capitalized case, and sentence case online. Fast, private, and 100% free tool for writers and developers.",
-};
-*/
+import { Copy, Maximize2, Minimize2, Type, Sigma } from 'lucide-react'; 
 
 // --- SEO Content Component (1500-शब्दों का लक्ष्य पूरा करने के लिए) ---
 const SeoContent = () => (
@@ -24,7 +11,7 @@ const SeoContent = () => (
                 Case Converter क्या है और इसका उपयोग क्यों करें?
             </h2>
             <p className="text-lg">
-                Case Converter एक आवश्यक ऑनलाइन टूल है जो आपको टेक्स्ट को विभिन्न लेटर केस (Letter Cases) में तुरंत बदलने की अनुमति देता है। चाहे आप किसी डॉक्यूमेंट में सुधार कर रहे हों, $\text{SEO}$ टाइटल तैयार कर रहे हों, या कोड लिख रहे हों, यह टूल आपके समय और मेहनत को बचाता है। यह टूल **100% मुफ्त** है और <strong className="text-blue-500">आपके ब्राउज़र में ही काम करता है,</strong> जिससे आपके टेक्स्ट की <strong className="text-blue-500">गोपनीयता</strong> सुनिश्चित होती है।
+                Case Converter एक आवश्यक ऑनलाइन टूल है जो आपको टेक्स्ट को विभिन्न लेटर केस (Letter Cases) में तुरंत बदलने की अनुमति देता है। चाहे आप किसी डॉक्यूमेंट में सुधार कर रहे हों, <strong>SEO</strong> टाइटल तैयार कर रहे हों, या कोड लिख रहे हों, यह टूल आपके समय और मेहनत को बचाता है। यह टूल **100% मुफ्त** है और <strong className="text-blue-500">आपके ब्राउज़र में ही काम करता है,</strong> जिससे आपके टेक्स्ट की <strong className="text-blue-500">गोपनीयता</strong> सुनिश्चित होती है।
             </p>
 
             <h3 className="text-2xl font-bold text-gray-800 mt-8">
@@ -53,7 +40,7 @@ const SeoContent = () => (
                 Case Converter का उपयोग कहाँ करें? (Use Cases)
             </h3>
             <p>
-                आपके $\text{SEO}$ और सामग्री की गुणवत्ता को बढ़ाने के लिए Case Converter कई तरह से मदद करता है:
+                आपके <strong>SEO</strong> और सामग्री की गुणवत्ता को बढ़ाने के लिए Case Converter कई तरह से मदद करता है:
             </p>
             
             <ol className="list-decimal ml-6 space-y-3">
@@ -64,10 +51,10 @@ const SeoContent = () => (
                     <strong>Presentation Clarity:</strong> यदि आप किसी डॉक्यूमेंट या प्रेजेंटेशन से टेक्स्ट कॉपी कर रहे हैं और केसिंग गड़बड़ है, तो यह टूल आपको एक क्लिक में इसे ठीक करने देता है, जिससे आपका काम साफ़-सुथरा दिखता है।
                 </li>
                 <li>
-                    <strong>Coding and Development:</strong> कई प्रोग्रामिंग भाषाएँ (जैसे Python या JavaScript) में वेरिएबल्स के लिए विशेष केसिंग नियम होते हैं (जैसे $\text{camelCase}$ या $\text{snake\_case}$)। यह टूल कोड स्निपेट्स को जल्दी से मानकीकृत (Standardize) करने में मदद करता है।
+                    <strong>Coding and Development:</strong> कई प्रोग्रामिंग भाषाएँ (जैसे Python या JavaScript) में वेरिएबल्स के लिए विशेष केसिंग नियम होते हैं (जैसे <code>camelCase</code> या <code>snake_case</code>)। यह टूल कोड स्निपेट्स को जल्दी से मानकीकृत (Standardize) करने में मदद करता है।
                 </li>
                 <li>
-                    <strong>Social Media and Email Marketing:</strong> सोशल मीडिया कैप्शन या ईमेल सब्जेक्ट लाइन को $\text{UPPERCASE}$ का उपयोग करके **ध्यान खींचने** के लिए, या $\text{Sentence case}$ का उपयोग करके उन्हें अधिक औपचारिक बनाने के लिए इसका उपयोग करें।
+                    <strong>Social Media and Email Marketing:</strong> सोशल मीडिया कैप्शन या ईमेल सब्जेक्ट लाइन को <strong>UPPERCASE</strong> का उपयोग करके **ध्यान खींचने** के लिए, या <strong>Sentence case</strong> का उपयोग करके उन्हें अधिक औपचारिक बनाने के लिए इसका उपयोग करें।
                 </li>
             </ol>
             
@@ -93,7 +80,7 @@ const SeoContent = () => (
                     <strong>क्या यह Case Converter टूल पूरी तरह से मुफ्त है?</strong> हाँ, यह टूल पूरी तरह से मुफ्त है और रहेगा। हम उच्च गुणवत्ता वाले डिजिटल टूल को बिना किसी शुल्क के प्रदान करने के लिए प्रतिबद्ध हैं।
                 </li>
                 <li>
-                    <strong>क्या टूल में वर्ड काउंट फीचर है?</strong> वर्तमान में, यह केवल केस बदलने पर केंद्रित है, लेकिन आप हमारे समर्पित **Word & Character Counter** टूल का उपयोग करके अपने टेक्स्ट के शब्दों और अक्षरों को गिन सकते हैं। (यह आंतरिक लिंकिंग है!)
+                    <strong>क्या टूल में वर्ड काउंट फीचर है?</strong> वर्तमान में, यह केवल केस बदलने पर केंद्रित है, लेकिन आप हमारे समर्पित **Word & Character Counter** टूल का उपयोग करके अपने टेक्स्ट के शब्दों और अक्षरों को गिन सकते हैं।
                 </li>
                 <li>
                     <strong>"Title Case" और "Capitalized Case" में क्या अंतर है?</strong> तकनीकी रूप से, वे अक्सर एक दूसरे के स्थान पर उपयोग किए जाते हैं, लेकिन Title Case में आमतौर पर छोटे शब्द (जैसे 'a', 'an', 'the', 'of') को छोटा रखा जाता है। हमारे टूल में, हम सभी शब्दों को बड़ा करते हैं ताकि अधिकतम दृश्यता मिले।
@@ -101,10 +88,8 @@ const SeoContent = () => (
             </ul>
             
             <p className="mt-8">
-                <strong>निष्कर्ष:</strong> Case Converter एक साधारण टूल से कहीं ज़्यादा है—यह आपकी लेखन प्रक्रिया को सुव्यवस्थित (Streamline) करने, आपके $\text{SEO}$ प्रयासों को बढ़ाने, और आपके कंटेंट को पेशेवर बनाने का एक महत्वपूर्ण हिस्सा है। इसे आज़माएं और अपने टेक्स्ट को तुरंत बदलें!
+                <strong>निष्कर्ष:</strong> Case Converter एक साधारण टूल से कहीं ज़्यादा है—यह आपकी लेखन प्रक्रिया को सुव्यवस्थित (Streamline) करने, आपके <strong>SEO</strong> प्रयासों को बढ़ाने, और आपके कंटेंट को पेशेवर बनाने का एक महत्वपूर्ण हिस्सा है। इसे आज़माएं और अपने टेक्स्ट को तुरंत बदलें!
             </p>
-            {/* यह कंटेंट लगभग 1000 शब्दों का है। आप इसे 1500 तक ले जाने के लिए
-            विभिन्न केसिंग उदाहरण, व्याकरणिक नियम, और अन्य टूल से तुलना जोड़ सकते हैं। */}
         </div>
     </section>
 );
