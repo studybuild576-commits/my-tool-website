@@ -37,13 +37,13 @@ const SeoContent = () => (
 
             <ul className="list-disc ml-6 space-y-3">
                 <li>
-                    <strong>JPG / JPEG:</strong> यह <strong className="text-green-500">तस्वीरों (Photography)</strong> और जटिल रंग ग्रेडिएंट्स (color gradients) के लिए सबसे अच्छा है। यह एक 'Lossy' फॉर्मेट है, जिसका मतलब है कि यह फ़ाइल साइज़ को कम करने के लिए कुछ डेटा हटाता है। यह $\mathbf{वेबसाइटों}$ पर सबसे अधिक उपयोग होता है।
+                    <strong>JPG / JPEG:</strong> यह <strong className="text-green-500">तस्वीरों (Photography)</strong> और जटिल रंग ग्रेडिएंट्स (color gradients) के लिए सबसे अच्छा है। यह एक 'Lossy' फॉर्मेट है, जिसका मतलब है कि यह फ़ाइल साइज़ को कम करने के लिए कुछ डेटा हटाता है। यह <strong>वेबसाइटों</strong> पर सबसे अधिक उपयोग होता है।
                 </li>
                 <li>
-                    <strong>PNG:</strong> यह <strong className="text-green-500">लोगो (Logos)</strong>, ग्राफिक्स, या टेक्स्ट वाली इमेजेस के लिए सर्वोत्तम है। इसकी सबसे बड़ी विशेषता है $\mathbf{Transparency}$ (पारदर्शिता) को सपोर्ट करना और यह एक 'Lossless' फॉर्मेट है, जिसका अर्थ है कि यह बिना क्वालिटी खोए कंप्रेस होता है।
+                    <strong>PNG:</strong> यह <strong className="text-green-500">लोगो (Logos)</strong>, ग्राफिक्स, या टेक्स्ट वाली इमेजेस के लिए सर्वोत्तम है। इसकी सबसे बड़ी विशेषता है <strong>Transparency</strong> (पारदर्शिता) को सपोर्ट करना और यह एक 'Lossless' फॉर्मेट है, जिसका अर्थ है कि यह बिना क्वालिटी खोए कंप्रेस होता है।
                 </li>
                 <li>
-                    <strong>WEBP:</strong> Google द्वारा विकसित, $\mathbf{WEBP}$ आधुनिक वेब के लिए डिज़ाइन किया गया है। यह $\mathbf{JPG}$ और $\mathbf{PNG}$ की तुलना में <strong className="text-purple-500">25-35% तक छोटा</strong> फ़ाइल साइज़ प्रदान करता है। $\mathbf{SEO}$ और <strong className="text-purple-500">पेज स्पीड</strong> के लिए यह सर्वोत्तम विकल्प है।
+                    <strong>WEBP:</strong> Google द्वारा विकसित, <strong>WEBP</strong> आधुनिक वेब के लिए डिज़ाइन किया गया है। यह <strong>JPG</strong> और <strong>PNG</strong> की तुलना में <strong className="text-purple-500">25-35% तक छोटा</strong> फ़ाइल साइज़ प्रदान करता है। <strong>SEO</strong> और <strong className="text-purple-500">पेज स्पीड</strong> के लिए यह सर्वोत्तम विकल्प है।
                 </li>
             </ul>
 
@@ -53,16 +53,16 @@ const SeoContent = () => (
             
             <ol className="list-decimal ml-6 space-y-3">
                 <li>
-                    <strong>Web Performance और SEO:</strong> Google $\mathbf{Page \ Speed}$ को रैंकिंग फैक्टर मानता है। $\mathbf{WEBP}$ में कन्वर्ट करके आप अपनी वेबसाइट की लोडिंग स्पीड को बढ़ा सकते हैं, जिससे यूज़र एक्सपीरियंस और $\mathbf{SEO}$ दोनों में सुधार होता है।
+                    <strong>Web Performance और SEO:</strong> Google <strong>Page Speed</strong> को रैंकिंग फैक्टर मानता है। <strong>WEBP</strong> में कन्वर्ट करके आप अपनी वेबसाइट की लोडिंग स्पीड को बढ़ा सकते हैं, जिससे यूज़र एक्सपीरियंस और <strong>SEO</strong> दोनों में सुधार होता है।
                 </li>
                 <li>
                     <strong>Social Media Uploads:</strong> कई सोशल मीडिया प्लेटफॉर्म (जैसे LinkedIn, Instagram) विशिष्ट फ़ाइल साइज़ और फॉर्मेट की मांग करते हैं। कन्वर्टर यह सुनिश्चित करता है कि आपकी इमेज सही फॉर्मेट में है।
                 </li>
                 <li>
-                    <strong>Design और Printing:</strong> कभी-कभी डिज़ाइन सॉफ्टवेयर को एक विशिष्ट फॉर्मेट (जैसे $\mathbf{PNG}$) की आवश्यकता होती है। आप $\mathbf{JPG}$ को $\mathbf{PNG}$ में बदलकर बैकग्राउंड पारदर्शिता बनाए रख सकते हैं।
+                    <strong>Design और Printing:</strong> कभी-कभी डिज़ाइन सॉफ्टवेयर को एक विशिष्ट फॉर्मेट (जैसे <strong>PNG</strong>) की आवश्यकता होती है। आप <strong>JPG</strong> को <strong>PNG</strong> में बदलकर बैकग्राउंड पारदर्शिता बनाए रख सकते हैं।
                 </li>
                 <li>
-                    <strong>Storage Saving:</strong> बड़ी $\mathbf{TIFF}$ या $\mathbf{RAW}$ फ़ाइलों को $\mathbf{JPG}$ या $\mathbf{WEBP}$ में कंप्रेस करके आप अपनी हार्ड ड्राइव पर जगह बचा सकते हैं।
+                    <strong>Storage Saving:</strong> बड़ी <strong>TIFF</strong> या <strong>RAW</strong> फ़ाइलों को <strong>JPG</strong> या <strong>WEBP</strong> में कंप्रेस करके आप अपनी हार्ड ड्राइव पर जगह बचा सकते हैं।
                 </li>
             </ol>
             
@@ -84,7 +84,7 @@ const SeoContent = () => (
             
             <ul className="list-disc ml-6 space-y-3">
                 <li>
-                    <strong>क्या कन्वर्ट करने पर इमेज की क्वालिटी कम हो जाती है?</strong> $\mathbf{PNG}$ से $\mathbf{JPG}$ में कन्वर्ट करने पर थोड़ी कमी आ सकती है (क्योंकि $\mathbf{JPG}$ Lossy है), लेकिन $\mathbf{PNG}$ और $\mathbf{WEBP}$ में कन्वर्ट करने पर हम उच्च क्वालिटी बनाए रखने का प्रयास करते हैं।
+                    <strong>क्या कन्वर्ट करने पर इमेज की क्वालिटी कम हो जाती है?</strong> <strong>PNG</strong> से <strong>JPG</strong> में कन्वर्ट करने पर थोड़ी कमी आ सकती है (क्योंकि <strong>JPG</strong> Lossy है), लेकिन <strong>PNG</strong> और <strong>WEBP</strong> में कन्वर्ट करने पर हम उच्च क्वालिटी बनाए रखने का प्रयास करते हैं।
                 </li>
                 <li>
                     <strong>क्या मैं एक साथ कई इमेज कन्वर्ट कर सकता हूँ?</strong> वर्तमान में, यह टूल एक समय में एक इमेज कन्वर्ट करता है, लेकिन हम जल्द ही बैच प्रोसेसिंग फीचर जोड़ने की योजना बना रहे हैं।
@@ -95,11 +95,8 @@ const SeoContent = () => (
             </ul>
             
             <p className="mt-8">
-                **निष्कर्ष:** एक तेज़, सुरक्षित और सटीक Image Converter के साथ, आप अपनी डिजिटल सामग्री को आसानी से प्रबंधित कर सकते हैं। आज ही अपनी इमेज को $\mathbf{WEBP}$ में बदलें और अपनी वेबसाइट को बूस्ट दें!
+                **निष्कर्ष:** एक तेज़, सुरक्षित और सटीक Image Converter के साथ, आप अपनी डिजिटल सामग्री को आसानी से प्रबंधित कर सकते हैं। आज ही अपनी इमेज को <strong>WEBP</strong> में बदलें और अपनी वेबसाइट को बूस्ट दें!
             </p>
-            {/* यह कंटेंट लगभग 1000 शब्दों का है। इसे 1500 तक ले जाने के लिए, आप 
-            विभिन्न इमेज के साइज़ (KBs vs MBs) पर केस स्टडी या अन्य फॉर्मेट्स (GIF, BMP, TIFF)
-            के बारे में और जानकारी जोड़ सकते हैं। */}
         </div>
     </section>
 );
@@ -117,25 +114,9 @@ export default function ImageConverterPage() {
   const showAlert = (msg: string) => setMessage(msg);
   const closeAlert = () => setMessage(null);
 
-
-  // Cleanup URL object when component unmounts
-  // This is a good practice to prevent memory leaks in client-side Next.js apps
-  // const cleanup = useCallback(() => {
-  //   if (originalImageUrl) {
-  //     URL.revokeObjectURL(originalImageUrl);
-  //   }
-  // }, [originalImageUrl]);
-
-  // useEffect(() => {
-  //   return cleanup;
-  // }, [cleanup]);
-
-
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // cleanup(); // Revoke previous URL if any
-
       // Safety check for file size (AdSense loves responsible apps)
       if (file.size > 20 * 1024 * 1024) { // 20MB limit
          showAlert("File is too large (max 20MB). Please try a smaller file.");
