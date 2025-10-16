@@ -1,68 +1,71 @@
-import type { Metadata } from 'next';
-import { Shield } from 'lucide-react';
+<h1>Privacy Policy</h1>
+<p>Last updated: October 16, 2025</p>
 
-export const metadata: Metadata = {
-  title: "Privacy Policy",
-};
+<p>
+Welcome to <strong>PDFMakerAI.shop</strong> (“we”, “our”, or “us”).  
+This Privacy Policy describes how we collect, use, and protect your personal information when you use our online tools and services such as PDF converters, mergers, compressors, and other text/image utilities.
+</p>
 
-export default function PrivacyPolicyPage() {
-  return (
-    <main className="container mx-auto px-4 py-12">
-      <div className="max-w-3xl mx-auto">
-        <header className="text-center mb-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 flex items-center justify-center gap-3">
-            <Shield className="w-10 h-10 text-gray-500" />
-            Privacy Policy
-          </h1>
-        </header>
+<p>
+We value your privacy and are committed to protecting your personal data in accordance with the laws of India, including the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011.
+</p>
 
-        <div className="bg-white p-8 md:p-10 rounded-2xl shadow-lg prose prose-lg lg:prose-xl text-gray-700">
-          {/* ↓↓↓ आपका जनरेट किया हुआ कंटेंट यहाँ है ↓↓↓ */}
-          
-          <p>Last updated: October 10, 2025</p>
-          <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
-          <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
-          
-          <h2>Interpretation and Definitions</h2>
-          <h3>Interpretation</h3>
-          <p>The words whose initial letters are capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.</p>
-          <h3>Definitions</h3>
-          <p>For the purposes of this Privacy Policy:</p>
-          <ul>
-            <li><strong>Account</strong> means a unique account created for You to access our Service or parts of our Service.</li>
-            <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to pdf-macker-ai.</li>
-            <li><strong>Cookies</strong> are small files that are placed on Your computer, mobile device or any other device by a website...</li>
-            <li><strong>Country</strong> refers to: Punjab, India</li>
-            <li><strong>Website</strong> refers to pdf-macker-ai, accessible from <a href="https://pdf-macker-ai.vercel.app" target="_blank" rel="noopener noreferrer">https://pdf-macker-ai.vercel.app</a></li>
-            <li><strong>You</strong> means the individual accessing or using the Service...</li>
-          </ul>
+<h2>Interpretation and Definitions</h2>
+<ul>
+  <li><strong>Company:</strong> Refers to PDFMakerAI, operating at <a href="https://pdfmakerai.shop" target="_blank">https://pdfmakerai.shop</a>.</li>
+  <li><strong>Country:</strong> India</li>
+  <li><strong>Service:</strong> Refers to all online tools and pages offered on PDFMakerAI.shop.</li>
+  <li><strong>You:</strong> Means the individual or entity using our website or tools.</li>
+</ul>
 
-          <h2>Collecting and Using Your Personal Data</h2>
-          <h3>Types of Data Collected</h3>
-          <h4>Personal Data</h4>
-          <p>While using Our Service, We may ask You to provide Us with certain personally identifiable information... This may include, but is not limited to: Usage Data.</p>
-          <h4>Usage Data</h4>
-          <p>Usage Data is collected automatically when using the Service...</p>
-          
-          {/* ... The rest of your policy content will be styled automatically ... */}
-          
-          <h2>Children's Privacy</h2>
-          <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13...</p>
-          
-          <h2>Links to Other Websites</h2>
-          <p>Our Service may contain links to other websites that are not operated by Us. If You click on a third party link, You will be directed to that third party's site...</p>
-          
-          <h2>Changes to this Privacy Policy</h2>
-          <p>We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page...</p>
-          
-          <h2>Contact Us</h2>
-          <p>If you have any questions about this Privacy Policy, You can contact us:</p>
-          <ul>
-            <li>By email: [rajputr51903@gmail.com]</li>
-          </ul>
+<h2>Information We Collect</h2>
+<ul>
+  <li><strong>Usage Data:</strong> We automatically collect non-personal data such as your IP address, browser type, and usage statistics to improve our service.</li>
+  <li><strong>Uploaded Files:</strong> Files you upload (e.g., PDFs or images) are processed securely and deleted automatically after processing. We do not store or share your uploaded files.</li>
+  <li><strong>Cookies:</strong> We use cookies to remember preferences and enhance your user experience.</li>
+</ul>
 
-        </div>
-      </div>
-    </main>
-  );
-}
+<h2>How We Use Your Data</h2>
+<ul>
+  <li>To operate and maintain our online tools.</li>
+  <li>To improve performance and user experience.</li>
+  <li>To monitor usage and detect technical issues.</li>
+  <li>To comply with applicable Indian laws.</li>
+</ul>
+
+<h2>Third-Party Services</h2>
+<p>
+We may use third-party services such as Google Analytics and Google AdSense for traffic analysis and monetization.  
+These third parties may use cookies to serve personalized ads based on your prior visits to this or other websites.  
+You can opt out of personalized advertising by visiting <a href="https://adssettings.google.com/" target="_blank">adssettings.google.com</a>.
+</p>
+
+<h2>Data Retention</h2>
+<p>
+We retain personal data only for as long as necessary to fulfill the purposes outlined in this policy. Uploaded files are automatically deleted shortly after processing.
+</p>
+
+<h2>Children’s Privacy</h2>
+<p>
+Our website is not directed to children under 13. We do not knowingly collect personal information from anyone under 13 years of age.
+</p>
+
+<h2>Links to Other Websites</h2>
+<p>
+Our site may contain links to third-party websites. We are not responsible for the content or privacy practices of those sites.
+</p>
+
+<h2>Changes to This Policy</h2>
+<p>
+We may update this Privacy Policy periodically. Any updates will be posted on this page with a revised “Last updated” date.
+</p>
+
+<h2>Contact Us</h2>
+<p>
+If you have questions or concerns about this Privacy Policy, please contact us:
+</p>
+<ul>
+  <li>Email: <a href="mailto:rajputr51903@gmail.com">rajputr51903@gmail.com</a></li>
+  <li>Website: <a href="https://pdfmakerai.shop" target="_blank">https://pdfmakerai.shop</a></li>
+  <li>Address: Punjab, India</li>
+</ul>
