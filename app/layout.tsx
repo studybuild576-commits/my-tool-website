@@ -85,4 +85,3 @@ export default function RootLayout({
     </html>
   );
 }
-Isko layout me add kare
