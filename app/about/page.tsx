@@ -1,7 +1,15 @@
 "use client";
 
-import { CheckCircle, Zap, Shield, Heart } from 'lucide-react';
-// Note: next/head is not used in modern Next.js/React, using Tailwind styles and standard HTML meta tags instead (if needed in a specific setup).
+import { Zap, Shield, Heart, LucideIcon } from 'lucide-react';
+import React from 'react';
+
+// TypeScript interface for PrincipleCard props
+interface PrincipleCardProps {
+    icon: React.ReactElement<LucideIcon>;
+    title: string;
+    content: string;
+    color: string;
+}
 
 export default function AboutPage() {
   return (
@@ -96,8 +104,8 @@ export default function AboutPage() {
   );
 }
 
-// Reusable component for core principles
-const PrincipleCard = ({ icon, title, content, color }) => (
+// Reusable component for core principles with explicit typing
+const PrincipleCard: React.FC<PrincipleCardProps> = ({ icon, title, content, color }) => (
     <div className={`p-6 rounded-xl shadow-lg border-2 flex flex-col items-center text-center transition transform hover:scale-[1.03] ${color}`}>
         <div className="mb-3">{icon}</div>
         <h3 className="text-xl font-bold mb-2">{title}</h3>
