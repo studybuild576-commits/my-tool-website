@@ -2,26 +2,43 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Newspaper } from 'lucide-react';
 
-// इस पेज का SEO
+// ✅ Page SEO Metadata
 export const metadata: Metadata = {
-  title: "Blog | Free Online Tools",
-  description: "Read our latest articles, tips, and tutorials about online tools, SEO, and productivity.",
+  title: "Our Blog | Free Online Tools",
+  description:
+    "Explore our latest blog posts about SEO, image optimization, title case tips, and social media image sizes for your website.",
 };
 
-// भविष्य में आप यहीं पर अपनी नई ब्लॉग पोस्ट जोड़ेंगे
+// ✅ Blog post list
 const posts = [
   {
     slug: 'seo-tips',
     title: 'SEO Tips for PDF & Image Tools Websites',
-    description: 'Improve your website\'s visibility and get more users with these proven SEO strategies.',
+    description:
+      'Improve your website visibility and attract more users with these proven SEO techniques.',
     date: 'October 8, 2025',
   },
-  // {
-  //   slug: 'another-post',
-  //   title: 'Another Blog Post Title',
-  //   description: 'A short description for the next blog post.',
-  //   date: 'October 9, 2025',
-  // },
+  {
+    slug: 'social-media-image-sizes',
+    title: 'Best Social Media Image Sizes for 2025',
+    description:
+      'Learn the ideal image dimensions for Instagram, Facebook, Twitter, and more to boost engagement.',
+    date: 'October 9, 2025',
+  },
+  {
+    slug: 'title-case-for-seo',
+    title: 'How Title Case Improves SEO & Readability',
+    description:
+      'Understand how using title case can enhance your content readability and SEO ranking.',
+    date: 'October 10, 2025',
+  },
+  {
+    slug: 'webp-vs-jpg',
+    title: 'WebP vs JPG — Which Image Format is Best?',
+    description:
+      'Compare WebP and JPG formats to optimize your website’s image quality and loading speed.',
+    date: 'October 11, 2025',
+  },
 ];
 
 export default function BlogIndexPage() {
@@ -33,7 +50,9 @@ export default function BlogIndexPage() {
             <Newspaper className="w-10 h-10 text-green-500" />
             Our Blog
           </h1>
-          <p className="mt-4 text-lg text-gray-600">Articles, tips, and tutorials from our team.</p>
+          <p className="mt-4 text-lg text-gray-600">
+            Articles, tips, and tutorials from our team.
+          </p>
         </header>
 
         <div className="space-y-8">
