@@ -1,75 +1,101 @@
+import type { Metadata } from 'next';
+import { Mail, MessageCircle, Send, Globe } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: "हमसे संपर्क करें | Contact Us",
+  description: "Have a question, feedback, or business inquiry? Please reach out to us.",
+};
+
 export default function Contact() {
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-2xl shadow-md mt-8 text-gray-800">
-      <h1 className="text-3xl font-bold mb-4 text-blue-600 text-center">
-        Contact Us
-      </h1>
+    <main className="container mx-auto px-4 py-12">
+      <div className="max-w-3xl mx-auto">
+        <header className="text-center mb-10">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 flex items-center justify-center gap-3">
+            <MessageCircle className="w-10 h-10 text-blue-600" />
+            हमसे संपर्क करें (<span className="text-blue-600">Contact Us</span>)
+          </h1>
+          <p className="text-lg text-gray-600 mt-2">
+            कोई सवाल है, सुझाव देना है, या व्यवसायिक पूछताछ (business inquiry) करनी है? हमें आपसे सुनना अच्छा लगेगा!
+          </p>
+        </header>
 
-      <p className="text-center text-gray-600 mb-6">
-        Have a question, feedback, or business inquiry?  
-        We’d love to hear from you! Please reach out through the form below or email us directly.
-      </p>
+        <div className="bg-white p-8 md:p-10 rounded-2xl shadow-xl border border-gray-100 text-gray-700">
+          
+          <div className="space-y-6">
+            <form
+              // FormSubmit URL, इसमें आपका ईमेल सही जगह पर है
+              action="https://formsubmit.co/rajputr51903@gmail.com"
+              method="POST"
+              className="space-y-5"
+            >
+              {/* Hidden fields for extra protection and redirection */}
+              <input type="hidden" name="_captcha" value="false" />
+              <input
+                type="hidden"
+                name="_next"
+                // Success पेज का URL यहाँ डालें। मैंने एक सामान्य URL उपयोग किया है।
+                value="https://pdfmakerai.shop/contact-success" 
+              />
+              <input type="hidden" name="_subject" value="New Contact Message from Tool Website" />
 
-      <div className="space-y-4">
-        <form
-          action="https://formsubmit.co/rajputr51903@gmail.com"
-          method="POST"
-          className="space-y-4"
-        >
-          {/* Hidden fields for extra protection */}
-          <input type="hidden" name="_captcha" value="false" />
-          <input
-            type="hidden"
-            name="_next"
-            value="https://pdfmakerai.shop/contact-success"
-          />
 
-          <div>
-            <label className="block text-gray-700 mb-1 font-medium">Your Name</label>
-            <input
-              type="text"
-              name="name"
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your name"
-            />
+              <div>
+                <label className="block text-gray-700 mb-2 font-semibold">आपका नाम (Your Name)</label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200"
+                  placeholder="कृपया अपना पूरा नाम दर्ज करें"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 mb-2 font-semibold">आपका ईमेल (Your Email)</label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200"
+                  placeholder="उदाहरण: yourname@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 mb-2 font-semibold">संदेश (Message)</label>
+                <textarea
+                  name="message"
+                  rows={6}
+                  required
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-200 resize-none"
+                  placeholder="आपकी प्रतिक्रिया, बग रिपोर्ट या सुझाव यहाँ लिखें..."
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white font-bold text-lg py-3 rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              >
+                <Send className="w-5 h-5"/> संदेश भेजें (Send Message)
+              </button>
+            </form>
           </div>
 
-          <div>
-            <label className="block text-gray-700 mb-1 font-medium">Your Email</label>
-            <input
-              type="email"
-              name="email"
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter your email"
-            />
+          <div className="mt-10 pt-6 border-t border-gray-200 text-center text-gray-600 space-y-3">
+            <p className="font-semibold text-gray-800">
+                आप हमें सीधे इन माध्यमों से भी संपर्क कर सकते हैं:
+            </p>
+            <p className="flex items-center justify-center gap-2 text-lg">
+                <Mail className="w-5 h-5 text-orange-500"/>
+                <strong>ईमेल (Email):</strong> <a href="mailto:rajputr51903@gmail.com" className="text-orange-600 hover:underline font-mono">rajputr51903@gmail.com</a>
+            </p>
+            <p className="flex items-center justify-center gap-2 text-sm text-gray-500">
+                हमारा प्रयास रहता है कि हम 24 से 48 घंटों के भीतर सभी प्रश्नों का उत्तर दें।
+            </p>
           </div>
-
-          <div>
-            <label className="block text-gray-700 mb-1 font-medium">Message</label>
-            <textarea
-              name="message"
-              rows={5}
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Write your message here..."
-            ></textarea>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Send Message
-          </button>
-        </form>
+        </div>
       </div>
-
-      <div className="mt-8 text-center text-gray-600">
-        <p>📧 Email: <a href="mailto:rajputr51903@gmail.com" className="text-blue-600 hover:underline">rajputr51903@gmail.com</a></p>
-        <p>🌐 Website: <a href="https://pdfmakerai.shop" className="text-blue-600 hover:underline">pdfmakerai.shop</a></p>
-      </div>
-    </div>
+    </main>
   );
 }
