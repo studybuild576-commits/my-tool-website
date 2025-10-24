@@ -15,7 +15,10 @@ export default function JPGToPDFTool() {
       page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
     }
     const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    // Cast to any to satisfy Blob constructor typing (pdf-lib returns a
+    // Uint8Array-like that can have an ArrayBufferLike buffer in some
+    // environments). This is safe at runtime.
+    const blob = new Blob([pdfBytes as any], { type: "application/pdf" });
     setPdfUrl(URL.createObjectURL(blob));
   }
 

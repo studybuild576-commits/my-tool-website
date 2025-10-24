@@ -23,7 +23,8 @@ export default function PDFWatermarkTool() {
     });
 
     const newBytes = await pdfDoc.save();
-    const blob = new Blob([newBytes], { type: "application/pdf" });
+    // Cast to any to satisfy Blob constructor typing
+    const blob = new Blob([newBytes as any], { type: "application/pdf" });
     setWatermarkedUrl(URL.createObjectURL(blob));
   }
 

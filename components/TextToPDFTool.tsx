@@ -22,7 +22,8 @@ export default function TextToPDFTool() {
     });
 
     const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    // Cast to any to satisfy Blob constructor typing
+    const blob = new Blob([pdfBytes as any], { type: "application/pdf" });
     setPdfUrl(URL.createObjectURL(blob));
   }
 

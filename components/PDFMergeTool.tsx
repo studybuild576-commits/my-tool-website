@@ -15,7 +15,8 @@ export default function PDFMergeTool() {
       pages.forEach((page) => mergedPdf.addPage(page));
     }
     const mergedBytes = await mergedPdf.save();
-    const blob = new Blob([mergedBytes], { type: "application/pdf" });
+    // Cast to any to satisfy Blob constructor typing
+    const blob = new Blob([mergedBytes as any], { type: "application/pdf" });
     setMergedUrl(URL.createObjectURL(blob));
   }
 

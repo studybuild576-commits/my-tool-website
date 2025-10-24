@@ -1,7 +1,13 @@
 "use client";
 import { useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import "pdfjs-dist/build/pdf.worker.entry";
+// Use the legacy build entry which is compatible with bundlers and set
+// the worker URL explicitly to avoid webpack trying to resolve a missing
+// local worker entry. We pin the CDN worker to the installed pdfjs-dist
+// version from package.json (5.4.296).
+// Defer loading pdfjs-dist to runtime inside the client event handler so
+// the module (which expects browser APIs like DOMMatrix) is never
+// evaluated during server-side prerendering. We'll dynamically import it
+// when the user reads a PDF.
 
 export default function PDFReaderTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,6 +18,12 @@ export default function PDFReaderTool() {
     const reader = new FileReader();
     reader.onload = async () => {
       const typedArray = new Uint8Array(reader.result as ArrayBuffer);
+      // Import pdfjs on-demand (client only) and configure workerSrc.
+      const pdfjsLib = (await import("pdfjs-dist")) as any;
+      pdfjsLib.GlobalWorkerOptions = pdfjsLib.GlobalWorkerOptions || {};
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js";
+
       const pdf = await pdfjsLib.getDocument({ data: typedArray }).promise;
       let fullText = "";
 

@@ -23,7 +23,10 @@ export default function HTMLToPDFTool() {
     });
 
     const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    // pdf-lib may return a Uint8Array-like with a non-standard ArrayBuffer type
+    // which TypeScript can sometimes reject as a BlobPart. Cast to `any` to
+    // satisfy the DOM Blob constructor at runtime (safe here).
+    const blob = new Blob([pdfBytes as any], { type: "application/pdf" });
     setPdfUrl(URL.createObjectURL(blob));
   }
 
