@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "My Tools",
-              url: "https://example.com/",
+              url: "https://pdfmakerai.shop/",
               description:
                 "All-in-one PDF & text utilities — convert, merge, split, compress and edit files quickly and privately.",
             }),

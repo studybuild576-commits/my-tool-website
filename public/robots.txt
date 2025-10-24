@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+# Sitemap for site indexing — make sure this file is served from the site root
 Sitemap: https://pdfmakerai.shop/sitemap.xml
