@@ -1,24 +1,19 @@
 import { NextResponse } from "next/server";
-// pdfjs doesn't ship types for the legacy build path; require dynamically and treat as any
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const pdfjsLib: any = require("pdfjs-dist/legacy/build/pdf.js");
+// Use pdf-parse for server-side PDF text extraction
+let pdfParse: any = null;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  pdfParse = require("pdf-parse");
+} catch (err) {
+  pdfParse = null;
+}
 
 const OPENAI_KEY = process.env.OPENAI_API_KEY || process.env.NEXT_PUBLIC_OPENAI_API_KEY;
 
 async function extractTextFromPdfBuffer(buffer: ArrayBuffer) {
-  const loadingTask = pdfjsLib.getDocument({ data: buffer });
-  const doc = await loadingTask.promise;
-  let fullText = "";
-  for (let i = 1; i <= doc.numPages; i++) {
-    // eslint-disable-next-line no-await-in-loop
-    const page = await doc.getPage(i);
-    // eslint-disable-next-line no-await-in-loop
-    const content = await page.getTextContent();
-    const strings = content.items.map((s: any) => s.str);
-    fullText += strings.join(" ") + "\n\n";
-  }
-  return fullText;
+  if (!pdfParse) throw new Error("pdf-parse not available");
+  const data = await pdfParse(Buffer.from(buffer));
+  return data?.text || "";
 }
 
 async function askOpenAI(systemPrompt: string, prompt: string) {

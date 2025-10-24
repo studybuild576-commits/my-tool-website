@@ -13,6 +13,7 @@
     "next": "15.5.4",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.4.296",
+    "pdf-parse": "^1.1.1",
     "openai": "^4.10.0",
     "tesseract.js": "^4.0.2",
     "react": "19.1.0",
