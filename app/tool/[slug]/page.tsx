@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { tools } from "@/lib/tools";
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const slug = params.slug;
+export async function generateMetadata({ params }: any) {
+  const slug = params.slug as string;
   const tool = tools.find((t) => t.route.replace(/^\//, "") === slug);
   if (!tool) return { title: "Tool" };
   return {
@@ -11,8 +11,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function ToolDescription({ params }: { params: { slug: string } }) {
-  const slug = params.slug;
+export default function ToolDescription({ params }: any) {
+  const slug = params.slug as string;
   const tool = tools.find((t) => t.route.replace(/^\//, "") === slug);
   if (!tool) return notFound();
 
