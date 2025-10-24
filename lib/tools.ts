@@ -193,8 +193,27 @@ export const tools = [
     route: "/ai-ocr",
     icon: "🧾🔍",
     description: "Extract editable text from scanned images and PDFs using AI-powered OCR.",
-    longDescription:
-      "Convert scanned documents and images into searchable, editable text using high-accuracy AI-OCR. Supports multiple languages and preserves basic layout when possible.",
+    longDescription: `Our AI-powered Optical Character Recognition (OCR) technology transforms scanned documents, images, and PDFs into fully searchable and editable text with unprecedented accuracy. Unlike traditional OCR solutions, our advanced AI model understands context and handles complex layouts, making it perfect for both simple text extraction and sophisticated document processing needs.
+
+    Key Features:
+    - Multi-language support with automatic language detection
+    - Maintains original document formatting and layout
+    - Handles handwritten text with remarkable accuracy
+    - Processes tables, columns, and complex layouts
+    - Batch processing for multiple documents
+    - Real-time preview and edit capabilities
+    
+    Perfect for businesses digitizing archives, researchers working with historical documents, or anyone needing to extract text from scanned materials. Our OCR tool preserves formatting while offering flexible export options including plain text, formatted documents, or searchable PDFs.
+    
+    Technical Specifications:
+    - Supports over 100 languages
+    - Processes multiple file formats (PDF, JPG, PNG, TIFF)
+    - 99.9% accuracy for printed text
+    - Smart layout preservation system
+    - Automatic image enhancement
+    
+    Built with privacy in mind, all processing happens on secure servers with files automatically deleted after completion. Experience the future of document processing with our AI-enhanced OCR technology.`,
+    blogContent: `ocr-advanced-guide.md`,
     category: "AI",
   },
   {
@@ -202,8 +221,27 @@ export const tools = [
     route: "/chat-with-pdf",
     icon: "💬📄",
     description: "Ask questions and get summaries from long PDF documents using AI.",
-    longDescription:
-      "Upload or reference a PDF and interactively ask questions, retrieve summaries, or jump to relevant sections. Great for research and quick insights.",
+    longDescription: `Transform the way you interact with PDF documents using our revolutionary Chat with PDF feature. This AI-powered tool creates an interactive experience where you can ask questions, request summaries, and extract insights from any PDF document instantly. Powered by advanced language models, it understands context and provides accurate, relevant responses.
+
+    Key Capabilities:
+    - Natural language interaction with document content
+    - Instant answers to specific questions
+    - Smart summarization at document or section level
+    - Citation of relevant page numbers and sections
+    - Multiple document comparison
+    - Context-aware responses
+    
+    Ideal for researchers analyzing papers, students studying textbooks, professionals reviewing contracts, or anyone needing to quickly extract information from lengthy documents. The AI understands document structure and maintains context across multiple questions.
+    
+    Advanced Features:
+    - Handles technical and specialized content
+    - Supports multiple languages
+    - Processes large documents efficiently
+    - Customizable response formats
+    - Export conversation history
+    
+    Our secure processing ensures document privacy, with enterprise-grade encryption and automatic data cleanup. Experience a new way to work with PDFs through intelligent, conversational interaction.`,
+    blogContent: `chat-pdf-guide.md`,
     category: "AI",
   },
   {
