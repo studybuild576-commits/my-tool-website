@@ -3,9 +3,6 @@ import { notFound } from "next/navigation";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { promises as fs } from 'fs';
 import path from 'path';
-import MarkdownRenderer from "@/components/MarkdownRenderer";
-import { promises as fs } from 'fs';
-import path from 'path';
 
 function slugFromRoute(route: string) {
   return route.replace(/^\//, "");
@@ -183,5 +180,4 @@ export default async function BlogPostPage({ params }: any) {
       </article>
     </main>
   );
-}
 }

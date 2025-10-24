@@ -17,7 +17,7 @@ type Props = {
   excerpt: string;
   href: string;
   icon?: string;
-  category?: CategoryKey;
+  category?: CategoryKey | string;
   readingTime?: string;
   date?: string;
 };
@@ -38,7 +38,7 @@ export default function BlogCard({
   readingTime,
   date,
 }: Props) {
-  const categoryColor = category && categoryColors[category] || "bg-slate-100 text-slate-800";
+  const categoryColor = category && categoryColors[category as CategoryKey] || "bg-slate-100 text-slate-800";
 
   return (
     <Link href={href}>
