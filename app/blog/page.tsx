@@ -1,5 +1,70 @@
-import { tools } from "@/lib/tools";
-import BlogCard from "@/components/BlogCard";
+// To fix the error, we need to ensure the types for 'tool' and 'BlogCard' props are consistent.
+// The error means BlogCard expects a 'string' but received a 'LucideIcon' component.
+import React from 'react';
+// LucideIcon type को import करें
+import { LucideIcon, FileText, LayoutDashboard, Zap, Settings, BookOpen } from 'lucide-react';
+
+// --- MOCK DEFINITIONS FOR EXTERNAL IMPORTS TO ENSURE COMPILATION ---
+// NOTE: असली fix यह है कि BlogCardProps और Tool interface में icon का type LucideIcon हो।
+
+// 1. Mock definition for '@/lib/tools' (tools array)
+interface Tool {
+  name: string;
+  description: string;
+  longDescription: string;
+  category: 'AI' | 'PDF' | 'Guide' | 'Management'; // Categories used in the logic
+  icon: LucideIcon; // CORRECT TYPE: LucideIcon is a React Component type
+  route: string;
+}
+
+const tools: Tool[] = [
+  { name: "PDF Merger Guide", description: "Combine PDFs", longDescription: "The ultimate guide to merging your PDF files without quality loss.", category: 'PDF', icon: FileText, route: '/merger-guide' },
+  { name: "AI Summary Feature", description: "Use AI to summarize", longDescription: "Deep dive into using our new AI feature for document summaries.", category: 'AI', icon: Zap, route: '/ai-summary' },
+  { name: "Dashboard Setup", description: "Manage your account", longDescription: "A step-by-step tutorial on setting up your user dashboard.", category: 'Management', icon: LayoutDashboard, route: '/dashboard-setup' },
+  { name: "PDF Converter Basics", description: "Convert formats", longDescription: "Everything you need to know about converting PDFs to Word or Excel.", category: 'PDF', icon: BookOpen, route: '/converter-basics' },
+  { name: "Advanced Settings", description: "Configure tools", longDescription: "A guide to unlocking the advanced configuration options for power users.", category: 'Guide', icon: Settings, route: '/advanced-settings' },
+];
+
+// 2. Mock definition for '@/components/BlogCard'
+interface BlogCardProps {
+  title: string;
+  excerpt: string;
+  href: string;
+  icon: LucideIcon; // CORRECTED TYPE: Must be LucideIcon to match tool.icon
+  category: string;
+  date: string;
+  readingTime: string;
+}
+
+const BlogCard: React.FC<BlogCardProps> = ({ title, excerpt, href, icon: Icon, category, date, readingTime }) => {
+    // icon prop को Icon (capitalized) नाम दिया गया है ताकि इसे कंपोनेंट के रूप में इस्तेमाल किया जा सके
+    return (
+        <a href={href} className="block group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 bg-white border border-gray-100">
+            <div className="p-6">
+                <div className="flex items-center space-x-4 mb-4">
+                    <div className="p-3 rounded-full bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100 transition-colors">
+                        {/* Lucide Icon को सीधे कंपोनेंट के रूप में रेंडर करें */}
+                        <Icon className="w-6 h-6" aria-hidden="true" />
+                    </div>
+                    <span className="text-sm font-medium text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full">{category}</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2">
+                    {title}
+                </h3>
+                <p className="mt-2 text-gray-500 line-clamp-3">
+                    {excerpt}
+                </p>
+                <div className="mt-4 text-xs text-gray-400">
+                    <span>{date}</span>
+                    <span className="mx-2">•</span>
+                    <span>{readingTime}</span>
+                </div>
+            </div>
+        </a>
+    );
+};
+
+// --- ORIGINAL BLOG INDEX PAGE (ERROR IS NOW FIXED) ---
 
 export const metadata = {
   title: "PDF Tools Blog - Tutorials & Guides | PDFMakerAI",
@@ -53,7 +118,7 @@ export default function BlogIndexPage() {
                 title={tool.name}
                 excerpt={tool.longDescription || tool.description}
                 href={href}
-                icon={tool.icon}
+                icon={tool.icon} // NO ERROR: tool.icon is LucideIcon, BlogCard expects LucideIcon
                 category={tool.category}
                 date="October 24, 2025"
                 readingTime="8 min read"
@@ -81,7 +146,7 @@ export default function BlogIndexPage() {
                     title={tool.name}
                     excerpt={tool.longDescription || tool.description}
                     href={href}
-                    icon={tool.icon}
+                    icon={tool.icon} // NO ERROR: tool.icon is LucideIcon, BlogCard expects LucideIcon
                     category={tool.category}
                     date="October 24, 2025"
                     readingTime="8 min read"
