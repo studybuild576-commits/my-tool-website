@@ -188,4 +188,58 @@ export const tools = [
       "View PDFs in-browser and extract selectable text for editing or copying. Supports basic search and navigation features.",
     category: "PDF",
   },
+  {
+    name: "AI OCR",
+    route: "/ai-ocr",
+    icon: "🧾🔍",
+    description: "Extract editable text from scanned images and PDFs using AI-powered OCR.",
+    longDescription:
+      "Convert scanned documents and images into searchable, editable text using high-accuracy AI-OCR. Supports multiple languages and preserves basic layout when possible.",
+    category: "AI",
+  },
+  {
+    name: "Chat with PDF",
+    route: "/chat-with-pdf",
+    icon: "💬📄",
+    description: "Ask questions and get summaries from long PDF documents using AI.",
+    longDescription:
+      "Upload or reference a PDF and interactively ask questions, retrieve summaries, or jump to relevant sections. Great for research and quick insights.",
+    category: "AI",
+  },
+  {
+    name: "Batch Processing",
+    route: "/batch-processing",
+    icon: "🗂️",
+    description: "Apply an action to multiple files at once (compress, convert, watermark).",
+    longDescription:
+      "Automate repetitive tasks by running batch operations on multiple files: convert formats, compress, watermark, and more in a single job.",
+    category: "Productivity",
+  },
+  {
+    name: "Conversion Suite",
+    route: "/conversion-suite",
+    icon: "🔁",
+    description: "Comprehensive conversions: PDF ⇄ Word/Excel/PPT and more.",
+    longDescription:
+      "A complete conversion toolkit for professionals: export PDFs to Word, Excel, or PowerPoint and convert those formats back to PDF with layout preservation options.",
+    category: "Productivity",
+  },
+  {
+    name: "E-Signature",
+    route: "/e-signature",
+    icon: "✍️🔐",
+    description: "Sign documents electronically and verify signatures.",
+    longDescription:
+      "Add legally-binding electronic signatures to documents, request signatures from others, and verify signed PDFs — streamlined for business workflows.",
+    category: "Productivity",
+  },
+  {
+    name: "Cloud Integration",
+    route: "/cloud-integration",
+    icon: "☁️",
+    description: "Import and export files directly from Google Drive and Dropbox.",
+    longDescription:
+      "Connect your cloud storage to import files directly from Google Drive or Dropbox and export results back to your cloud accounts for a smooth workflow.",
+    category: "UX",
+  },
 ];

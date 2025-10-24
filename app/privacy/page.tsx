@@ -29,6 +29,7 @@ export default function PrivacyPage() {
             Uploaded files are retained only for the time required to perform
             the requested operation and then deleted from our servers.
             Where temporary logs exist for debugging, they are purged regularly.
+            For clarity: files uploaded for processing are automatically deleted within 24 hours by default. If you need a different retention policy for business/enterprise needs, contact support@pdfmakerai.shop to discuss options.
           </p>
 
           <h2 className="text-lg font-semibold mt-4">Cookies and analytics</h2>

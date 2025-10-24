@@ -194,4 +194,28 @@
     <lastmod>2025-10-24</lastmod>
   </url>
   <!-- NOTE: Sitemap uses https://pdfmakerai.shop/ — update dates or add more routes if you add tools -->
+    <url>
+      <loc>https://pdfmakerai.shop/ai-ocr</loc>
+      <lastmod>2025-10-24</lastmod>
+    </url>
+    <url>
+      <loc>https://pdfmakerai.shop/chat-with-pdf</loc>
+      <lastmod>2025-10-24</lastmod>
+    </url>
+    <url>
+      <loc>https://pdfmakerai.shop/batch-processing</loc>
+      <lastmod>2025-10-24</lastmod>
+    </url>
+    <url>
+      <loc>https://pdfmakerai.shop/conversion-suite</loc>
+      <lastmod>2025-10-24</lastmod>
+    </url>
+    <url>
+      <loc>https://pdfmakerai.shop/e-signature</loc>
+      <lastmod>2025-10-24</lastmod>
+    </url>
+    <url>
+      <loc>https://pdfmakerai.shop/cloud-integration</loc>
+      <lastmod>2025-10-24</lastmod>
+    </url>
 </urlset>
