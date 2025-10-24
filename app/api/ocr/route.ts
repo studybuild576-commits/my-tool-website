@@ -41,10 +41,7 @@ export async function POST(req: Request) {
 
     // For images, fall back to Tesseract if available
     if (Tesseract) {
-      const worker = Tesseract.createWorker();
-      await worker.load();
-      await worker.loadLanguage("eng");
-      await worker.initialize("eng");
+      const worker = await Tesseract.createWorker("eng");
       const { data } = await worker.recognize(Buffer.from(buf));
       await worker.terminate();
       return NextResponse.json({ text: data.text });
