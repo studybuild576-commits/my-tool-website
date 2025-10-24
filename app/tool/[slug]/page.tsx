@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation";
 import { tools } from "@/lib/tools";
 
-interface Props {
-  params: { slug: string };
-}
-
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
   const slug = params.slug;
   const tool = tools.find((t) => t.route.replace(/^\//, "") === slug);
   if (!tool) return { title: "Tool" };
@@ -15,7 +11,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default function ToolDescription({ params }: Props) {
+export default function ToolDescription({ params }: { params: { slug: string } }) {
   const slug = params.slug;
   const tool = tools.find((t) => t.route.replace(/^\//, "") === slug);
   if (!tool) return notFound();
