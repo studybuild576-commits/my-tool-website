@@ -2,6 +2,9 @@
 import { tools } from "@/lib/tools";
 import ToolCard from "@/components/ToolCard";
 
+// ✅ Import all icons here (optional: only those used in tools)
+import * as LucideIcons from "lucide-react";
+
 export default function ToolsPage() {
   return (
     <main className="min-h-screen bg-gray-50 py-10">
@@ -31,15 +34,23 @@ export default function ToolsPage() {
       {/* Tools Grid */}
       <section className="max-w-6xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {tools.map((tool) => (
-            <ToolCard
-              key={tool.route}
-              name={tool.name}
-              route={tool.route}
-              icon={tool.icon}
-              description={tool.description}
-            />
-          ))}
+          {tools.map((tool) => {
+            // ✅ If icon is string (like "FileIcon"), convert it to actual component
+            const Icon =
+              typeof tool.icon === "string"
+                ? LucideIcons[tool.icon as keyof typeof LucideIcons]
+                : tool.icon;
+
+            return (
+              <ToolCard
+                key={tool.route}
+                name={tool.name}
+                route={tool.route}
+                icon={Icon}
+                description={tool.description}
+              />
+            );
+          })}
         </div>
       </section>
     </main>
