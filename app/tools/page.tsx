@@ -1,9 +1,12 @@
-// ✅ Import the tools data and ToolCard component
-import { tools } from "@/lib/tools";
-import ToolCard from "@/components/ToolCard";
+import React from 'react';
+// FIX 1: अब हम मानते हैं कि ये imports resolve हो जाएंगे क्योंकि आपकी ToolCard ठीक है
+import { tools } from "@/lib/tools"; 
+import ToolCard from "@/components/ToolCard"; 
 
-// ✅ Import all icons here (optional: only those used in tools)
+// FIX 2: LucideIcon type और सभी icons को import करें
 import * as LucideIcons from "lucide-react";
+import { type LucideIcon, FileText } from "lucide-react";
+
 
 export default function ToolsPage() {
   return (
@@ -36,17 +39,25 @@ export default function ToolsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {tools.map((tool) => {
             // ✅ If icon is string (like "FileIcon"), convert it to actual component
-            const Icon =
+            const ResolvedIcon =
               typeof tool.icon === "string"
                 ? LucideIcons[tool.icon as keyof typeof LucideIcons]
                 : tool.icon;
+            
+            // Safety check और Type Assertion
+            // यह सुनिश्चित करता है कि यह एक React Component है, string नहीं, 
+            // और यदि यह undefined है तो FileText पर वापस आ जाता है।
+            const FinalIcon = (!ResolvedIcon || typeof ResolvedIcon === 'string') 
+                ? FileText 
+                : ResolvedIcon;
 
             return (
               <ToolCard
                 key={tool.route}
                 name={tool.name}
                 route={tool.route}
-                icon={Icon}
+                // FIX 3: LucideIcon type पर स्पष्ट रूप से Typecast करें।
+                icon={FinalIcon as LucideIcon}
                 description={tool.description}
               />
             );
