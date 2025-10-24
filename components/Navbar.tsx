@@ -27,6 +27,9 @@ export default function Navbar() {
           >
             All Tools
           </Link>
+          <Link href="/blog" className="text-sm text-slate-700 hover:text-blue-600 transition">
+            Blog
+          </Link>
           <Link href="/about" className="text-sm text-slate-700 hover:text-blue-600 transition">
             About
           </Link>
