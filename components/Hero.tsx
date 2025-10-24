@@ -2,38 +2,61 @@ import Link from "next/link";
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-r from-white via-sky-50 to-white rounded-lg p-8 mb-8">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-            Fast, private PDF & image tools — built for productivity
-          </h1>
-          <p className="text-lg text-slate-600 mb-6 max-w-xl">
-            Convert, edit and optimize PDFs, images and text in your browser.
-            No signup, minimal UI, and privacy-first processing.
-          </p>
+    <section className="bg-gradient-to-br from-red-50 via-pink-50 to-white rounded-2xl p-12 mb-12">
+      <div className="max-w-6xl mx-auto text-center">
+        <h1 className="text-5xl md:text-6xl font-extrabold mb-6 bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+          Every tool you need to work with PDFs in one place
+        </h1>
+        <p className="text-xl text-slate-600 mb-8 max-w-3xl mx-auto">
+          Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! 
+          Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.
+        </p>
 
-          <div className="flex gap-3">
-            <Link
-              href="/tools"
-              className="inline-block bg-blue-600 text-white px-5 py-3 rounded-md font-medium hover:bg-blue-700 transition"
-            >
-              Try tools now
-            </Link>
-
-            <a
-              href="/about"
-              className="inline-block text-slate-700 px-4 py-3 rounded-md border border-slate-200 hover:bg-slate-50 transition"
-            >
-              Learn more
-            </a>
-          </div>
+        <div className="flex flex-wrap gap-4 justify-center mb-8">
+          <Link
+            href="/pdf-merge"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-pink-600 text-white px-6 py-3 rounded-lg font-medium hover:from-red-700 hover:to-pink-700 transition shadow-lg"
+          >
+            <span className="text-xl">🔗</span>
+            Merge PDF
+          </Link>
+          
+          <Link
+            href="/pdf-splitter"
+            className="inline-flex items-center gap-2 bg-white text-slate-700 px-6 py-3 rounded-lg font-medium border-2 hover:bg-slate-50 transition"
+          >
+            <span className="text-xl">✂️</span>
+            Split PDF
+          </Link>
+          
+          <Link
+            href="/pdf-compress"
+            className="inline-flex items-center gap-2 bg-white text-slate-700 px-6 py-3 rounded-lg font-medium border-2 hover:bg-slate-50 transition"
+          >
+            <span className="text-xl">🗜️</span>
+            Compress PDF
+          </Link>
         </div>
 
-        <div className="hidden md:flex items-center justify-center">
-          {/* Placeholder illustration */}
-          <div className="w-64 h-40 bg-gradient-to-br from-sky-100 to-white rounded-lg shadow-md flex items-center justify-center text-2xl text-slate-500">
-            🔧 Tools
+        {/* Feature badges */}
+        <div className="flex flex-wrap gap-6 justify-center text-sm text-slate-600">
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+            </svg>
+            <span>100% Free</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+            </svg>
+            <span>No signup required</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+            </svg>
+            <span>Privacy first</span>
           </div>
         </div>
       </div>

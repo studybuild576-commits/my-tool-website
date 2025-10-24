@@ -1,11 +1,12 @@
 import { tools } from "@/lib/tools";
 import ToolCard from "@/components/ToolCard";
 import Hero from "@/components/Hero";
+import Link from "next/link";
 
 export const metadata = {
-  title: "PDFMakerAI — Fast online PDF & image utilities",
+  title: "PDF Maker AI — Every tool you need to work with PDFs",
   description:
-    "PDFMakerAI provides fast, privacy-first tools to convert, edit and optimize PDFs, images and text directly in your browser.",
+    "PDF Maker AI is an online service to work with PDF files completely free and easy to use. Merge PDF, split PDF, compress PDF, convert images and documents, and more!",
 };
 
 function groupByCategory() {
@@ -20,109 +21,93 @@ function groupByCategory() {
 
 export default function Home() {
   const categories = groupByCategory();
+  const featuredTools = tools.filter(t => 
+    ['PDF Merge', 'PDF Splitter', 'PDF Compress', 'JPG to PDF', 'PDF to JPG', 'PDF to Word'].includes(t.name)
+  );
 
   return (
     <main>
       <Hero />
 
-      {/* Focus areas: AI Core, Productivity, UX & Security */}
-      <section className="max-w-6xl mx-auto px-4 mb-8">
-        <div className="bg-white rounded-lg p-6 shadow-sm">
-          <h2 className="text-2xl font-semibold mb-4">Our focus areas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">AI-Based Core Features</h3>
-              <p className="text-sm text-slate-700 mb-3">
-                Advanced AI features such as AI-OCR for scanned documents and
-                an interactive "Chat with PDF" assistant to summarize and answer
-                questions about long documents.
-              </p>
-              <a href="/ai-ocr" className="text-blue-600 hover:underline">Explore AI tools →</a>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Advanced Productivity Tools</h3>
-              <p className="text-sm text-slate-700 mb-3">
-                Batch processing for bulk actions, a comprehensive conversion
-                suite (PDF ⇄ Word/Excel/PPT), and E-Signature capabilities
-                for professional workflows.
-              </p>
-              <a href="/conversion-suite" className="text-blue-600 hover:underline">See productivity tools →</a>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-semibold mb-2">UX & Security</h3>
-              <p className="text-sm text-slate-700 mb-3">
-                Seamless cloud integration (Google Drive, Dropbox), clear data
-                security policies, and strict file retention to keep your data
-                private and under your control.
-              </p>
-              <a href="/cloud-integration" className="text-blue-600 hover:underline">Cloud & security →</a>
-            </div>
-          </div>
+      {/* Featured/Popular Tools */}
+      <section className="max-w-7xl mx-auto px-4 mb-12">
+        <h2 className="text-3xl font-bold mb-6">Most Popular Tools</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {featuredTools.map((tool) => (
+            <Link
+              key={tool.route}
+              href={tool.route}
+              className="group bg-white rounded-lg p-6 text-center hover:shadow-lg transition border border-slate-200"
+            >
+              <div className="text-4xl mb-3 group-hover:scale-110 transition">{tool.icon}</div>
+              <div className="text-sm font-medium text-slate-700 group-hover:text-red-600">{tool.name}</div>
+            </Link>
+          ))}
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="md:col-span-2 bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-2xl font-semibold mb-2">All tools</h2>
-            <p className="text-slate-600 mb-4">Browse our most popular utilities or search to find the right tool.</p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {tools.slice(0, 9).map((tool) => (
-                <ToolCard
+      {/* All Tools by Category */}
+      {Object.entries(categories).map(([cat, categoryTools]) => (
+        <section key={cat} className="max-w-7xl mx-auto px-4 mb-12">
+          <div className="bg-white rounded-xl shadow-sm border p-8">
+            <h2 className="text-2xl font-bold mb-6 text-slate-800">{cat} Tools</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {categoryTools.map((tool) => (
+                <Link
                   key={tool.route}
-                  name={tool.name}
-                  route={tool.route}
-                  icon={tool.icon}
-                  description={tool.description}
-                  category={tool.category}
-                />
+                  href={tool.route}
+                  className="group flex items-center gap-3 p-4 rounded-lg hover:bg-slate-50 transition border border-transparent hover:border-red-200"
+                >
+                  <div className="text-3xl group-hover:scale-110 transition">{tool.icon}</div>
+                  <div>
+                    <div className="font-medium text-slate-800 group-hover:text-red-600 transition text-sm">
+                      {tool.name}
+                    </div>
+                    <div className="text-xs text-slate-500 line-clamp-1">{tool.description}</div>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
+        </section>
+      ))}
 
-          <aside className="hidden md:block">
-            <div className="bg-white rounded-lg p-6 shadow-sm sticky top-24">
-              <h3 className="text-lg font-semibold mb-2">Categories</h3>
-              <ul className="text-sm text-slate-700 space-y-2">
-                {Object.keys(categories).map((cat) => (
-                  <li key={cat}>
-                    <a href={`/tools?category=${encodeURIComponent(cat)}`} className="text-blue-600 hover:underline">
-                      {cat} ({categories[cat].length})
-                    </a>
-                  </li>
-                ))}
-              </ul>
+      {/* Why Choose Us Section */}
+      <section className="max-w-7xl mx-auto px-4 mb-12">
+        <div className="bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl p-8">
+          <h2 className="text-3xl font-bold mb-8 text-center">Why Choose PDF Maker AI?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4">
+                ⚡
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Fast & Easy</h3>
+              <p className="text-sm text-slate-600">
+                Process your files in seconds with our intuitive interface. No learning curve required.
+              </p>
             </div>
-          </aside>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4">
+                🔒
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Secure & Private</h3>
+              <p className="text-sm text-slate-600">
+                Your files are automatically deleted after processing. We respect your privacy.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-full flex items-center justify-center text-white text-2xl mx-auto mb-4">
+                🎯
+              </div>
+              <h3 className="text-lg font-semibold mb-2">All-in-One Solution</h3>
+              <p className="text-sm text-slate-600">
+                Everything you need for PDFs in one place. Merge, split, compress, convert and more.
+              </p>
+            </div>
+          </div>
         </div>
-
-        {/* Full category sections */}
-        {Object.keys(categories).map((cat) => (
-          <div key={cat} className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold">{cat}</h3>
-              <a href={`/tools?category=${encodeURIComponent(cat)}`} className="text-sm text-blue-600">
-                View all
-              </a>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {categories[cat].slice(0, 6).map((tool) => (
-                <ToolCard
-                  key={tool.route}
-                  name={tool.name}
-                  route={tool.route}
-                  icon={tool.icon}
-                  description={tool.description}
-                  category={tool.category}
-                />
-              ))}
-            </div>
-          </div>
-        ))}
       </section>
     </main>
   );

@@ -5,20 +5,22 @@ import type { ReactNode } from "react";
 
 export const metadata = {
   title: {
-    default: "My Tools",
-    template: "%s | My Tools",
+    default: "PDF Maker AI — Online PDF Tools for PDF Lovers",
+    template: "%s | PDF Maker AI",
   },
   description:
-    "All-in-one PDF & text utilities — convert, merge, split, compress and edit files quickly and privately.",
+    "PDF Maker AI is an online service to work with PDF files completely free and easy to use. Merge PDF, split PDF, compress PDF, office to PDF, PDF to JPG and more!",
   keywords: [
     "pdf tools",
     "pdf converter",
-    "pdf merge",
-    "pdf split",
-    "online tools",
-    "text tools",
+    "merge pdf",
+    "split pdf",
+    "compress pdf",
+    "pdf maker",
+    "ai pdf tools",
+    "online pdf editor",
   ],
-  authors: [{ name: "Rahul" }],
+  authors: [{ name: "PDF Maker AI" }],
   robots: {
     index: true,
     follow: true,
@@ -32,17 +34,17 @@ export const metadata = {
     shortcut: "/favicon.svg",
   },
   openGraph: {
-    title: "My Tools — Fast online PDF & text utilities",
+    title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
     description:
-      "Convert, merge, split, compress and edit PDFs and text fast and privately. No signup required.",
+      "PDF Maker AI is an online service to work with PDF files completely free and easy to use. Merge PDF, split PDF, compress PDF, office to PDF, PDF to JPG and more!",
     images: ["/favicon.svg"],
-    siteName: "My Tools",
+    siteName: "PDF Maker AI",
   },
   twitter: {
     card: "summary_large_image",
-    title: "My Tools — Online PDF & text utilities",
+    title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
     description:
-      "Convert, merge, split, compress and edit PDFs and text fast and privately.",
+      "PDF Maker AI is an online service to work with PDF files completely free and easy to use. Merge PDF, split PDF, compress PDF, office to PDF, PDF to JPG and more!",
     images: ["/favicon.svg"],
   },
 };
@@ -62,10 +64,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              name: "My Tools",
+              name: "PDF Maker AI",
               url: "https://pdfmakerai.shop/",
               description:
-                "All-in-one PDF & text utilities — convert, merge, split, compress and edit files quickly and privately.",
+                "PDF Maker AI is an online service to work with PDF files completely free and easy to use. Merge PDF, split PDF, compress PDF, office to PDF, PDF to JPG and more!",
             }),
           }}
         />
