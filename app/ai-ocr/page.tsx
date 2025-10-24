@@ -3,6 +3,8 @@ export const metadata = {
   description: "Convert scanned PDFs and images into editable text using AI-powered OCR.",
 };
 
+import AIOCRForm from "@/components/AIOCRForm";
+
 export default function AIOCRPage() {
   return (
     <main>
@@ -15,21 +17,7 @@ export default function AIOCRPage() {
             preserves layout where possible.
           </p>
 
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const form = e.currentTarget as HTMLFormElement;
-              const data = new FormData(form);
-              const res = await fetch("/api/ocr", { method: "POST", body: data });
-              const json = await res.json();
-              alert(json.text || json.error || "No result");
-            }}
-          >
-            <input type="file" name="file" accept="application/pdf,image/*" className="mb-3" />
-            <div>
-              <button className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md">Run OCR</button>
-            </div>
-          </form>
+          <AIOCRForm />
         </div>
       </section>
     </main>
