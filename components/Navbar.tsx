@@ -1,24 +1,19 @@
 import Link from "next/link";
 import { tools } from "@/lib/tools";
-// FIX 1: LucideIcon type को Navbar में भी import करें
 import { type LucideIcon } from 'lucide-react'; 
 
-// FIX 2: टूल डेटा के लिए अपेक्षित इंटरफ़ेस को Mock करें (चूंकि tools "@/lib/tools" से आता है)
+// Mock Interface (Next.js build के लिए टाइप सुरक्षा प्रदान करता है)
 interface Tool {
     name: string;
     description: string;
     category: string;
     route: string;
-    // icon: string | LucideIcon के बजाय अब केवल LucideIcon कंपोनेंट होना चाहिए 
-    // क्योंकि हमने ToolsPage में इसे हल किया है।
     icon: string | LucideIcon; 
 }
 
-// type ToolArray = Tool[];
-
 function groupByCategory() {
-  const map: Record<string, Tool[]> = {}; // map type को भी ठीक किया
-  for (const t of tools as Tool[]) { // tools को Tool[] के रूप में टाइपकास्ट किया
+  const map: Record<string, Tool[]> = {}; 
+  for (const t of tools as Tool[]) { 
     const cat = t.category || "Other";
     if (!map[cat]) map[cat] = [];
     map[cat].push(t);
@@ -34,7 +29,8 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2" legacyBehavior>
+          <Link href="/" legacyBehavior>
+            {/* FIX: Link के अंदर एक सिंगल <a> टैग है */}
             <a className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center shadow-lg transform hover:rotate-6 transition-transform">
                   <span className="text-white text-2xl font-bold">📄</span>
@@ -71,23 +67,22 @@ export default function Navbar() {
                       <ul className="space-y-3">
                         {tools.slice(0, 5).map((tool) => {
                                 // Icon कंपोनेंट को एक वेरिएबल में रखें
-                                // यह मानकर कि tool.icon एक LucideIcon कंपोनेंट है
                                 const Icon = tool.icon as LucideIcon; 
 
                                 return (
                               <li key={tool.route}>
                                 <Link 
                                   href={tool.route}
-                                  className="flex items-center gap-3 text-sm text-slate-700 hover:text-indigo-600 transition group/item"
                                      legacyBehavior
                                 >
-                                  {/* FIX APPLIED HERE: tool.icon को <Icon /> के रूप में रेंडर करें */}
-                                  <span className="text-xl group-hover/item:scale-110 transition">
-                                        {/* LucideIcons को <span> के अंदर child के रूप में रेंडर करने के बजाय 
-                                            उन्हें JSX टैग के रूप में रेंडर किया जाता है। */}
-                                        {typeof Icon !== 'string' ? <Icon className="w-5 h-5" /> : null}
-                                  </span>
-                                  <span>{tool.name}</span>
+                                    {/* FIX: एक <a> टैग से रैप किया गया */}
+                                  <a className="flex items-center gap-3 text-sm text-slate-700 hover:text-indigo-600 transition group/item">
+                                    <span className="text-xl group-hover/item:scale-110 transition">
+                                            {/* LucideIcons को JSX टैग के रूप में रेंडर किया गया */}
+                                            {typeof Icon !== 'string' ? <Icon className="w-5 h-5" /> : null}
+                                    </span>
+                                    <span>{tool.name}</span>
+                                    </a>
                                 </Link>
                               </li>
                                 );
@@ -97,8 +92,8 @@ export default function Navbar() {
                   ))}
                 </div>
                 <div className="mt-6 pt-6 border-t border-slate-200">
-                  <Link href="/tools" className="text-sm text-indigo-600 hover:text-purple-600 font-semibold inline-flex items-center gap-2" legacyBehavior>
-                    <a>
+                  <Link href="/tools" legacyBehavior>
+                    <a className="text-sm text-indigo-600 hover:text-purple-600 font-semibold inline-flex items-center gap-2">
                         View all {tools.length}+ tools
                     <span>→</span>
                     </a>
@@ -107,12 +102,12 @@ export default function Navbar() {
               </div>
             </div>
 
-            <Link href="/blog" className="text-sm font-medium text-slate-700 hover:text-indigo-600 transition" legacyBehavior>
-              <a>Blog</a>
+            <Link href="/blog" legacyBehavior>
+              <a className="text-sm font-medium text-slate-700 hover:text-indigo-600 transition">Blog</a>
             </Link>
             
-            <Link href="/about" className="text-sm font-medium text-slate-700 hover:text-indigo-600 transition" legacyBehavior>
-              <a>About</a>
+            <Link href="/about" legacyBehavior>
+              <a className="text-sm font-medium text-slate-700 hover:text-indigo-600 transition">About</a>
             </Link>
           </div>
 
