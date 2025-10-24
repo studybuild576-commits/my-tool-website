@@ -40,7 +40,7 @@ export function generateStaticParams() {
   return tools.map((t) => ({ slug: slugFromRoute(t.route) }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: any) {
   const tool = tools.find((t) => slugFromRoute(t.route) === params.slug);
   if (!tool) return { title: "Not found" };
   return {
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+export default function BlogPostPage({ params }: any) {
   const tool = tools.find((t) => slugFromRoute(t.route) === params.slug);
   if (!tool) return notFound();
 
