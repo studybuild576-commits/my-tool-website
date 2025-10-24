@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { tools } from "@/lib/tools";
+import { LucideIcon } from "lucide-react"; // Add this import if needed
 
 export async function generateMetadata({ params }: any) {
   const slug = params.slug as string;
@@ -28,11 +29,16 @@ export default function ToolDescription({ params }: any) {
     url: toolUrl,
   };
 
+  // ✅ Convert icon to JSX element
+  const Icon = tool.icon as LucideIcon;
+
   return (
     <main>
       <section className="bg-white rounded-lg shadow-sm p-8 mb-6">
         <div className="max-w-3xl mx-auto">
-          <div className="text-4xl mb-2">{tool.icon}</div>
+          <div className="text-4xl mb-2">
+            <Icon className="w-10 h-10 text-blue-600" /> {/* Render as JSX element */}
+          </div>
           <h1 className="text-3xl font-extrabold mb-2">{tool.name}</h1>
           <p className="text-slate-600 mb-4">{tool.description}</p>
           {tool.longDescription && (
