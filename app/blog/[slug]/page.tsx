@@ -1,8 +1,6 @@
 import { tools } from "@/lib/tools";
 import { notFound } from "next/navigation";
 
-type Params = { params: { slug: string } };
-
 function slugFromRoute(route: string) {
   return route.replace(/^\//, "");
 }
@@ -38,11 +36,11 @@ function generateArticle(tool: any) {
   return { title, intro, features, steps, faqs };
 }
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return tools.map((t) => ({ slug: slugFromRoute(t.route) }));
 }
 
-export async function generateMetadata({ params }: Params) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
   const tool = tools.find((t) => slugFromRoute(t.route) === params.slug);
   if (!tool) return { title: "Not found" };
   return {
@@ -51,7 +49,7 @@ export async function generateMetadata({ params }: Params) {
   };
 }
 
-export default function BlogPostPage({ params }: Params) {
+export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const tool = tools.find((t) => slugFromRoute(t.route) === params.slug);
   if (!tool) return notFound();
 
