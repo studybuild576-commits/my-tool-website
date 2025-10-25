@@ -1,25 +1,40 @@
-export const metadata = {
-  title: "AI OCR — PDFMakerAI",
-  description: "Convert scanned PDFs and images into editable text using AI-powered OCR.",
-};
+import { NextResponse } from "next/server";
+import Tesseract from "tesseract.js";
+import { promises as fs } from "fs";
 
-import AIOCRForm from "@/components/AIOCRForm";
+export const runtime = "nodejs";
 
-export default function AIOCRPage() {
-  return (
-    <main>
-      <section className="bg-white rounded-lg shadow-sm p-8">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-extrabold mb-3">AI OCR</h1>
-          <p className="text-slate-700 mb-4">
-            Use our AI-powered OCR to extract editable, searchable text from
-            scanned documents and images. Supports multiple languages and
-            preserves layout where possible.
-          </p>
+export async function POST(req: Request) {
+  try {
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
 
-          <AIOCRForm />
-        </div>
-      </section>
-    </main>
-  );
+    if (!file) {
+      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    }
+
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Temporary file save
+    const tempPath = `/tmp/${Date.now()}-${file.name}`;
+    await fs.writeFile(tempPath, buffer);
+
+    // Run OCR
+    const { data } = await Tesseract.recognize(tempPath, "eng+hin", {
+      logger: (info) => console.log(info), // optional: see progress
+    });
+
+    // Delete temp file
+    await fs.unlink(tempPath);
+
+    if (!data.text.trim()) {
+      return NextResponse.json({ error: "No text detected" }, { status: 422 });
+    }
+
+    return NextResponse.json({ text: data.text.trim() });
+  } catch (error: any) {
+    console.error("OCR error:", error);
+    return NextResponse.json({ error: error.message || "Internal server error" }, { status: 500 });
+  }
 }
