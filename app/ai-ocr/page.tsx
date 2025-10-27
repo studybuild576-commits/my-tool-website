@@ -1,9 +1,6 @@
 "use client";
-import AIOCRForm from "@/components/AIOCRForm";
-import PDFReaderTool from "@/components/PDFReaderTool";
-import { pageMetadataForRoute } from '@/lib/generateMetadataForRoute';
 
-export const metadata = pageMetadataForRoute('/ai-ocr');
+import AIOCRForm from "@/components/AIOCRForm";
 
 export default function AIOCRPage() {
   return (
