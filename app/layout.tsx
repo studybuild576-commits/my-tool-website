@@ -1,5 +1,6 @@
 import "./globals.css";
 import Layout from "@/components/Layout";
+import Script from "next/script";
 import type { ReactNode } from "react";
 
 export const metadata = {
@@ -36,34 +37,51 @@ export const metadata = {
 		apple: "/logo.png",
 		other: {
 			rel: "apple-touch-icon",
-			url: "/logo.png"
-		}
+			url: "/logo.png",
+		},
 	},
-		openGraph: {
-			title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
-			description:
-				"PDF Maker AI is the ultimate online suite for PDF lovers. Use our powerful AI OCR, Merge, Split, Compress, Office to PDF, PDF to JPG tools and more—completely free and easy to use.",
-			images: ["/og-image.svg", "/logo.png"],
-			siteName: "PDF Maker AI",
-		},
-		twitter: {
-			card: "summary_large_image",
-			title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
-			description:
-				"PDF Maker AI is the ultimate online suite for PDF lovers. Use our powerful AI OCR, Merge, Split, Compress, Office to PDF, PDF to JPG tools and more—completely free and easy to use.",
-			images: ["/og-image.svg", "/logo.png"],
-		},
+	openGraph: {
+		title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
+		description:
+			"PDF Maker AI is the ultimate online suite for PDF lovers. Use our powerful AI OCR, Merge, Split, Compress, Office to PDF, PDF to JPG tools and more—completely free and easy to use.",
+		images: ["/og-image.svg", "/logo.png"],
+		siteName: "PDF Maker AI",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
+		description:
+			"PDF Maker AI is the ultimate online suite for PDF lovers. Use our powerful AI OCR, Merge, Split, Compress, Office to PDF, PDF to JPG tools and more—completely free and easy to use.",
+		images: ["/og-image.svg", "/logo.png"],
+	},
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en">
+			<head>
+				{/* ✅ Google Analytics (official method for Next.js App Router) */}
+				<Script
+					src="https://www.googletagmanager.com/gtag/js?id=G-V0R7FENN5V"
+					strategy="afterInteractive"
+				/>
+				<Script id="google-analytics" strategy="afterInteractive">
+					{`
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', 'G-V0R7FENN5V');
+					`}
+				</Script>
+			</head>
+
 			<body className="bg-gray-50 text-slate-900 font-sans">
-				{/* wrap children in new Layout for consistent UI */}
+				{/* Layout wrapper */}
 				<Layout>{children}</Layout>
 
-				{/* Structured data (JSON-LD) for WebSite + Organization */}
-				<script
+				{/* ✅ JSON-LD Structured Data (SEO) */}
+				<Script
+					id="structured-data"
 					type="application/ld+json"
 					dangerouslySetInnerHTML={{
 						__html: JSON.stringify({
