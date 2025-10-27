@@ -7,11 +7,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white text-xl">📄</span>
+            <div className="flex items-center gap-3 mb-4">
+              <img src="/logo.png" alt="PDF Maker AI" className="w-10 h-10 rounded-xl shadow-lg bg-white p-1 object-cover" />
+              <div>
+                <div className="text-lg font-bold">PDF Maker AI</div>
+                <div className="text-xs text-slate-300 -mt-1">Smart PDF Solutions</div>
               </div>
-              <span className="text-lg font-bold">PDF Maker AI</span>
             </div>
             <p className="text-sm text-slate-400 mb-4 leading-relaxed">
               Your complete PDF toolkit powered by AI. Free, fast, and privacy-focused tools for all your document needs.
@@ -56,6 +57,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm text-slate-200">
               <li><Link href="/about" className="hover:text-primary-300 transition">About Us</Link></li>
               <li><Link href="/contact" className="hover:text-primary-300 transition">Contact</Link></li>
+              <li><Link href="/tool-request" className="hover:text-primary-300 transition">Request a Tool</Link></li>
               <li><Link href="/privacy" className="hover:text-primary-300 transition">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-primary-300 transition">Terms of Service</Link></li>
             </ul>

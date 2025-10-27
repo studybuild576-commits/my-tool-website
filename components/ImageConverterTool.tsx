@@ -146,6 +146,7 @@ export default function ImageConverterTool() {
               alt="Preview"
               className="max-w-full h-auto rounded-lg border shadow-sm"
               style={{ maxHeight: "300px" }}
+              loading="lazy"
             />
           </div>
         )}

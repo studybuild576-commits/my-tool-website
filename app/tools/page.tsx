@@ -1,8 +1,19 @@
 import React from 'react';
-import { tools } from "@/lib/tools"; 
-import ToolCard from "@/components/ToolCard"; 
-import * as LucideIcons from "lucide-react";
-import { type LucideIcon, FileText } from "lucide-react";
+import { tools } from "@/lib/tools";
+import ToolCard from "@/components/ToolCard";
+
+export const metadata = {
+  title: "All Tools — PDF Maker AI",
+  description: "All PDF Maker AI tools: merge, split, compress, OCR, convert and more.",
+  alternates: { canonical: "https://pdfmakerai.shop/tools" },
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: "All Tools — PDF Maker AI",
+    description: "All PDF Maker AI tools: merge, split, compress, OCR, convert and more.",
+    url: "https://pdfmakerai.shop/tools",
+    images: ["/og-image.png"],
+  },
+};
 
 export default function ToolsPage() {
   return (
@@ -34,21 +45,14 @@ export default function ToolsPage() {
       <section className="max-w-6xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {tools.map((tool) => {
-            // Icon को resolve करें
-            const ResolvedIcon =
-              typeof tool.icon === "string"
-                ? (LucideIcons[tool.icon as keyof typeof LucideIcons] as LucideIcon)
-                : tool.icon;
-
-            // Fallback icon
-            const FinalIcon = ResolvedIcon ?? FileText;
-
+            // pass the icon name (string) down to the ToolCard so it resolves
+            // the lucide icon on the rendering side (avoids passing functions)
             return (
               <ToolCard
                 key={tool.route}
                 name={tool.name}
                 route={tool.route}
-                icon={FinalIcon}
+                icon={tool.icon}
                 description={tool.description}
                 category={tool.category}
               />

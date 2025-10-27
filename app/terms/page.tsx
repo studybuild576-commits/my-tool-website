@@ -1,6 +1,9 @@
 export const metadata = {
   title: "Terms of Service — My Tools",
   description: "Terms of service for using My Tools online utilities.",
+  alternates: { canonical: "https://pdfmakerai.shop/terms" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "Terms of Service — PDF Maker AI", description: "Terms of service for using PDF Maker AI online utilities.", url: "https://pdfmakerai.shop/terms", images: ["/og-image.png"] },
 };
 
 export default function TermsPage() {

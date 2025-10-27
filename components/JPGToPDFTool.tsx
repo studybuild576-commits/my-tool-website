@@ -268,6 +268,7 @@ export default function JPGToPDFTool() {
                     src={file.preview}
                     alt={`Preview ${index + 1}`}
                     className="w-full h-32 object-cover rounded"
+                    loading="lazy"
                   />
                   <button
                     onClick={() => setFiles(files.filter((_, i) => i !== index))}

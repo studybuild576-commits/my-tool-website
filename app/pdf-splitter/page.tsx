@@ -1,4 +1,7 @@
 import PDFSplitterTool from "@/components/PDFSplitterTool";
+import { pageMetadataForRoute } from '@/lib/generateMetadataForRoute';
+
+export const metadata = pageMetadataForRoute('/pdf-splitter');
 
 export default function Page() {
   return (

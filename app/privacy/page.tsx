@@ -1,6 +1,9 @@
 export const metadata = {
-  title: "Privacy Policy — My Tools",
-  description: "Privacy policy describing how My Tools handles files, logs and personal data.",
+  title: "Privacy Policy — PDF Maker AI",
+  description: "Privacy policy describing how PDF Maker AI handles files, logs and personal data.",
+  alternates: { canonical: "https://pdfmakerai.shop/privacy" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "Privacy Policy — PDF Maker AI", description: "Privacy policy describing how PDF Maker AI handles files, logs and personal data.", url: "https://pdfmakerai.shop/privacy", images: ["/og-image.png"] },
 };
 
 export default function PrivacyPage() {

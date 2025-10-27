@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { type LucideIcon } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import React from "react";
 
 interface ToolCardProps {
   name: string;
   route: string;
-  icon: LucideIcon; // LucideIcon type
+  // icon can be a lucide icon name (string) or an emoji/component fallback
+  icon: string | React.ReactNode;
   description: string;
   category?: string;
 }
@@ -17,22 +18,30 @@ export default function ToolCard({
   description,
   category,
 }: ToolCardProps) {
+
+  // resolve icon: if a string name is provided, map to lucide icon
+  let IconNode: React.ReactNode = null;
+  if (typeof Icon === "string") {
+    const K = (LucideIcons as any)[Icon];
+    if (typeof K === "function") IconNode = <K className="w-5 h-5" />;
+    else IconNode = <span className="text-2xl">{Icon}</span>;
+  } else {
+    IconNode = Icon;
+  }
+
   return (
-    <Link
-      href={route}
-      className="block" // Link ko block banaya taki pura card clickable ho
-    >
-  <article className="bg-white border-b-4 border-transparent hover:border-primary-500 rounded-xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-300 cursor-pointer">
+    <Link href={route} className="block">
+  <article className="bg-white/70 backdrop-blur-sm border border-transparent hover:border-primary-200 rounded-xl p-6 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-200 cursor-pointer">
         <div className="flex items-start gap-5">
           {/* Icon Area */}
-          <div className="p-3 bg-primary-50 text-primary-600 rounded-lg text-4xl flex-shrink-0">
-            <Icon className="w-6 h-6" />
+          <div className="p-3 bg-primary-50 text-primary-600 rounded-lg text-3xl flex-shrink-0 w-12 h-12 flex items-center justify-center">
+            {IconNode}
           </div>
 
           <div className="flex-1">
             <div className="flex items-center justify-between">
               {/* Title */}
-              <h3 className="text-xl font-bold text-gray-800">{name}</h3>
+              <h3 className="text-xl font-semibold text-gray-900">{name}</h3>
 
               {/* Category Tag */}
               {category && (

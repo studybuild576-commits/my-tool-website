@@ -1,6 +1,9 @@
 export const metadata = {
   title: "About Us — PDF Maker AI",
   description: "Learn about PDF Maker AI's mission to provide free, AI-powered PDF tools for everyone. Discover our story, values, and commitment to privacy.",
+  alternates: { canonical: "https://pdfmakerai.shop/about" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "About Us — PDF Maker AI", description: "Learn about PDF Maker AI's mission and values.", url: "https://pdfmakerai.shop/about", images: ["/og-image.png"] },
 };
 
 export default function AboutPage() {

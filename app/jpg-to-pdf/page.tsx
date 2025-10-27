@@ -1,4 +1,7 @@
 import JPGToPDFTool from "@/components/JPGToPDFTool";
+import { pageMetadataForRoute } from '@/lib/generateMetadataForRoute';
+
+export const metadata = pageMetadataForRoute('/jpg-to-pdf');
 
 export default function Page() {
   return (

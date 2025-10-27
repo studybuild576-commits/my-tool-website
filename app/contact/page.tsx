@@ -1,6 +1,9 @@
 export const metadata = {
   title: "Contact Us — PDF Maker AI",
   description: "Get in touch with PDF Maker AI for support, feedback, partnerships, or any questions. We're here to help!",
+  alternates: { canonical: "https://pdfmakerai.shop/contact" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "Contact Us — PDF Maker AI", description: "Get in touch with PDF Maker AI for support, feedback, partnerships, or any questions.", url: "https://pdfmakerai.shop/contact", images: ["/og-image.png"] },
 };
 
 export default function ContactPage() {

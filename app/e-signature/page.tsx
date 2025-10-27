@@ -1,6 +1,9 @@
 export const metadata = {
   title: "E-Signature — PDFMakerAI",
   description: "Sign and request signatures on PDF documents securely.",
+  alternates: { canonical: "https://pdfmakerai.shop/e-signature" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "E-Signature — PDFMakerAI", description: "Sign and request signatures on PDF documents securely.", url: "https://pdfmakerai.shop/e-signature", images: ["/og-image.png"] },
 };
 
 export default function ESignaturePage() {

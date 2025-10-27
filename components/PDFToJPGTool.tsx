@@ -71,7 +71,7 @@ export default function PDFToJPGTool() {
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           {images.map((src, i) => (
             <div key={i} className="bg-gray-50 p-2 rounded">
-              <img src={src} alt={`page-${i + 1}`} className="w-full h-auto" />
+              <img src={src} alt={`page-${i + 1}`} className="w-full h-auto" loading="lazy" />
               <a href={src} download={`page-${i + 1}.jpg`} className="text-green-600 underline block mt-2">
                 📥 Download Page {i + 1}
               </a>

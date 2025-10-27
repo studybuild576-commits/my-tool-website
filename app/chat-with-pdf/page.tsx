@@ -1,6 +1,9 @@
 export const metadata = {
   title: "Chat with PDF — PDFMakerAI",
   description: "Interact with PDF documents: ask questions and get summaries using AI.",
+  alternates: { canonical: "https://pdfmakerai.shop/chat-with-pdf" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "Chat with PDF — PDFMakerAI", description: "Interact with PDF documents: ask questions and get summaries using AI.", url: "https://pdfmakerai.shop/chat-with-pdf", images: ["/og-image.png"] },
 };
 
 import ChatWithPDFForm from "@/components/ChatWithPDFForm";

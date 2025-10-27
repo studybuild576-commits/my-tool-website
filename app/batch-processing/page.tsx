@@ -1,6 +1,9 @@
 export const metadata = {
   title: "Batch Processing — PDFMakerAI",
   description: "Run actions on multiple files at once — convert, compress, watermark and more.",
+  alternates: { canonical: "https://pdfmakerai.shop/batch-processing" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "Batch Processing — PDFMakerAI", description: "Run actions on multiple files at once — convert, compress, watermark and more.", url: "https://pdfmakerai.shop/batch-processing", images: ["/og-image.png"] },
 };
 
 export default function BatchProcessingPage() {

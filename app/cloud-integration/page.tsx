@@ -1,6 +1,9 @@
 export const metadata = {
   title: "Cloud Integration — PDFMakerAI",
   description: "Connect Google Drive and Dropbox to import and export files seamlessly.",
+  alternates: { canonical: "https://pdfmakerai.shop/cloud-integration" },
+  robots: { index: true, follow: true },
+  openGraph: { title: "Cloud Integration — PDFMakerAI", description: "Connect Google Drive and Dropbox to import and export files seamlessly.", url: "https://pdfmakerai.shop/cloud-integration", images: ["/og-image.png"] },
 };
 
 export default function CloudIntegrationPage() {

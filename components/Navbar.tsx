@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { tools } from "@/lib/tools";
+import * as LucideIcons from "lucide-react";
 import { type LucideIcon } from "lucide-react";
 
 interface Tool {
@@ -33,7 +34,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" legacyBehavior>
             <a className="flex items-center gap-2">
-              <img src="/logo.svg" alt="PDF Maker AI" className="w-10 h-10 logo-hover" />
+              <img src="/logo.png" alt="PDF Maker AI" className="w-10 h-10 logo-hover" />
               <div className="flex flex-col">
                 <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
                   PDF Maker AI
@@ -65,14 +66,18 @@ export default function Navbar() {
                       </div>
                       <ul className="space-y-3">
                         {tools.slice(0, 5).map((tool) => {
-                          const Icon = tool.icon as LucideIcon;
+                          const IconRaw = tool.icon as string | LucideIcon;
+                          const Icon =
+                            typeof IconRaw === "string"
+                              ? (LucideIcons as any)[IconRaw]
+                              : (IconRaw as LucideIcon);
 
                           return (
                             <li key={tool.route}>
                               <Link href={tool.route} legacyBehavior>
                                 <a className="flex items-center gap-3 text-sm text-slate-700 hover:text-indigo-600 transition group/item">
                                   <span className="text-xl group-hover/item:scale-110 transition">
-                                    {typeof Icon !== "string" ? <Icon className="w-5 h-5" /> : Icon}
+                                    {typeof Icon === "function" ? <Icon className="w-5 h-5" /> : <span>{String(IconRaw)}</span>}
                                   </span>
                                   <span>{tool.name}</span>
                                 </a>
@@ -143,7 +148,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between mb-6">
             <Link href="/" legacyBehavior>
               <a className="flex items-center gap-3" onClick={() => setOpen(false)}>
-                <img src="/logo.svg" alt="PDF Maker AI" className="w-10 h-10" />
+                <img src="/logo.png" alt="PDF Maker AI" className="w-10 h-10" />
                 <div>
                   <div className="font-bold text-sm">PDF Maker AI</div>
                   <div className="text-xs text-slate-500">Smart PDF Solutions</div>
@@ -183,13 +188,14 @@ export default function Navbar() {
               <div className="text-xs font-semibold text-slate-500 uppercase mb-2">Popular tools</div>
               <ul className="space-y-2">
                 {tools.slice(0, 8).map((t) => {
-                  const Icon = t.icon as LucideIcon | string;
+                  const IconRaw = t.icon as string | LucideIcon;
+                  const Icon = typeof IconRaw === "string" ? (LucideIcons as any)[IconRaw] : (IconRaw as LucideIcon);
                   return (
                     <li key={t.route}>
                       <Link href={t.route} legacyBehavior>
                         <a onClick={() => setOpen(false)} className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-slate-50">
                           <span className="w-6 h-6 flex items-center justify-center text-lg">
-                            {typeof Icon === "string" ? Icon : <Icon className="w-5 h-5 text-slate-600" />}
+                            {typeof Icon === "function" ? <Icon className="w-5 h-5 text-slate-600" /> : <span>{String(IconRaw)}</span>}
                           </span>
                           <span className="text-sm font-medium text-slate-700">{t.name}</span>
                         </a>

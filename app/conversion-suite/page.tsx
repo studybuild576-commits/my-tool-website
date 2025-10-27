@@ -1,6 +1,14 @@
 export const metadata = {
   title: "Conversion Suite — PDFMakerAI",
   description: "Convert PDFs to Word/Excel/PPT and back with layout preservation options.",
+  alternates: { canonical: "https://pdfmakerai.shop/conversion-suite" },
+  robots: { index: true, follow: true },
+  openGraph: {
+    title: "Conversion Suite — PDFMakerAI",
+    description: "Convert PDFs to Word/Excel/PPT and back with layout preservation options.",
+    url: "https://pdfmakerai.shop/conversion-suite",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function ConversionSuitePage() {

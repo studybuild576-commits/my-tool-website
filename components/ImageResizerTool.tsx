@@ -190,6 +190,7 @@ export default function ImageResizerTool() {
               alt="Preview"
               className="max-w-full h-auto rounded-lg border shadow-sm"
               style={{ maxHeight: "300px" }}
+              loading="lazy"
             />
             {originalDimensions && (
               <p className="text-sm text-slate-600 mt-2">
@@ -381,6 +382,7 @@ export default function ImageResizerTool() {
                 alt="Resized preview"
                 className="max-w-full h-auto rounded-lg border shadow-sm"
                 style={{ maxHeight: "300px" }}
+                loading="lazy"
               />
             </div>
             
