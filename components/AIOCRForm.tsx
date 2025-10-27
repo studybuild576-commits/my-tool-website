@@ -1,44 +1,135 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createWorker, Worker } from "tesseract.js";
+import * as pdfjs from "pdfjs-dist";
+
+interface LoggerMessage {
+  status: string;
+  progress?: number;
+}
 
 export default function AIOCRForm() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  const [progress, setProgress] = useState<string>("");
+  const [worker, setWorker] = useState<Worker | null>(null);
+
+  // Initialize Tesseract worker
+  useEffect(() => {
+    async function initWorker() {
+      try {
+        const worker = await createWorker({
+          logger: (m: LoggerMessage) => {
+            if (m.status === 'recognizing text') {
+              setProgress(`Recognizing text... ${Math.floor((m.progress || 0) * 100)}%`);
+            } else {
+              setProgress(m.status);
+            }
+          }
+        });
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        setWorker(worker);
+      } catch (err) {
+        console.error("Failed to initialize OCR worker:", err);
+        setError("Failed to initialize OCR engine. Please try again.");
+      }
+    }
+    initWorker();
+    return () => {
+      if (worker) worker.terminate();
+    };
+  }, []);
+
+  async function processImage(imageFile: File): Promise<string> {
+    const img = await createImageBitmap(imageFile);
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx?.drawImage(img, 0, 0);
+    return canvas.toDataURL('image/png');
+  }
+
+  async function processPDF(pdfFile: File): Promise<string> {
+    const pdfjsLib = await import('pdfjs-dist');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 
+      'https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js';
+
+    const data = await pdfFile.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument(data).promise;
+    const page = await pdf.getPage(1); // Process first page
+    
+    const viewport = page.getViewport({ scale: 2.0 });
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error("Failed to get canvas context");
+    
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    
+    const renderContext = {
+      canvasContext: ctx,
+      viewport: viewport,
+      canvas: canvas
+    };
+    await page.render(renderContext).promise;
+    
+    return canvas.toDataURL('image/png');
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setResult(null);
-    const form = e.currentTarget;
-    const data = new FormData(form);
     
+    if (!worker) {
+      setError("OCR engine is not ready. Please wait a moment and try again.");
+      return;
+    }
+    
+    const form = e.currentTarget;
     const fileInput = form.elements.namedItem("file") as HTMLInputElement;
-    if (!fileInput?.files?.[0]) {
+    const file = fileInput?.files?.[0];
+    
+    if (!file) {
       setError("Please select a file");
       return;
     }
     
     setLoading(true);
     try {
-      const res = await fetch("/api/ocr", { method: "POST", body: data });
-      const json = await res.json();
+      setProgress("Preparing file...");
+      const imageData = file.type === 'application/pdf' 
+        ? await processPDF(file)
+        : await processImage(file);
       
-      if (res.ok && json.text) {
-        setResult(json.text);
-      } else {
-        setError(json.error || "Failed to extract text from file");
-      }
+      setProgress("Starting OCR...");
+      const { data: { text } } = await worker.recognize(imageData);
+      setResult(text);
     } catch (err: any) {
-      setError("Network error: " + (err.message || String(err)));
+      console.error("OCR error:", err);
+      setError("Failed to process file: " + (err.message || String(err)));
     } finally {
       setLoading(false);
+      setProgress("");
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
+        <h2 className="text-lg font-semibold text-indigo-900 mb-2">
+          🤖 Browser-Based AI OCR
+        </h2>
+        <p className="text-sm text-slate-600">
+          Extract text from images or PDFs using advanced OCR technology.
+          Everything runs directly in your browser - no data is sent to any servers.
+        </p>
+      </div>
+
       <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-indigo-400 transition">
         <input 
           type="file" 
@@ -50,7 +141,8 @@ export default function AIOCRForm() {
             file:text-sm file:font-semibold
             file:bg-indigo-50 file:text-indigo-700
             hover:file:bg-indigo-100"
-          onChange={(e) => setFileName(e.target.files?.[0]?.name || "")}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFileName(e.target.files?.[0]?.name || "")}
+          disabled={loading || !worker}
         />
         <p className="mt-2 text-xs text-slate-500">
           Upload a PDF or image file (JPG, PNG) to extract text using AI OCR
@@ -60,7 +152,7 @@ export default function AIOCRForm() {
       <button
         type="submit"
         className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={loading}
+        disabled={loading || !worker}
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
@@ -68,9 +160,9 @@ export default function AIOCRForm() {
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
             </svg>
-            Processing...
+            {progress || "Processing..."}
           </span>
-        ) : "🤖 Run AI OCR"}
+        ) : "Extract Text"}
       </button>
 
       {error && (

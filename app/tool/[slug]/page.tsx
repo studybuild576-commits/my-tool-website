@@ -6,9 +6,27 @@ export async function generateMetadata({ params }: any) {
   const slug = params.slug as string;
   const tool = tools.find((t) => t.route.replace(/^\//, "") === slug);
   if (!tool) return { title: "Tool" };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pdfmakerai.shop";
+  const url = `${siteUrl}/${slug}`.replace(/([^:]?)\/\/+/g, "$1/");
+
   return {
-    title: `${tool.name} — My Tools`,
+    title: `${tool.name} — PDF Maker AI`,
     description: tool.longDescription || tool.description,
+    openGraph: {
+      title: `${tool.name} — PDF Maker AI`,
+      description: tool.longDescription || tool.description,
+      url,
+      images: [`${siteUrl}/og-image.svg`],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${tool.name} — PDF Maker AI`,
+      description: tool.longDescription || tool.description,
+      images: [`${siteUrl}/og-image.svg`],
+    },
+    alternates: {
+      canonical: url,
+    },
   };
 }
 
@@ -27,6 +45,16 @@ export default function ToolDescription({ params }: any) {
     description: tool.longDescription || tool.description,
     applicationCategory: tool.category || "WebApplication",
     url: toolUrl,
+  };
+
+  const breadcrumbs = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://pdfmakerai.shop/"},
+      {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://pdfmakerai.shop/tools"},
+      {"@type": "ListItem", "position": 3, "name": tool.name, "item": toolUrl}
+    ]
   };
 
   // ✅ Convert icon to JSX element
@@ -71,6 +99,10 @@ export default function ToolDescription({ params }: any) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }}
       />
     </main>
   );
