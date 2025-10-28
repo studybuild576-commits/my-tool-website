@@ -7,7 +7,6 @@ import { createWorker, type Worker } from "tesseract.js";
 // Lazy load pdf.js only when needed (type-safe workerSrc)
 const loadPdfJs = async () => {
   const pdfjsLib = await import("pdfjs-dist");
-  // Some builds don’t ship TS types for GlobalWorkerOptions; set it safely
   (pdfjsLib as any).GlobalWorkerOptions = (pdfjsLib as any).GlobalWorkerOptions || {};
   (pdfjsLib as any).GlobalWorkerOptions.workerSrc =
     "https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js";
@@ -60,10 +59,11 @@ export default function AIOCRForm() {
     const img = await createImageBitmap(file);
     const dpr = window.devicePixelRatio || 1;
     const canvas = document.createElement("canvas");
-    canvas.width = img.width * dpr;
-    canvas.height = img.height * dpr;
+    canvas.width = Math.floor(img.width * dpr);
+    canvas.height = Math.floor(img.height * dpr);
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas failed");
+    // Option A: scale context (we already sized canvas by dpr)
     ctx.scale(dpr, dpr);
     ctx.drawImage(img, 0, 0);
     return canvas.toDataURL("image/png");
@@ -73,15 +73,31 @@ export default function AIOCRForm() {
     const pdfjsLib = await loadPdfJs();
     const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
     const page = await pdf.getPage(1);
-    const viewport = page.getViewport({ scale: 2 });
+
+    const scale = 2;
+    const viewport = page.getViewport({ scale });
     const dpr = window.devicePixelRatio || 1;
+
     const canvas = document.createElement("canvas");
-    canvas.width = viewport.width * dpr;
-    canvas.height = viewport.height * dpr;
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas failed");
+
+    // HiDPI sizing
+    canvas.width = Math.floor(viewport.width * dpr);
+    canvas.height = Math.floor(viewport.height * dpr);
+    canvas.style.width = `${Math.floor(viewport.width)}px`;
+    canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+    // Option A: scale context to dpr (since we sized canvas by dpr)
     ctx.scale(dpr, dpr);
-    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    // Pass canvas in RenderParameters to satisfy types
+    await page.render({
+      canvasContext: ctx,
+      canvas,
+      viewport,
+    } as any).promise;
+
     return canvas.toDataURL("image/png");
   }
 
@@ -89,6 +105,7 @@ export default function AIOCRForm() {
     e.preventDefault();
     setError(null);
     setResult(null);
+
     const worker = workerRef.current;
     if (!worker) {
       setError("OCR engine is not ready. Please wait.");
