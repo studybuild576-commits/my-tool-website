@@ -20,9 +20,9 @@ export default function ChatWithPDFForm() {
   const chunksRef = useRef<TextChunk[]>([]);
 
   async function extractTextFromPDF(file: File) {
-    // Lazy import + pin worker version for stability
-    const pdfjsLib: any = await import("pdfjs-dist");
-    // @ts-expect-error runtime global
+    // Lazy import + typesafe worker config (no ts-expect-error)
+    const pdfjsLib = (await import("pdfjs-dist")) as any;
+    pdfjsLib.GlobalWorkerOptions = pdfjsLib.GlobalWorkerOptions || {};
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       "https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js";
 
@@ -37,7 +37,7 @@ export default function ChatWithPDFForm() {
       const content = await page.getTextContent();
       const text = (content.items as any[]).map((item: any) => item.str).join(" ");
 
-      // Split into ~100‑word chunks for better retrieval
+      // Correct whitespace split for ~100-word chunks
       const words = text.split(/s+/);
       for (let j = 0; j < words.length; j += 100) {
         const chunk = words.slice(j, j + 100).join(" ");
@@ -48,12 +48,10 @@ export default function ChatWithPDFForm() {
   }
 
   function initializeSearch(textChunks: TextChunk[]) {
-    // FlexSearch document index with stored fields
     const index = new Document({
       document: { id: "id", index: ["text"], store: ["text", "pageNum"] },
       tokenize: "forward",
     } as any);
-
     textChunks.forEach((chunk, i) => index.add(i, { text: chunk.text, pageNum: chunk.pageNum }));
     return index;
   }
@@ -61,7 +59,7 @@ export default function ChatWithPDFForm() {
   function getAnswer(question: string, chunks: TextChunk[], index: any): string {
     const q = question.toLowerCase();
 
-    // Fast heuristics
+    // Quick heuristics
     if (q.includes("how many pages")) {
       const pages = new Set(chunks.map((c) => c.pageNum)).size;
       return `The document has ${pages} page${pages === 1 ? "" : "s"}.`;
@@ -76,7 +74,7 @@ Starts with: "${first.slice(0, 200)}..."
 Concludes with: "${last.slice(-200)}"`;
     }
 
-    // Search relevant chunks (enrich to get ids)
+    // Search + enrich to get ids
     const results = index.search(question, { limit: 8, enrich: true });
     const ids: number[] = [];
     for (const r of results) {
@@ -156,7 +154,6 @@ ${best.text}`;
           className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
           onChange={(e) => {
             setFileName(e.target.files?.[0]?.name || "");
-            // Reset state when file changes
             indexRef.current = null;
             chunksRef.current = [];
             setAnswer(null);
