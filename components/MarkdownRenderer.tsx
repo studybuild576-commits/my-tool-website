@@ -1,54 +1,171 @@
-import ReactMarkdown from 'react-markdown';
+// components/MarkdownRenderer.tsx
+"use client";
+
+import React from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { refractor } from "refractor/lib/core";
+import js from "refractor/lang/javascript";
+import ts from "refractor/lang/typescript";
+import bash from "refractor/lang/bash";
+import json from "refractor/lang/json";
+import jsx from "refractor/lang/jsx";
+import tsx from "refractor/lang/tsx";
+
+// Register light langs only to keep bundle small
+refractor.register(js);
+refractor.register(ts);
+refractor.register(bash);
+refractor.register(json);
+refractor.register(jsx);
+refractor.register(tsx);
+
+function CodeBlock({ className, children }: { className?: string; children: any }) {
+  const lang = /language-(w+)/.exec(className || "")?.[1] || "";
+  const code = String(children || "");
+  let nodes;
+  try {
+    nodes = lang ? refractor.highlight(code, lang) : refractor.highlight(code, "javascript");
+  } catch {
+    nodes = refractor.highlight(code, "javascript");
+  }
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {}
+  };
+
+  return (
+    <div className="relative group my-4">
+      <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-x-auto">
+        <code className={className}>
+          {nodes.map((n: any, i: number) => (
+            <span key={i} dangerouslySetInnerHTML={{ __html: refractor.stringify ? "" : "" }}>
+              {/* refractor returns hast syntax tree; easiest is to set innerHTML on container.
+                 But to avoid raw HTML here, serialize as plain text segments: */}
+              {typeof n === "string" ? n : (n.value ?? "")}
+            </span>
+          ))}
+          {/* Fallback plain text if above serialization simplified */}
+          {!nodes?.length && code}
+        </code>
+      </pre>
+      <button
+        type="button"
+        onClick={copy}
+        className="absolute top-2 right-2 text-xs bg-white/10 text-white px-2 py-1 rounded border border-white/20 opacity-0 group-hover:opacity-100 transition"
+        aria-label="Copy code"
+        title="Copy"
+      >
+        📋 Copy
+      </button>
+    </div>
+  );
+}
 
 export default function MarkdownRenderer({ content }: { content: string }) {
+  // Extend sanitize schema to allow className on code blocks and tables
+  const schema = {
+    ...defaultSchema,
+    attributes: {
+      ...defaultSchema.attributes,
+      code: [...(defaultSchema.attributes?.code || []), ["className"]],
+      span: [...(defaultSchema.attributes?.span || []), ["className"]],
+      table: [["className"]],
+      thead: [["className"]],
+      tbody: [["className"]],
+      tr: [["className"]],
+      th: [["className"]],
+      td: [["className"]],
+      img: [
+        ...(defaultSchema.attributes?.img || []),
+        ["className"],
+        ["loading"],
+        ["decoding"],
+        ["width"],
+        ["height"],
+        ["alt"]
+      ],
+      a: [...(defaultSchema.attributes?.a || []), ["rel"], ["target"], ["className"]],
+    },
+  };
+
   return (
     <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[
+        // Allow inline HTML but sanitize rigorously
+        rehypeRaw,
+        [rehypeSanitize, schema],
+        rehypeSlug,
+        [rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: "no-underline" } }],
+      ]}
       components={{
-        h1: ({ children }) => (
-          <h1 className="text-4xl font-bold mb-6">{children}</h1>
+        h1: ({ node, ...props }) => <h1 className="text-4xl font-bold mb-6 scroll-mt-24" {...props} />,
+        h2: ({ node, ...props }) => <h2 className="text-3xl font-semibold mt-8 mb-4 scroll-mt-24" {...props} />,
+        h3: ({ node, ...props }) => <h3 className="text-2xl font-semibold mt-6 mb-3 scroll-mt-24" {...props} />,
+        h4: ({ node, ...props }) => <h4 className="text-xl font-semibold mt-4 mb-2 scroll-mt-24" {...props} />,
+
+        p: ({ node, ...props }) => <p className="text-slate-700 mb-4 leading-relaxed" {...props} />,
+        ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-4 text-slate-700" {...props} />,
+        ol: ({ node, ...props }) => <ol className="list-decimal pl-6 mb-4 text-slate-700" {...props} />,
+        li: ({ node, ...props }) => <li className="mb-2" {...props} />,
+
+        table: ({ node, ...props }) => (
+          <div className="overflow-x-auto my-4">
+            <table className="min-w-full border-collapse text-sm" {...props} />
+          </div>
         ),
-        h2: ({ children }) => (
-          <h2 className="text-3xl font-semibold mt-8 mb-4">{children}</h2>
+        th: ({ node, ...props }) => <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold" {...props} />,
+        td: ({ node, ...props }) => <td className="border-b border-slate-100 px-3 py-2 align-top" {...props} />,
+
+        blockquote: ({ node, ...props }) => (
+          <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-slate-600" {...props} />
         ),
-        h3: ({ children }) => (
-          <h3 className="text-2xl font-semibold mt-6 mb-3">{children}</h3>
-        ),
-        h4: ({ children }) => (
-          <h4 className="text-xl font-semibold mt-4 mb-2">{children}</h4>
-        ),
-        p: ({ children }) => (
-          <p className="text-slate-700 mb-4 leading-relaxed">{children}</p>
-        ),
-        ul: ({ children }) => (
-          <ul className="list-disc pl-6 mb-4 text-slate-700">{children}</ul>
-        ),
-        ol: ({ children }) => (
-          <ol className="list-decimal pl-6 mb-4 text-slate-700">{children}</ol>
-        ),
-        li: ({ children }) => (
-          <li className="mb-2">{children}</li>
-        ),
-        blockquote: ({ children }) => (
-          <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-slate-600">
-            {children}
-          </blockquote>
-        ),
-        code: ({ className, children, ...props }: any) => {
-          const match = /language-(\w+)/.exec(className || '');
-          const isCodeBlock = match && typeof children === 'string';
-          return isCodeBlock ? (
-            <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 my-4 overflow-x-auto">
-              <code className={className} {...props}>
+
+        code({ inline, className, children, ...props }) {
+          if (inline) {
+            return (
+              <code className="bg-slate-100 rounded px-1 py-0.5 text-slate-800" {...props}>
                 {children}
               </code>
-            </pre>
-          ) : (
-            <code className="bg-slate-100 rounded px-1 py-0.5 text-slate-800" {...props}>
+            );
+          }
+          return <CodeBlock className={className}>{children}</CodeBlock>;
+        },
+
+        a: ({ node, href, children, ...props }) => {
+          const isExternal = href && /^https?:///i.test(href);
+          return (
+            <a
+              href={href as string}
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+              className="text-indigo-600 hover:text-indigo-700 underline underline-offset-2"
+              {...props}
+            >
               {children}
-            </code>
+            </a>
           );
         },
-        // Add custom styling for other elements as needed
+
+        img: ({ node, ...props }) => (
+          <img
+            loading="lazy"
+            decoding="async"
+            className="max-w-full h-auto rounded-md my-3"
+            width={props.width || 800 as any}
+            height={props.height || 450 as any}
+            alt={(props.alt as string) || ""}
+            {...props}
+          />
+        ),
+        hr: () => <hr className="my-8 border-slate-200" />,
       }}
     >
       {content}
