@@ -143,7 +143,15 @@ export default function ImageResizerTool() {
           // Decide output mime (keep original type unless it’s unsupported)
           const origMime = file.type || "image/png";
           const mime = /^image/(png|jpe?g|webp)$/i.test(origMime) ? origMime : "image/png";
-          const quality = /jpe?g|webp/i.test(mime) ? clampQuality(settings.quality) : undefined;
+
+          // Compute quality only for lossy formats
+          let quality: number | undefined;
+          if (/jpe?g|webp/i.test(mime)) {
+            const q = typeof settings.quality === "number" ? settings.quality : 0.8;
+            quality = clampQuality(q);
+          } else {
+            quality = undefined; // PNG ignores quality
+          }
 
           canvas.toBlob(
             (blob) => {
