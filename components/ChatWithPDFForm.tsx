@@ -5,10 +5,7 @@ import { useState, useRef } from "react";
 import { Document } from "flexsearch";
 import * as stringSimilarity from "string-similarity";
 
-interface TextChunk {
-  text: string;
-  pageNum: number;
-}
+interface TextChunk { text: string; pageNum: number; }
 
 export default function ChatWithPDFForm() {
   const [loading, setLoading] = useState(false);
@@ -20,7 +17,6 @@ export default function ChatWithPDFForm() {
   const chunksRef = useRef<TextChunk[]>([]);
 
   async function extractTextFromPDF(file: File) {
-    // Lazy import + typesafe worker config (no ts-expect-error)
     const pdfjsLib = (await import("pdfjs-dist")) as any;
     pdfjsLib.GlobalWorkerOptions = pdfjsLib.GlobalWorkerOptions || {};
     pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -36,8 +32,6 @@ export default function ChatWithPDFForm() {
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
       const text = (content.items as any[]).map((item: any) => item.str).join(" ");
-
-      // Correct whitespace split for ~100-word chunks
       const words = text.split(/s+/);
       for (let j = 0; j < words.length; j += 100) {
         const chunk = words.slice(j, j + 100).join(" ");
@@ -50,7 +44,7 @@ export default function ChatWithPDFForm() {
   function initializeSearch(textChunks: TextChunk[]) {
     const index = new Document({
       document: { id: "id", index: ["text"], store: ["text", "pageNum"] },
-      tokenize: "forward",
+      tokenize: "forward"
     } as any);
     textChunks.forEach((chunk, i) => index.add(i, { text: chunk.text, pageNum: chunk.pageNum }));
     return index;
@@ -59,7 +53,6 @@ export default function ChatWithPDFForm() {
   function getAnswer(question: string, chunks: TextChunk[], index: any): string {
     const q = question.toLowerCase();
 
-    // Quick heuristics
     if (q.includes("how many pages")) {
       const pages = new Set(chunks.map((c) => c.pageNum)).size;
       return `The document has ${pages} page${pages === 1 ? "" : "s"}.`;
@@ -74,24 +67,18 @@ Starts with: "${first.slice(0, 200)}..."
 Concludes with: "${last.slice(-200)}"`;
     }
 
-    // Search + enrich to get ids
     const results = index.search(question, { limit: 8, enrich: true });
     const ids: number[] = [];
-    for (const r of results) {
-      for (const item of r.result || []) {
-        if (typeof item.id === "number") ids.push(item.id);
-      }
-    }
+    for (const r of results) for (const item of r.result || []) if (typeof item.id === "number") ids.push(item.id);
     if (!ids.length) return "No clearly relevant passages were found for that query.";
 
     const candidates = ids.slice(0, 5).map((id) => chunks[id]).filter(Boolean);
     const scored = candidates.map((chunk) => ({
       chunk,
-      score: stringSimilarity.compareTwoStrings(q, chunk.text.toLowerCase()),
+      score: stringSimilarity.compareTwoStrings(q, chunk.text.toLowerCase())
     }));
     scored.sort((a, b) => b.score - a.score);
     const best = scored[0]?.chunk || candidates[0];
-
     return `Based on page ${best.pageNum}, relevant passage:
 
 ${best.text}`;
@@ -99,22 +86,14 @@ ${best.text}`;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setAnswer(null);
-    setError(null);
-    setProgress("");
+    setAnswer(null); setError(null); setProgress("");
 
     const form = e.currentTarget;
     const file = (form.elements.namedItem("file") as HTMLInputElement)?.files?.[0];
     const question = (form.elements.namedItem("question") as HTMLInputElement)?.value || "";
 
-    if (!file) {
-      setError("Please select a PDF file");
-      return;
-    }
-    if (!question.trim()) {
-      setError("Please enter a question");
-      return;
-    }
+    if (!file) { setError("Please select a PDF file"); return; }
+    if (!question.trim()) { setError("Please enter a question"); return; }
 
     setLoading(true);
     try {
@@ -124,26 +103,62 @@ ${best.text}`;
         setProgress("Building search index...");
         indexRef.current = initializeSearch(chunksRef.current);
       }
-
       setProgress("Finding relevant information...");
       const response = getAnswer(question, chunksRef.current, indexRef.current);
       setAnswer(response);
     } catch (err: any) {
-      console.error("PDF processing error:", err);
       setError("Failed to process PDF: " + String(err));
     } finally {
-      setLoading(false);
-      setProgress("");
+      setLoading(false); setProgress("");
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
-        <h2 className="text-lg font-semibold text-indigo-900 mb-2">💬 Chat with PDF</h2>
-        <p className="text-sm text-slate-600">
-          Ask questions, get summaries, and extract information from your PDF. Everything runs in your browser—no uploads.
-        </p>
+      {/* Decorative hero (inline SVG, no images) */}
+      <div className="relative overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/15 via-pink-500/15 to-rose-500/15" />
+        <div aria-hidden="true" className="pointer-events-none absolute -top-24 -left-20 h-72 w-72 rounded-full bg-rose-400 blur-3xl opacity-20" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -right-20 h-72 w-72 rounded-full bg-purple-400 blur-3xl opacity-20" />
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 800 400"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Chat with PDF AI tool providing answers and summaries from documents"
+        >
+          <defs>
+            <pattern id="dots2" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1" fill="currentColor" />
+            </pattern>
+            <linearGradient id="stroke2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#a855f7" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.6" />
+            </linearGradient>
+            <linearGradient id="fill2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#c084fc" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#fb7185" stopOpacity="0.18" />
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots2)" className="text-purple-400/20" />
+          <path
+            d="M100,260 C180,180 320,160 400,220 C500,300 660,300 700,240 C740,180 680,120 600,110 C520,100 480,130 420,150 C360,170 300,170 240,150 C180,130 120,160 90,200 C70,230 80,260 100,260 Z"
+            fill="url(#fill2)"
+            stroke="url(#stroke2)"
+            strokeWidth="2"
+          />
+        </svg>
+        <div className="relative p-8 sm:p-10">
+          <h2 className="text-2xl sm:text-3xl font-bold text-purple-900">💬 Chat with PDF — Private & In‑Browser</h2>
+          <p className="mt-2 text-sm sm:text-base text-slate-700">
+            Ask questions and get instant summaries locally—no uploads, no signup.
+          </p>
+          <ul className="mt-4 flex flex-wrap gap-3 text-xs sm:text-sm text-slate-700">
+            <li className="bg-white/70 backdrop-blur px-3 py-1 rounded-md border border-slate-200">No signup</li>
+            <li className="bg-white/70 backdrop-blur px-3 py-1 rounded-md border border-slate-200">Privacy‑first</li>
+            <li className="bg-white/70 backdrop-blur px-3 py-1 rounded-md border border-slate-200">Fast answers</li>
+          </ul>
+        </div>
       </div>
 
       <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-purple-400 transition">
@@ -159,6 +174,7 @@ ${best.text}`;
             setAnswer(null);
           }}
           disabled={loading}
+          aria-label="Upload PDF for AI chat and summarization"
         />
         <p className="mt-2 text-xs text-slate-600">
           {fileName ? `Selected file: ${fileName}` : "Upload a PDF to start chatting"}
@@ -174,10 +190,8 @@ ${best.text}`;
           placeholder="Ask anything about the document…"
           defaultValue="Summarize the document."
           disabled={loading}
+          aria-label="Type your question about the PDF"
         />
-        <p className="mt-2 text-xs text-slate-500">
-          Tip: Ask about sections, definitions, dates, numbers, or request summaries.
-        </p>
       </div>
 
       {progress && (
@@ -203,7 +217,18 @@ ${best.text}`;
 
       {answer && (
         <section className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
-          <h3 className="font-semibold text-purple-800 mb-3">Answer</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-purple-800 flex items-center gap-2">
+              <span>💡</span> Answer
+            </h3>
+            <button
+              type="button"
+              onClick={() => navigator.clipboard.writeText(answer)}
+              className="text-sm bg-white px-3 py-1 rounded-lg border border-purple-300 hover:bg-purple-50 transition"
+            >
+              📋 Copy
+            </button>
+          </div>
           <div className="bg-white rounded-lg p-4">
             <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{answer}</p>
           </div>
