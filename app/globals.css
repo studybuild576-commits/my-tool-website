@@ -2,130 +2,84 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Animation Classes */
-.animate-float {
-  animation: float 6s ease-in-out infinite;
+/* Prefer system fonts until webfonts are ready (swap) */
+:root{
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-primary: #7C3AED; /* tailwind primary-600 */
+  --color-muted: #94a3b8;
+  --max-content-width: 1200px;
 }
 
-.animate-float-slow {
-  animation: float 8s ease-in-out infinite;
+/* Base typography */
+html, body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background-color: var(--color-bg);
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
+h1,h2,h3,h4 { font-family: Poppins, Inter, ui-sans-serif; }
+
+/* Links & focus */
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button, a[role="button"], input[type="button"], input[type="submit"]{ touch-action: manipulation; }
+:focus { outline: none; }
+:focus-visible { box-shadow: 0 0 0 4px rgba(124,58,237,0.12); border-radius: 8px; }
+
+.surface { background: var(--color-surface); }
+.muted { color: var(--color-muted); }
+small, .text-xs { line-height: 1.4; }
+
+/* Animations (motion-safe) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 
-.animation-delay-150 {
-  animation-delay: 150ms;
-}
+.animate-float { animation: float 6s ease-in-out infinite; }
+.animate-float-slow { animation: float 8s ease-in-out infinite; }
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
 
-.animation-delay-300 {
-  animation-delay: 300ms;
-}
+.animation-delay-150 { animation-delay: 150ms; }
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-450 { animation-delay: 450ms; }
+.animation-delay-600 { animation-delay: 600ms; }
 
-.animation-delay-450 {
-  animation-delay: 450ms;
-}
-
-.animation-delay-600 {
-  animation-delay: 600ms;
-}
-
-/* Keyframes */
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
 }
-
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Logo Animation */
-.logo-hover {
-  transition: all 0.3s ease;
-}
+/* Logo hover */
+.logo-hover { transition: transform 0.3s ease, filter 0.3s ease; }
+.logo-hover:hover { filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5)); transform: scale(1.05) rotate(5deg); }
 
-.logo-hover:hover {
-  filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
-  transform: scale(1.05) rotate(5deg);
-}
-
-/* Premium Glass Effect */
+/* Glass effects with fallback */
 .glass-effect {
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Backdrop blur + fallback */
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+@supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+  .glass-effect { background: rgba(255, 255, 255, 0.85); }
 }
 
 .glass-card {
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
-
-/* Premium mobile-first fonts (display for headings, sans for body) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@600;700;800&display=swap');
-
-:root{
-	--color-bg: #ffffff;
-	--color-surface: #ffffff;
-	--color-primary: #7C3AED; /* matches tailwind primary-600 */
-	--color-muted: #94a3b8;
-	--max-content-width: 1200px;
+@supports not ((-webkit-backdrop-filter: blur(10px)) or (backdrop-filter: blur(10px))) {
+  .glass-card { background: #ffffff; }
 }
-
-html, body {
-	font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-		"Helvetica Neue", Arial;
-	background-color: var(--color-bg);
-	color: #0f172a;
-	-webkit-font-smoothing:antialiased;
-	-moz-osx-font-smoothing:grayscale;
-}
-
-/* Headings use a display font for premium feel */
-h1,h2,h3,h4 { font-family: Poppins, Inter, ui-sans-serif; }
-
-/* Link and focus styles */
-a { color: var(--color-primary); text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-/* Make interactive elements easier to tap on mobile */
-button, a[role="button"], input[type="button"], input[type="submit"]{
-	touch-action: manipulation;
-}
-
-/* Better focus rings for keyboard users */
-:focus {
-	outline: none;
-}
-:focus-visible {
-	box-shadow: 0 0 0 4px rgba(124,58,237,0.12);
-	border-radius: 8px;
-}
-
-/* Utility: subtle card background to use across components */
-.surface { background: var(--color-surface); }
-
-/* Slight default link tint for small elements */
-.muted { color: var(--color-muted); }
-
-/* Improve accessibility for lists and small text */
-small, .text-xs { line-height: 1.4; }
-
