@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createWorker, type Worker } from "tesseract.js";
 
+// Lazy load pdf.js only when needed
 const loadPdfJs = async () => {
   const pdfjsLib = await import("pdfjs-dist");
   // @ts-expect-error runtime global
@@ -34,7 +35,7 @@ export default function AIOCRForm() {
         await worker.loadLanguage("eng");
         await worker.initialize("eng");
         if (!cancelled) workerRef.current = worker; else await worker.terminate();
-      } catch (e) {
+      } catch {
         setError("Failed to initialize OCR engine. Please reload and try again.");
       }
     })();
