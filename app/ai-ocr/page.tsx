@@ -1,33 +1,12 @@
 // app/ai-ocr/page.tsx
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-
-const AIOCRForm = dynamic(() => import("@/components/AIOCRForm"), {
-  ssr: false,
-  loading: () => (
-    <div className="animate-pulse space-y-3">
-      <div className="h-8 w-48 bg-gray-200 rounded" />
-      <div className="h-10 w-full bg-gray-200 rounded" />
-      <div className="h-40 w-full bg-gray-200 rounded" />
-    </div>
-  ),
-});
+import AIOCRFormWrapper from "@/components/client/AIOCRFormWrapper";
 
 export const metadata: Metadata = {
   title: "AI OCR: PDF/Image to Text (Private, In‑Browser) | PDF Maker AI",
   description:
     "Extract text from PDFs and images with AI OCR—fast, accurate, and privacy‑first. Runs in your browser. No signup needed, 100% free.",
-  keywords: [
-    "AI OCR",
-    "OCR online free",
-    "PDF to text",
-    "extract text from PDF",
-    "image to text",
-    "in‑browser OCR",
-    "no signup OCR",
-    "private OCR",
-  ],
   alternates: { canonical: "https://pdfmakerai.shop/ai-ocr" },
   robots: { index: true, follow: true },
   openGraph: {
@@ -62,50 +41,22 @@ export default function AIOCRPage() {
       "AI accuracy",
       "In‑browser processing",
       "No signup",
-      "Privacy‑first",
+      "Privacy‑first"
     ],
     keywords:
       "AI OCR, OCR online free, PDF to text, extract text from PDF, image to text, in‑browser OCR",
-    publisher: { "@type": "Organization", name: "PDF Maker AI", url: "https://pdfmakerai.shop" },
+    publisher: { "@type": "Organization", name: "PDF Maker AI", url: "https://pdfmakerai.shop" }
   };
 
   const faqLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
-      {
-        "@type": "Question",
-        name: "Kya AI OCR bina upload ke browser mein chalta hai?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Haan, processing aapke browser mein hoti hai; files server par upload nahi hoti.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Kya yeh tool bilkul free hai?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "Haan, 100% free aur bina account ke use kar sakte hain.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Kaunse formats supported hain?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "PDF, JPG, PNG jaise aam formats supported hain.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "Accuracy kaisi rahegi?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: "AI-based OCR high accuracy deta hai; clear scans par best results milte hain.",
-        },
-      },
-    ],
+      { "@type": "Question", name: "Kya AI OCR bina upload ke browser mein chalta hai?", acceptedAnswer: { "@type": "Answer", text: "Haan, processing aapke browser mein hoti hai; files server par upload nahi hoti." } },
+      { "@type": "Question", name: "Kya yeh tool bilkul free hai?", acceptedAnswer: { "@type": "Answer", text: "Haan, 100% free aur bina account ke use kar sakte hain." } },
+      { "@type": "Question", name: "Kaunse formats supported hain?", acceptedAnswer: { "@type": "Answer", text: "PDF, JPG, PNG jaise aam formats supported hain." } },
+      { "@type": "Question", name: "Accuracy kaisi rahegi?", acceptedAnswer: { "@type": "Answer", text: "AI-based OCR high accuracy deta hai; clear scans par best results milte hain." } }
+    ]
   };
 
   return (
@@ -115,7 +66,7 @@ export default function AIOCRPage() {
 
       <header className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">🧠 AI OCR: PDF/Image to Text (Private, In‑Browser)</h1>
-        <p className="text-gray-600">Convert scanned PDFs and images to editable text with fast, accurate AI OCR—no signup, no upload. 100% free.</p>
+        <p className="text-gray-600">Convert scanned PDFs and images to editable text—no signup, no upload, 100% free.</p>
       </header>
 
       <h2 className="text-xl font-semibold mb-3">Why use this OCR?</h2>
@@ -126,7 +77,7 @@ export default function AIOCRPage() {
         <li>• Fast and accurate AI OCR</li>
       </ul>
 
-      <AIOCRForm />
+      <AIOCRFormWrapper />
 
       <aside className="mt-10 border-t pt-6">
         <h2 className="text-xl font-semibold mb-3">Related tools</h2>
