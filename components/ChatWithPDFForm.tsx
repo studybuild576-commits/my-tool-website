@@ -5,7 +5,10 @@ import { useState, useRef } from "react";
 import { Document } from "flexsearch";
 import * as stringSimilarity from "string-similarity";
 
-interface TextChunk { text: string; pageNum: number; }
+interface TextChunk {
+  text: string;
+  pageNum: number;
+}
 
 export default function ChatWithPDFForm() {
   const [loading, setLoading] = useState(false);
@@ -17,16 +20,24 @@ export default function ChatWithPDFForm() {
   const chunksRef = useRef<TextChunk[]>([]);
 
   async function extractTextFromPDF(file: File) {
+    // Lazy import + pin worker version for stability
     const pdfjsLib: any = await import("pdfjs-dist");
     // @ts-expect-error runtime global
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js";
-    const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js";
+
+    const data = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data }).promise;
+    const numPages = pdf.numPages;
+
     const textChunks: TextChunk[] = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
-      setProgress(`Reading page ${i} of ${pdf.numPages}...`);
+    for (let i = 1; i <= numPages; i++) {
+      setProgress(`Reading page ${i} of ${numPages}...`);
       const page = await pdf.getPage(i);
       const content = await page.getTextContent();
-      const text = (content.items as any[]).map((it:any)=>it.str).join(" ");
+      const text = (content.items as any[]).map((item: any) => item.str).join(" ");
+
+      // Split into ~100‑word chunks for better retrieval
       const words = text.split(/s+/);
       for (let j = 0; j < words.length; j += 100) {
         const chunk = words.slice(j, j + 100).join(" ");
@@ -37,38 +48,52 @@ export default function ChatWithPDFForm() {
   }
 
   function initializeSearch(textChunks: TextChunk[]) {
+    // FlexSearch document index with stored fields
     const index = new Document({
       document: { id: "id", index: ["text"], store: ["text", "pageNum"] },
       tokenize: "forward",
     } as any);
+
     textChunks.forEach((chunk, i) => index.add(i, { text: chunk.text, pageNum: chunk.pageNum }));
     return index;
   }
 
   function getAnswer(question: string, chunks: TextChunk[], index: any): string {
     const q = question.toLowerCase();
+
+    // Fast heuristics
     if (q.includes("how many pages")) {
-      const pages = new Set(chunks.map(c=>c.pageNum)).size;
-      return `The document has ${pages} page${pages===1?"":"s"}.`;
+      const pages = new Set(chunks.map((c) => c.pageNum)).size;
+      return `The document has ${pages} page${pages === 1 ? "" : "s"}.`;
     }
     if (q.includes("summarize") || q.includes("summary")) {
-      const first = chunks[0]?.text || ""; const last = chunks[chunks.length-1]?.text || "";
+      const first = chunks[0]?.text || "";
+      const last = chunks[chunks.length - 1]?.text || "";
       return `Here's a brief overview:
 
-Starts with: "${first.slice(0,200)}..."
+Starts with: "${first.slice(0, 200)}..."
 
 Concludes with: "${last.slice(-200)}"`;
     }
 
+    // Search relevant chunks (enrich to get ids)
     const results = index.search(question, { limit: 8, enrich: true });
     const ids: number[] = [];
-    for (const r of results) for (const item of (r.result||[])) if (typeof item.id === "number") ids.push(item.id);
+    for (const r of results) {
+      for (const item of r.result || []) {
+        if (typeof item.id === "number") ids.push(item.id);
+      }
+    }
     if (!ids.length) return "No clearly relevant passages were found for that query.";
 
-    const candidates = ids.slice(0,5).map(id=>chunks[id]).filter(Boolean);
-    const scored = candidates.map(chunk => ({ chunk, score: stringSimilarity.compareTwoStrings(q, chunk.text.toLowerCase()) }));
-    scored.sort((a,b)=>b.score-a.score);
+    const candidates = ids.slice(0, 5).map((id) => chunks[id]).filter(Boolean);
+    const scored = candidates.map((chunk) => ({
+      chunk,
+      score: stringSimilarity.compareTwoStrings(q, chunk.text.toLowerCase()),
+    }));
+    scored.sort((a, b) => b.score - a.score);
     const best = scored[0]?.chunk || candidates[0];
+
     return `Based on page ${best.pageNum}, relevant passage:
 
 ${best.text}`;
@@ -76,12 +101,22 @@ ${best.text}`;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setAnswer(null); setError(null); setProgress("");
+    setAnswer(null);
+    setError(null);
+    setProgress("");
 
-    const file = (e.currentTarget.elements.namedItem("file") as HTMLInputElement)?.files?.[0];
-    const question = (e.currentTarget.elements.namedItem("question") as HTMLInputElement)?.value || "";
-    if (!file) { setError("Please select a PDF file"); return; }
-    if (!question.trim()) { setError("Please enter a question"); return; }
+    const form = e.currentTarget;
+    const file = (form.elements.namedItem("file") as HTMLInputElement)?.files?.[0];
+    const question = (form.elements.namedItem("question") as HTMLInputElement)?.value || "";
+
+    if (!file) {
+      setError("Please select a PDF file");
+      return;
+    }
+    if (!question.trim()) {
+      setError("Please enter a question");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -91,12 +126,16 @@ ${best.text}`;
         setProgress("Building search index...");
         indexRef.current = initializeSearch(chunksRef.current);
       }
+
       setProgress("Finding relevant information...");
-      setAnswer(getAnswer(question, chunksRef.current, indexRef.current));
-    } catch (err:any) {
+      const response = getAnswer(question, chunksRef.current, indexRef.current);
+      setAnswer(response);
+    } catch (err: any) {
+      console.error("PDF processing error:", err);
       setError("Failed to process PDF: " + String(err));
     } finally {
-      setLoading(false); setProgress("");
+      setLoading(false);
+      setProgress("");
     }
   }
 
@@ -104,31 +143,73 @@ ${best.text}`;
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
         <h2 className="text-lg font-semibold text-indigo-900 mb-2">💬 Chat with PDF</h2>
-        <p className="text-sm text-slate-600">Ask questions, get summaries, and extract information. Everything runs in your browser—no uploads.</p>
+        <p className="text-sm text-slate-600">
+          Ask questions, get summaries, and extract information from your PDF. Everything runs in your browser—no uploads.
+        </p>
       </div>
 
       <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-purple-400 transition">
-        <input type="file" name="file" accept="application/pdf" className="block w-full text-sm" onChange={(e)=>{ setFileName(e.target.files?.[0]?.name||""); indexRef.current=null; chunksRef.current=[]; setAnswer(null); }} disabled={loading} />
-        <p className="mt-2 text-xs text-slate-600">{fileName?`Selected: ${fileName}`:"Upload a PDF to start chatting"}</p>
+        <input
+          type="file"
+          name="file"
+          accept="application/pdf"
+          className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+          onChange={(e) => {
+            setFileName(e.target.files?.[0]?.name || "");
+            // Reset state when file changes
+            indexRef.current = null;
+            chunksRef.current = [];
+            setAnswer(null);
+          }}
+          disabled={loading}
+        />
+        <p className="mt-2 text-xs text-slate-600">
+          {fileName ? `Selected file: ${fileName}` : "Upload a PDF to start chatting"}
+        </p>
       </div>
 
       <div>
         <label className="block text-sm font-medium mb-2 text-slate-700">Your Question</label>
-        <textarea name="question" rows={3} className="w-full border-2 border-slate-200 rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition" placeholder="Ask anything about the document…" defaultValue="Summarize the document." disabled={loading} />
+        <textarea
+          name="question"
+          rows={3}
+          className="w-full border-2 border-slate-200 rounded-xl px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition"
+          placeholder="Ask anything about the document…"
+          defaultValue="Summarize the document."
+          disabled={loading}
+        />
+        <p className="mt-2 text-xs text-slate-500">
+          Tip: Ask about sections, definitions, dates, numbers, or request summaries.
+        </p>
       </div>
 
-      {progress && <div className="bg-blue-50 border border-blue-200 rounded-xl p-4"><p className="text-sm text-blue-700">{progress}</p></div>}
+      {progress && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+          <p className="text-sm text-blue-700">{progress}</p>
+        </div>
+      )}
 
-      <button type="submit" className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white px-6 py-3 rounded-xl font-semibold disabled:opacity-50" disabled={loading} aria-busy={loading}>
+      <button
+        type="submit"
+        className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={loading}
+        aria-busy={loading}
+      >
         {loading ? (progress || "Processing...") : "Ask Question"}
       </button>
 
-      {error && <div className="bg-red-50 border border-red-200 rounded-xl p-4"><p className="text-sm text-red-600">{error}</p></div>}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4" role="alert">
+          <p className="text-sm text-red-600">{error}</p>
+        </div>
+      )}
 
       {answer && (
         <section className="bg-gradient-to-br from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
           <h3 className="font-semibold text-purple-800 mb-3">Answer</h3>
-          <div className="bg-white rounded-lg p-4"><p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{answer}</p></div>
+          <div className="bg-white rounded-lg p-4">
+            <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{answer}</p>
+          </div>
         </section>
       )}
     </form>
