@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createWorker, type Worker } from "tesseract.js";
 
-// Lazy load pdf.js only when needed (type-safe workerSrc)
+// pdf.js lazy import and typed worker config
 const loadPdfJs = async () => {
   const pdfjsLib = await import("pdfjs-dist");
   (pdfjsLib as any).GlobalWorkerOptions = (pdfjsLib as any).GlobalWorkerOptions || {};
@@ -13,10 +13,7 @@ const loadPdfJs = async () => {
   return pdfjsLib;
 };
 
-interface LoggerMessage {
-  status: string;
-  progress?: number;
-}
+interface LoggerMessage { status: string; progress?: number; }
 
 export default function AIOCRForm() {
   const [loading, setLoading] = useState(false);
@@ -33,11 +30,7 @@ export default function AIOCRForm() {
         const worker = await createWorker({
           logger: (m: LoggerMessage) => {
             if (cancelled) return;
-            setProgress(
-              m.status === "recognizing text"
-                ? `Recognizing text... ${Math.floor((m.progress || 0) * 100)}%`
-                : m.status
-            );
+            setProgress(m.status === "recognizing text" ? `Recognizing text... ${Math.floor((m.progress || 0) * 100)}%` : m.status);
           },
         });
         await worker.loadLanguage("eng");
@@ -63,7 +56,6 @@ export default function AIOCRForm() {
     canvas.height = Math.floor(img.height * dpr);
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas failed");
-    // Option A: scale context (we already sized canvas by dpr)
     ctx.scale(dpr, dpr);
     ctx.drawImage(img, 0, 0);
     return canvas.toDataURL("image/png");
@@ -82,21 +74,14 @@ export default function AIOCRForm() {
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas failed");
 
-    // HiDPI sizing
     canvas.width = Math.floor(viewport.width * dpr);
     canvas.height = Math.floor(viewport.height * dpr);
     canvas.style.width = `${Math.floor(viewport.width)}px`;
     canvas.style.height = `${Math.floor(viewport.height)}px`;
 
-    // Option A: scale context to dpr (since we sized canvas by dpr)
     ctx.scale(dpr, dpr);
 
-    // Pass canvas in RenderParameters to satisfy types
-    await page.render({
-      canvasContext: ctx,
-      canvas,
-      viewport,
-    } as any).promise;
+    await page.render({ canvasContext: ctx, canvas, viewport } as any).promise;
 
     return canvas.toDataURL("image/png");
   }
@@ -105,27 +90,17 @@ export default function AIOCRForm() {
     e.preventDefault();
     setError(null);
     setResult(null);
-
     const worker = workerRef.current;
-    if (!worker) {
-      setError("OCR engine is not ready. Please wait.");
-      return;
-    }
+    if (!worker) { setError("OCR engine is not ready. Please wait."); return; }
     const file = (e.currentTarget.elements.namedItem("file") as HTMLInputElement)?.files?.[0];
-    if (!file) {
-      setError("Please select a file");
-      return;
-    }
+    if (!file) { setError("Please select a file"); return; }
 
     try {
       setLoading(true);
       setProgress("Preparing file...");
-      const imageData =
-        file.type === "application/pdf" ? await processPDF(file) : await processImage(file);
+      const imageData = file.type === "application/pdf" ? await processPDF(file) : await processImage(file);
       setProgress("Starting OCR...");
-      const {
-        data: { text },
-      } = await worker.recognize(imageData);
+      const { data: { text } } = await worker.recognize(imageData);
       setResult(text);
     } catch (err: any) {
       setError("Failed to process file: " + (err?.message || String(err)));
@@ -138,10 +113,9 @@ export default function AIOCRForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
-        <h2 className="text-lg font-semibold text-indigo-900 mb-2">🤖 Browser‑Based AI OCR</h2>
+        <h2 className="text-lg font-semibold text-indigo-900 mb-2">🤖 AI OCR Tool — Free & Private</h2>
         <p className="text-sm text-slate-600">
-          Extract text from images or PDFs using advanced OCR. Everything runs in your browser—no
-          uploads.
+          Extract text from images or PDFs using advanced OCR. Everything runs in your browser—no uploads.
         </p>
       </div>
 
@@ -153,9 +127,10 @@ export default function AIOCRForm() {
           className="block w-full text-sm"
           onChange={(e) => setFileName(e.target.files?.[0]?.name || "")}
           disabled={loading || !workerRef.current}
+          aria-label="Upload PDF or image for AI OCR"
         />
         <p className="mt-2 text-xs text-slate-500">
-          {fileName ? `Selected: ${fileName}` : "Upload a PDF or image (JPG, PNG)"}
+          {fileName ? `Selected: ${fileName}` : "Upload a PDF or image (JPG, PNG) to extract text"}
         </p>
       </div>
 
@@ -165,11 +140,11 @@ export default function AIOCRForm() {
         disabled={loading || !workerRef.current}
         aria-busy={loading}
       >
-        {loading ? progress || "Processing..." : "Extract Text"}
+        {loading ? (progress || "Processing...") : "Extract Text"}
       </button>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4" role="alert">
           <p className="text-sm text-red-600">{error}</p>
         </div>
       )}
