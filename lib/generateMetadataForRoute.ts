@@ -1,4 +1,3 @@
-e
 import { tools } from './tools';
 
 export function pageMetadataForRoute(route: string) {
