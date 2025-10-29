@@ -48,7 +48,7 @@ export default function Page() {
     operatingSystem: "Web",
     url: "https://pdfmakerai.shop/pdf-protect",
     isAccessibleForFree: true,
-    offers: { "@type": "Offer", price: "0", priceCurrency": "USD" },
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     featureList: [
       "User/Owner passwords",
       "Permissions control",
