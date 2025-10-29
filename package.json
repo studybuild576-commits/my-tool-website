@@ -13,7 +13,7 @@
   "dependencies": {
     "@tailwindcss/typography": "0.5.13",
     "docx": "9.5.1",
-    "flexsearch": "0.8.2",
+    "flexsearch": "0.7.31",
     "html2canvas": "1.4.1",
     "lucide-react": "0.423.0",
     "mammoth": "1.11.0",
