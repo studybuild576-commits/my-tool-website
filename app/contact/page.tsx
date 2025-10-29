@@ -114,7 +114,8 @@ export default function ContactPage() {
     ]
   };
 
-  // Prefilled mailto helpers
+  // Prefilled mailto helpers (FIX: multiline text via 
+)
   const supportMail = `mailto:support@pdfmakerai.shop?subject=${encodeURIComponent(
     "Support: Issue/Question"
   )}&body=${encodeURIComponent(
@@ -148,15 +149,16 @@ Thanks,
 "
   )}`;
 
-  // Requested address to add
   const personalMail = `mailto:rajputr51903@gmail.com?subject=${encodeURIComponent(
     "Contact from PDF Maker AI"
-  )}&body=${encodeURIComponent("Hi,
+  )}&body=${encodeURIComponent(
+    "Hi,
 
 I’d like to discuss:
 
 Thanks,
-")}`;
+"
+  )}`;
 
   return (
     <main className="max-w-4xl mx-auto">
@@ -198,7 +200,6 @@ Thanks,
             <a href={supportMail} className="inline-flex items-center gap-2 text-indigo-600 hover:text-purple-600 font-semibold">
               support@pdfmakerai.shop <span aria-hidden="true">→</span>
             </a>
-            {/* Personal address as requested */}
             <a href={personalMail} className="inline-flex items-center gap-2 text-indigo-600 hover:text-purple-600 font-semibold">
               rajputr51903@gmail.com <span aria-hidden="true">→</span>
             </a>
@@ -228,14 +229,10 @@ Thanks,
         </div>
       </div>
 
-      {/* Contact Form (stub) */}
+      {/* Contact Form */}
       <section className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-2xl p-8 mb-12">
         <h2 className="text-2xl font-bold mb-6 text-center text-slate-800">Send us a Message</h2>
-        <form
-          className="max-w-2xl mx-auto space-y-6"
-          method="POST"
-          action="/api/contact" // create an API route later to process emails/CRM
-        >
+        <form className="max-w-2xl mx-auto space-y-6" method="POST" action="/api/contact">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-2">Your Name</label>
