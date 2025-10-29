@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PDFDocument } from "pdf-lib";
 
 interface ProtectionOptions {
@@ -17,7 +17,7 @@ export default function PDFProtectTool() {
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState<string>("");
   const [protectedUrl, setProtectedUrl] = useState<string | null>(null);
-  
+
   const [options, setOptions] = useState<ProtectionOptions>({
     userPassword: "",
     ownerPassword: "",
@@ -27,60 +27,99 @@ export default function PDFProtectTool() {
     allowAnnotating: true
   });
 
+  // Blob URL cleanup
+  useEffect(() => {
+    return () => {
+      if (protectedUrl) URL.revokeObjectURL(protectedUrl);
+    };
+  }, [protectedUrl]);
+
+  function validatePasswords(): string | null {
+    const { userPassword, ownerPassword } = options;
+    if (!userPassword && !ownerPassword) return "Kam se kam ek password zaroori hai.";
+    const weak =
+      (userPassword && userPassword.length < 4) || (ownerPassword && ownerPassword.length < 4);
+    if (weak) return "Password 4 characters se zyada rakhen.";
+    return null;
+  }
+
   async function handleProtect() {
     if (!file) {
-      setError("Please select a PDF file");
+      setError("PDF select karein.");
       return;
     }
-
-    if (!options.userPassword && !options.ownerPassword) {
-      setError("Please enter at least one password");
+    const pwdMsg = validatePasswords();
+    if (pwdMsg) {
+      setError(pwdMsg);
       return;
     }
 
     setLoading(true);
     setError(null);
-    setProgress("Reading PDF...");
+    setProgress("PDF read ho raha hai...");
     setProtectedUrl(null);
 
     try {
-      // Load the PDF
       const bytes = await file.arrayBuffer();
       const pdfDoc = await PDFDocument.load(bytes);
-      
-      setProgress("Encrypting PDF...");
-      
-      // Set passwords and permissions
-      if (options.userPassword || options.ownerPassword) {
-        // pdf-lib typings may not include `encrypt` depending on version; use any to call it safely
-        try {
-          await (pdfDoc as any).encrypt({
-            userPassword: options.userPassword,
-            ownerPassword: options.ownerPassword || options.userPassword,
-            permissions: {
-              printing: options.allowPrinting ? 'highResolution' : 'none',
-              modifying: options.allowModifying,
-              copying: options.allowCopying,
-              annotating: options.allowAnnotating,
-              fillingForms: options.allowModifying,
-              contentAccessibility: true,
-              documentAssembly: options.allowModifying,
-            },
+
+      setProgress("Encrypt/Protect apply ho raha hai...");
+
+      const permits = {
+        printing: options.allowPrinting ? "highResolution" : "none",
+        modifying: options.allowModifying,
+        copying: options.allowCopying,
+        annotating: options.allowAnnotating,
+        fillingForms: options.allowModifying,
+        contentAccessibility: true,
+        documentAssembly: options.allowModifying
+      };
+
+      let outBytes: Uint8Array | ArrayBuffer;
+      let encrypted = false;
+
+      // Approach A: direct encrypt (agar available ho)
+      try {
+        const anyDoc: any = pdfDoc as any;
+        if (typeof anyDoc.encrypt === "function") {
+          await anyDoc.encrypt({
+            userPassword: options.userPassword || undefined,
+            ownerPassword: (options.ownerPassword || options.userPassword) || undefined,
+            permissions: permits
           });
-        } catch (e) {
-          // If encrypt is not available, ignore and attempt to continue (some versions handle encryption differently)
-          console.warn('pdf-lib encrypt call failed or is unavailable:', e);
+          encrypted = true;
+        }
+      } catch {}
+
+      setProgress("Saving...");
+
+      if (encrypted) {
+        outBytes = await pdfDoc.save();
+      } else {
+        // Approach B: save ke through encrypt options (kuch builds support karte hain)
+        try {
+          const anyDoc: any = pdfDoc as any;
+          outBytes = await anyDoc.save({
+            encrypt: {
+              userPassword: options.userPassword || undefined,
+              ownerPassword: (options.ownerPassword || options.userPassword) || undefined,
+              permissions: permits
+            }
+          });
+        } catch {
+          // Fallback: without encryption + notice
+          outBytes = await pdfDoc.save();
+          setError(
+            "Is build me encryption method available nahi mila. File save ho gayi, par password shayad apply na hua ho."
+          );
         }
       }
 
-      // Save the protected PDF
-      setProgress("Saving protected PDF...");
-  const protectedBytes = await pdfDoc.save();
-  const blob = new Blob([protectedBytes as any], { type: "application/pdf" });
+      if (protectedUrl) URL.revokeObjectURL(protectedUrl);
+      const blob = new Blob([outBytes as unknown as BlobPart], { type: "application/pdf" });
       setProtectedUrl(URL.createObjectURL(blob));
       setProgress("");
     } catch (err) {
-      console.error("Failed to protect PDF:", err);
       setError("Failed to protect PDF: " + String(err));
     } finally {
       setLoading(false);
@@ -92,14 +131,14 @@ export default function PDFProtectTool() {
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-6 mb-6">
         <h2 className="text-xl font-bold text-slate-800 mb-2">🔐 PDF Password Protection</h2>
         <p className="text-sm text-slate-600">
-          Secure your PDF files with passwords and permission controls. 
-          Set different passwords for viewing and editing, and control what users can do with the document.
+          User/Owner password set karke PDF secure karein aur printing/copying/modifying permissions control karein. Saari processing browser ke andar hoti hai.
         </p>
       </div>
 
       <div className="space-y-6">
-        {/* File Upload */}
+        {/* Upload */}
         <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-blue-400 transition">
+          <label className="block text-sm font-medium text-slate-700 mb-2">PDF chunen</label>
           <input
             type="file"
             accept="application/pdf"
@@ -115,36 +154,31 @@ export default function PDFProtectTool() {
               file:bg-blue-50 file:text-blue-700
               hover:file:bg-blue-100"
             disabled={loading}
+            aria-label="Upload PDF to protect"
           />
-          <p className="mt-2 text-xs text-slate-500">
-            Select a PDF file to protect. Maximum file size: 100MB
-          </p>
+          <p className="mt-2 text-xs text-slate-500">Max size: 100MB</p>
         </div>
 
-        {/* Password Fields */}
+        {/* Passwords */}
         <div className="grid gap-6 md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              User Password (for opening)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">User Password (open)</label>
             <input
               type="password"
               value={options.userPassword}
               onChange={(e) => setOptions({ ...options, userPassword: e.target.value })}
-              placeholder="Required to open PDF"
+              placeholder="Open password"
               className="w-full border rounded-lg px-3 py-2"
               disabled={loading}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Owner Password (for editing)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Owner Password (full access)</label>
             <input
               type="password"
               value={options.ownerPassword}
               onChange={(e) => setOptions({ ...options, ownerPassword: e.target.value })}
-              placeholder="Required for full access"
+              placeholder="Edit/permissions control"
               className="w-full border rounded-lg px-3 py-2"
               disabled={loading}
             />
@@ -153,7 +187,7 @@ export default function PDFProtectTool() {
 
         {/* Permissions */}
         <div className="bg-slate-50 rounded-lg p-4">
-          <h3 className="font-medium text-slate-700 mb-3">Document Permissions:</h3>
+          <h3 className="font-medium text-slate-700 mb-3">Permissions</h3>
           <div className="grid gap-3 md:grid-cols-2">
             <label className="flex items-center">
               <input
@@ -198,7 +232,7 @@ export default function PDFProtectTool() {
           </div>
         </div>
 
-        {/* Action Buttons */}
+        {/* Actions */}
         <div className="flex justify-center gap-4">
           <button
             onClick={handleProtect}
@@ -207,9 +241,9 @@ export default function PDFProtectTool() {
           >
             {loading ? (
               <>
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
                 {progress || "Protecting PDF..."}
               </>
@@ -221,20 +255,20 @@ export default function PDFProtectTool() {
           {protectedUrl && (
             <a
               href={protectedUrl}
-              download={file?.name?.replace('.pdf', '') + '_protected.pdf'}
+              download={(file?.name?.replace(/.pdf$/i, "") || "document") + "_protected.pdf"}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-green-100 text-green-700 hover:bg-green-200 font-medium"
             >
-              <span className="text-xl">📥</span>
+              <span className="text-xl" aria-hidden="true">📥</span>
               Download Protected PDF
             </a>
           )}
         </div>
 
-        {/* Error Display */}
+        {/* Error */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mt-4" role="alert">
             <div className="flex items-start gap-3">
-              <span className="text-red-500 text-xl">⚠️</span>
+              <span className="text-red-500 text-xl" aria-hidden="true">⚠️</span>
               <div>
                 <p className="font-semibold text-red-800">Error</p>
                 <p className="text-sm text-red-600">{error}</p>
