@@ -42,7 +42,7 @@ export default function Page() {
     operatingSystem: "Web",
     url: "https://pdfmakerai.shop/html-to-pdf",
     isAccessibleForFree: true,
-    offers: { "@type": "Offer", price: "0", priceCurrency": "USD" },
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }, // FIX: key
     featureList: [
       "A4/Letter sizes",
       "High‑DPI rendering",
@@ -57,7 +57,10 @@ export default function Page() {
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-10">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(appLd).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(appLd).replace(/</g, "\\u003c") }}
+      />
       {/* Decorative hero (inline SVG) */}
       <div className="relative overflow-hidden rounded-2xl mb-6">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/15 via-sky-500/15 to-cyan-500/15" />
