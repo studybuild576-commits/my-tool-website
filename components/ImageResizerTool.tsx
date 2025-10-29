@@ -1,6 +1,5 @@
-// components/ImageResizerTool.tsx
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 interface ResizeSettings {
   width: number;
@@ -9,7 +8,7 @@ interface ResizeSettings {
   quality: number; // 0.1..1 used by JPEG/WebP; PNG ignores
   resizeMode: "dimensions" | "percentage" | "maxSize";
   percentage: number; // 1..100
-  maxSize: number;    // longest side cap
+  maxSize: number; // longest side cap
 }
 
 export default function ImageResizerTool() {
@@ -30,21 +29,24 @@ export default function ImageResizerTool() {
     maxSize: 1024,
   });
 
-  // Cleanup object URL on unmount or when replaced
+  // Cleanup object URL
   useEffect(() => {
     return () => {
       if (resizedUrl) URL.revokeObjectURL(resizedUrl);
     };
   }, [resizedUrl]);
 
+  // Handle file upload
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0] || null;
     setFile(f);
     setError(null);
+
     if (resizedUrl) {
       URL.revokeObjectURL(resizedUrl);
       setResizedUrl(null);
     }
+
     if (!f) {
       setPreview(null);
       setOrig(null);
@@ -53,10 +55,12 @@ export default function ImageResizerTool() {
 
     const img = new Image();
     const reader = new FileReader();
+
     reader.onload = (ev) => {
       const dataUrl = String(ev.target?.result || "");
       setPreview(dataUrl);
       img.src = dataUrl;
+
       img.onload = () => {
         setOrig({ w: img.width, h: img.height });
         // If not dimensions mode, pre-compute suggested dims
@@ -65,18 +69,20 @@ export default function ImageResizerTool() {
           setSettings((s) => ({ ...s, width: dims.w, height: dims.h }));
         }
       };
+
       img.onerror = () => setError("Failed to load image for preview.");
     };
+
     reader.onerror = () => setError("Failed to read the selected file.");
     reader.readAsDataURL(f);
   }
 
   const aspect = useMemo(() => {
-    if (!orig) return null;
+    if (!orig) return 1;
     return orig.w / orig.h || 1;
   }, [orig]);
 
-  // Auto update height when width changes with aspect lock in dimensions mode
+  // Maintain aspect ratio dynamically
   useEffect(() => {
     if (!orig) return;
     if (settings.resizeMode !== "dimensions") return;
@@ -84,7 +90,7 @@ export default function ImageResizerTool() {
     const ar = orig.w / orig.h;
     setSettings((s) => ({ ...s, height: Math.max(1, Math.round(s.width / ar)) }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.width, settings.maintainAspectRatio, orig?.w, orig?.h, settings.resizeMode]);
+  }, [settings.width, settings.maintainAspectRatio, orig, settings.resizeMode]);
 
   function clampQuality(q: number) {
     return Math.min(1, Math.max(0.1, q || 0.8));
@@ -95,6 +101,7 @@ export default function ImageResizerTool() {
       const f = Math.max(1, Math.min(100, s.percentage)) / 100;
       return { w: Math.max(1, Math.round(w * f)), h: Math.max(1, Math.round(h * f)) };
     }
+
     if (s.resizeMode === "maxSize") {
       const max = Math.max(100, Math.min(4096, s.maxSize));
       if (Math.max(w, h) <= max) return { w, h };
@@ -106,7 +113,8 @@ export default function ImageResizerTool() {
         return { w: Math.max(1, nw), h: max };
       }
     }
-    // dimensions
+
+    // Default: dimensions
     if (s.maintainAspectRatio) {
       const ar = w / h;
       return { w: s.width, h: Math.max(1, Math.round(s.width / ar)) };
@@ -118,11 +126,14 @@ export default function ImageResizerTool() {
     if (!file) return;
     setLoading(true);
     setError(null);
+
     try {
       const img = new Image();
       const reader = new FileReader();
+
       reader.onload = (e) => {
         img.src = String(e.target?.result || "");
+
         img.onload = () => {
           const { w, h } = calcDims(img.width, img.height, settings);
           const canvas = document.createElement("canvas");
@@ -134,23 +145,19 @@ export default function ImageResizerTool() {
             setLoading(false);
             return;
           }
+
           ctx.imageSmoothingEnabled = true;
           ctx.imageSmoothingQuality = "high";
           ctx.drawImage(img, 0, 0, w, h);
 
           if (resizedUrl) URL.revokeObjectURL(resizedUrl);
 
-          // Decide output mime (keep original type unless it’s unsupported)
           const origMime = file.type || "image/png";
-          const mime = /^image/(png|jpe?g|webp)$/i.test(origMime) ? origMime : "image/png";
+          const mime = /^image\/(png|jpe?g|webp)$/i.test(origMime) ? origMime : "image/png";
 
-          // Compute quality only for lossy formats
           let quality: number | undefined;
           if (/jpe?g|webp/i.test(mime)) {
-            const q = typeof settings.quality === "number" ? settings.quality : 0.8;
-            quality = clampQuality(q);
-          } else {
-            quality = undefined; // PNG ignores quality
+            quality = clampQuality(settings.quality);
           }
 
           canvas.toBlob(
@@ -168,15 +175,18 @@ export default function ImageResizerTool() {
             quality
           );
         };
+
         img.onerror = () => {
           setError("Failed to load image. Please try a different file.");
           setLoading(false);
         };
       };
+
       reader.onerror = () => {
         setError("Failed to read the selected file.");
         setLoading(false);
       };
+
       reader.readAsDataURL(file);
     } catch (err) {
       setError("Error resizing image: " + String(err));
@@ -186,10 +196,11 @@ export default function ImageResizerTool() {
 
   return (
     <section className="bg-white p-6 rounded-lg shadow-lg">
+      {/* Header */}
       <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6">
         <h2 className="text-xl font-bold text-slate-800 mb-2">📐 Image Resizer</h2>
         <p className="text-sm text-slate-600">
-          Resize your images by exact dimensions, percentage scale, or maximum size. High‑quality smoothing, aspect ratio control, and private in‑browser processing.
+          Resize your images by exact dimensions, percentage, or maximum size — all in your browser with no upload.
         </p>
       </div>
 
@@ -207,7 +218,6 @@ export default function ImageResizerTool() {
               file:text-sm file:font-semibold
               file:bg-indigo-50 file:text-indigo-700
               hover:file:bg-blue-100"
-            aria-label="Upload image to resize"
           />
         </div>
 
@@ -230,7 +240,7 @@ export default function ImageResizerTool() {
           </div>
         )}
 
-        {/* Resize Mode */}
+        {/* Resize Options */}
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">Resize Mode:</label>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -238,11 +248,17 @@ export default function ImageResizerTool() {
               <button
                 key={mode}
                 onClick={() => setSettings((s) => ({ ...s, resizeMode: mode }))}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors
-                  ${settings.resizeMode === mode ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}
-                aria-pressed={settings.resizeMode === mode}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  settings.resizeMode === mode
+                    ? "bg-indigo-600 text-white"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
               >
-                {mode === "dimensions" ? "Exact Dimensions" : mode === "percentage" ? "Percentage Scale" : "Maximum Size"}
+                {mode === "dimensions"
+                  ? "Exact Dimensions"
+                  : mode === "percentage"
+                  ? "Percentage Scale"
+                  : "Maximum Size"}
               </button>
             ))}
           </div>
@@ -256,23 +272,25 @@ export default function ImageResizerTool() {
                 <label className="block text-sm font-medium text-slate-700 mb-2">Width (px)</label>
                 <input
                   type="number"
-                  min="1"
+                  min={1}
                   value={settings.width}
-                  onChange={(e) => setSettings((s) => ({ ...s, width: Math.max(1, parseInt(e.target.value) || 1) }))}
+                  onChange={(e) =>
+                    setSettings((s) => ({ ...s, width: Math.max(1, parseInt(e.target.value) || 1) }))
+                  }
                   className="w-full border rounded-lg px-3 py-2"
-                  aria-label="Output width in pixels"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Height (px)</label>
                 <input
                   type="number"
-                  min="1"
+                  min={1}
                   value={settings.height}
-                  onChange={(e) => setSettings((s) => ({ ...s, height: Math.max(1, parseInt(e.target.value) || 1) }))}
+                  onChange={(e) =>
+                    setSettings((s) => ({ ...s, height: Math.max(1, parseInt(e.target.value) || 1) }))
+                  }
                   disabled={settings.maintainAspectRatio}
                   className="w-full border rounded-lg px-3 py-2 disabled:bg-slate-50 disabled:text-slate-500"
-                  aria-label="Output height in pixels"
                 />
               </div>
             </div>
@@ -285,12 +303,11 @@ export default function ImageResizerTool() {
               </label>
               <input
                 type="range"
-                min="1"
-                max="100"
+                min={1}
+                max={100}
                 value={settings.percentage}
                 onChange={(e) => setSettings((s) => ({ ...s, percentage: parseInt(e.target.value) }))}
                 className="w-full"
-                aria-label="Scale percentage"
               />
             </div>
           )}
@@ -302,13 +319,12 @@ export default function ImageResizerTool() {
               </label>
               <input
                 type="range"
-                min="100"
-                max="4096"
-                step="100"
+                min={100}
+                max={4096}
+                step={100}
                 value={settings.maxSize}
                 onChange={(e) => setSettings((s) => ({ ...s, maxSize: parseInt(e.target.value) }))}
                 className="w-full"
-                aria-label="Maximum size in pixels"
               />
             </div>
           )}
@@ -320,16 +336,17 @@ export default function ImageResizerTool() {
             </label>
             <input
               type="range"
-              min="0.1"
-              max="1"
-              step="0.1"
+              min={0.1}
+              max={1}
+              step={0.1}
               value={settings.quality}
-              onChange={(e) => setSettings((s) => ({ ...s, quality: parseFloat(e.target.value) }))}
+              onChange={(e) =>
+                setSettings((s) => ({ ...s, quality: parseFloat(e.target.value) }))
+              }
               className="w-full"
-              aria-label="Output quality"
             />
             <p className="text-xs text-slate-500 mt-1">
-              Note: PNG is lossless and ignores the quality slider; JPEG/WebP honor it.
+              PNG ignores quality; JPEG/WebP honor it.
             </p>
           </div>
 
@@ -340,7 +357,9 @@ export default function ImageResizerTool() {
                 id="lock-ar"
                 type="checkbox"
                 checked={settings.maintainAspectRatio}
-                onChange={(e) => setSettings((s) => ({ ...s, maintainAspectRatio: e.target.checked }))}
+                onChange={(e) =>
+                  setSettings((s) => ({ ...s, maintainAspectRatio: e.target.checked }))
+                }
                 className="rounded border-slate-300 text-indigo-600"
               />
               <label htmlFor="lock-ar" className="text-sm text-slate-700">
@@ -352,14 +371,8 @@ export default function ImageResizerTool() {
 
         {/* Error */}
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4" role="alert">
-            <div className="flex items-start gap-3">
-              <span className="text-red-500 text-xl" aria-hidden="true">⚠️</span>
-              <div>
-                <p className="font-semibold text-red-800">Error</p>
-                <p className="text-sm text-red-600">{error}</p>
-              </div>
-            </div>
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+            <p className="font-semibold text-red-800">⚠️ {error}</p>
           </div>
         )}
 
@@ -368,19 +381,9 @@ export default function ImageResizerTool() {
           onClick={handleResize}
           disabled={!file || loading}
           className="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 
-            disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300"
+            disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          {loading ? (
-            <div className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              Resizing...
-            </div>
-          ) : (
-            "Resize Image"
-          )}
+          {loading ? "Resizing..." : "Resize Image"}
         </button>
 
         {/* Result */}
@@ -401,10 +404,9 @@ export default function ImageResizerTool() {
                 href={resizedUrl}
                 download={`resized-${file?.name || "image"}`}
                 className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-2 
-                  rounded-lg hover:bg-green-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-green-300"
+                  rounded-lg hover:bg-green-700 transition-colors"
               >
-                <span aria-hidden="true">📥</span>
-                <span>Download Resized Image</span>
+                📥 Download Resized Image
               </a>
             </div>
           </div>
