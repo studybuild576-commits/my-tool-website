@@ -6,13 +6,15 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { promises as fs } from "fs";
 import path from "path";
 
-// Helpers
+// ✅ FIXED: Proper regex escape for leading slash removal
 function slugFromRoute(route: string) {
-  return route.replace(/^//, ""); // FIX: regex escape
+  return route.replace(/^\//, ""); // Correct regex
 }
+
 function findToolBySlug(slug: string) {
   return tools.find((t) => slugFromRoute(t.route) === slug);
 }
+
 async function getArticleContent(tool: any) {
   if (tool?.blogContent) {
     try {
@@ -25,8 +27,9 @@ async function getArticleContent(tool: any) {
   }
   return null;
 }
+
 function generateArticle(tool: any) {
-  const title = `${tool.name}: Ultimate Guide & How‑to`;
+  const title = `${tool.name}: Ultimate Guide & How-to`;
   const intro = `${tool.longDescription || tool.description} In this guide you'll learn how to use ${tool.name} effectively, best practices, and tips to get the best results.`;
   const features = [
     tool.description,
@@ -98,10 +101,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <main className="max-w-4xl mx-auto p-6">
+      {/* ✅ JSON-LD Schema Safe Injection */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd).replace(/</g, "\\u003c") }}
       />
+
       <article className="prose prose-slate max-w-none">
         {customContent ? (
           <>
@@ -157,7 +162,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <section className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Best Practices</h2>
               <p>
-                For best results, use high‑quality source files and choose options that balance size and quality depending on your needs.
+                For best results, use high-quality source files and choose options that balance size and quality depending on your needs.
               </p>
             </section>
 
@@ -177,7 +182,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
         <footer className="mt-8 p-4 bg-blue-50 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">Ready to try it yourself?</h3>
-          <p className="mb-4">Now that you've learned about {tool.name}, put your knowledge into practice.</p>
+          <p className="mb-4">
+            Now that you've learned about {tool.name}, put your knowledge into practice.
+          </p>
           <a
             href={tool.route}
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
