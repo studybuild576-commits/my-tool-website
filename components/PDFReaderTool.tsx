@@ -1,6 +1,8 @@
+// components/PDFReaderTool.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
-// Dynamic import of pdfjs-dist to avoid server-side issues
+
+// pdfjs ko sirf client pe load karna (Next SSR issues avoid)
 let pdfjsLib: any = null;
 
 interface PageContent {
@@ -23,54 +25,54 @@ export default function PDFReaderTool() {
   const pdfDocRef = useRef<any>(null);
 
   useEffect(() => {
-    // Dynamic import of pdfjs-dist
-    import("pdfjs-dist").then((pdfjs) => {
-      pdfjsLib = pdfjs;
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
+    let mounted = true;
+    // Dynamic import of pdfjs-dist (esm build)
+    import("pdfjs-dist/build/pdf").then((mod: any) => {
+      if (!mounted) return;
+      pdfjsLib = mod;
+      // Worker set — version pin karein
+      (pdfjsLib as any).GlobalWorkerOptions.workerSrc =
         "https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js";
+    }).catch((e) => {
+      setError("PDF library load nahi hui: " + String(e));
     });
 
     return () => {
-      // Cleanup
+      mounted = false;
       if (pdfDocRef.current) {
-        pdfDocRef.current.destroy();
+        try { pdfDocRef.current.destroy(); } catch {}
       }
     };
   }, []);
 
-  async function loadPDF(file: File) {
+  async function loadPDF(f: File) {
     if (!pdfjsLib) {
-      setError("PDF library not loaded yet. Please try again.");
+      setError("PDF library abhi load ho rahi hai, thodi der baad try karein.");
       return;
     }
-
     setLoading(true);
     setError(null);
     setProgress("Loading PDF...");
     setTextContent([]);
-    
+    setCurrentPage(1);
     try {
-      const data = await file.arrayBuffer();
-      pdfDocRef.current = await pdfjsLib.getDocument({ data }).promise;
+      const data = await f.arrayBuffer();
+      const loadingTask = (pdfjsLib as any).getDocument({ data });
+      pdfDocRef.current = await loadingTask.promise;
       setTotalPages(pdfDocRef.current.numPages);
-      
-      // Extract text content from all pages
+
+      // Extract text (basic, non-layout preserving)
       const content: PageContent[] = [];
       for (let i = 1; i <= pdfDocRef.current.numPages; i++) {
-        setProgress(`Extracting text from page ${i}/${pdfDocRef.current.numPages}...`);
+        setProgress(`Extracting text: ${i}/${pdfDocRef.current.numPages}...`);
         const page = await pdfDocRef.current.getPage(i);
-        const textContent = await page.getTextContent();
-        content.push({
-          text: textContent.items.map((item: any) => item.str).join(" "),
-          pageNum: i
-        });
+        const txt = await page.getTextContent();
+        content.push({ text: txt.items.map((it: any) => it.str).join(" "), pageNum: i });
       }
       setTextContent(content);
-      
-      // Render first page
+
       await renderPage(1);
     } catch (err) {
-      console.error("Failed to load PDF:", err);
       setError("Failed to load PDF: " + String(err));
     } finally {
       setLoading(false);
@@ -80,24 +82,17 @@ export default function PDFReaderTool() {
 
   async function renderPage(pageNum: number) {
     if (!pdfDocRef.current) return;
-    
     try {
       const page = await pdfDocRef.current.getPage(pageNum);
       const viewport = page.getViewport({ scale });
       const canvas = canvasRef.current;
-      const context = canvas?.getContext('2d');
-      
-      if (canvas && context) {
+      const ctx = canvas?.getContext("2d");
+      if (canvas && ctx) {
         canvas.height = viewport.height;
         canvas.width = viewport.width;
-        
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        }).promise;
+        await page.render({ canvasContext: ctx, viewport }).promise;
       }
     } catch (err) {
-      console.error("Failed to render page:", err);
       setError("Failed to render page: " + String(err));
     }
   }
@@ -107,25 +102,19 @@ export default function PDFReaderTool() {
       setSearchResults([]);
       return;
     }
-    
-    const results = textContent
-      .filter(content => 
-        content.text.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .map(content => content.pageNum);
-    
+    const q = searchQuery.toLowerCase();
+    const results = textContent.filter((c) => c.text.toLowerCase().includes(q)).map((c) => c.pageNum);
     setSearchResults(results);
-    
-    if (results.length > 0) {
+    if (results.length) {
       setCurrentPage(results[0]);
       renderPage(results[0]);
     }
   }
 
-  async function handlePageChange(newPage: number) {
-    if (newPage < 1 || newPage > totalPages) return;
-    setCurrentPage(newPage);
-    await renderPage(newPage);
+  async function handlePageChange(n: number) {
+    if (n < 1 || n > totalPages) return;
+    setCurrentPage(n);
+    await renderPage(n);
   }
 
   return (
@@ -133,22 +122,22 @@ export default function PDFReaderTool() {
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-6 mb-6">
         <h2 className="text-xl font-bold text-slate-800 mb-2">📚 PDF Reader</h2>
         <p className="text-sm text-slate-600">
-          Read and search through PDF documents directly in your browser. 
-          Extract text, navigate pages, and search for specific content.
+          Browser me PDF read, search aur text extract karein — sab kuch client‑side.
         </p>
       </div>
 
       <div className="space-y-6">
-        {/* File Upload */}
+        {/* Upload */}
         <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-blue-400 transition">
+          <label className="block text-sm font-medium text-slate-700 mb-2">PDF chunen</label>
           <input
             type="file"
             accept="application/pdf"
             onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                setFile(file);
-                loadPDF(file);
+              const f = e.target.files?.[0];
+              if (f) {
+                setFile(f);
+                loadPDF(f);
               }
             }}
             className="block w-full text-sm text-slate-500
@@ -158,15 +147,16 @@ export default function PDFReaderTool() {
               file:bg-blue-50 file:text-blue-700
               hover:file:bg-blue-100"
             disabled={loading}
+            aria-label="Upload PDF to read"
           />
         </div>
 
         {loading && progress && (
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <svg className="animate-spin h-5 w-5 text-blue-600" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+              <svg className="animate-spin h-5 w-5 text-blue-600" viewBox="0 0 24 24" aria-hidden="true">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
               <p className="text-sm text-blue-700">{progress}</p>
             </div>
@@ -174,9 +164,9 @@ export default function PDFReaderTool() {
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4" role="alert">
             <div className="flex items-start gap-3">
-              <span className="text-red-500 text-xl">⚠️</span>
+              <span className="text-red-500 text-xl" aria-hidden="true">⚠️</span>
               <div>
                 <p className="font-semibold text-red-800">Error</p>
                 <p className="text-sm text-red-600">{error}</p>
@@ -197,9 +187,7 @@ export default function PDFReaderTool() {
                 >
                   ←
                 </button>
-                <span className="text-sm">
-                  Page {currentPage} of {totalPages}
-                </span>
+                <span className="text-sm">Page {currentPage} of {totalPages}</span>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage >= totalPages}
@@ -210,19 +198,9 @@ export default function PDFReaderTool() {
               </div>
 
               <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setScale(s => Math.max(0.5, s - 0.25))}
-                  className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200"
-                >
-                  -
-                </button>
+                <button onClick={() => setScale((s) => Math.max(0.5, s - 0.25))} className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200">-</button>
                 <span className="text-sm">{Math.round(scale * 100)}%</span>
-                <button
-                  onClick={() => setScale(s => Math.min(3, s + 0.25))}
-                  className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200"
-                >
-                  +
-                </button>
+                <button onClick={() => setScale((s) => Math.min(3, s + 0.25))} className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200">+</button>
               </div>
             </div>
 
@@ -232,32 +210,24 @@ export default function PDFReaderTool() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 placeholder="Search in document..."
                 className="flex-1 border rounded-lg px-3 py-2"
               />
-              <button
-                onClick={handleSearch}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
+              <button onClick={handleSearch} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                 Search
               </button>
             </div>
 
             {searchResults.length > 0 && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-sm text-yellow-800">
-                  Found matches on pages: {searchResults.join(", ")}
-                </p>
+                <p className="text-sm text-yellow-800">Found matches on pages: {searchResults.join(", ")}</p>
               </div>
             )}
 
             {/* PDF Viewer */}
             <div className="max-w-full overflow-x-auto">
-              <canvas
-                ref={canvasRef}
-                className="border rounded-lg shadow-sm mx-auto"
-              />
+              <canvas ref={canvasRef} className="border rounded-lg shadow-sm mx-auto" />
             </div>
 
             {/* Text Content */}
