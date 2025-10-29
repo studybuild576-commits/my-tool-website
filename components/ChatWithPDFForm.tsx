@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Document } from "flexsearch";
+import { FlexSearchDocument } from "flexsearch";
 import * as stringSimilarity from "string-similarity";
 
 interface TextChunk { text: string; pageNum: number; }
