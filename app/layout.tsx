@@ -1,4 +1,5 @@
 // app/layout.tsx
+"use client";
 import type { Metadata } from "next";
 import "./globals.css";
 import Layout from "@/components/Layout";
