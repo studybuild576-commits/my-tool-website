@@ -1,9 +1,6 @@
 // app/pdf-reader/page.tsx
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-
-// SSR disable for pdfjs client tool
-const PDFReaderTool = dynamic(() => import("@/components/PDFReaderTool"), { ssr: false });
+import PDFReaderPageClient from "@/components/client/PDFReaderPageClient";
 
 export const metadata: Metadata = {
   title: "PDF Reader — Read, Search, Extract Text (Free, Private)",
@@ -53,7 +50,7 @@ export default function Page() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(appLd).replace(/</g, "\\u003c") }}
       />
-      <PDFReaderTool />
+      <PDFReaderPageClient />
     </main>
   );
 }
