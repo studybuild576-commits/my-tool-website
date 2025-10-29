@@ -5,61 +5,65 @@ import { useMemo, useState } from "react";
 export default function CaseConverterTool() {
   const [text, setText] = useState("");
 
+  // ✅ Word, Char, Line count fix
   const counts = useMemo(() => {
     const chars = text.length;
-    const words = text.trim() ? text.trim().split(/s+/).length : 0; // FIX: /s+/
-    const lines = text ? text.split(/
-?
-/).length : 0;             // FIX: /
-?
-/
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const lines = text ? text.split(/\r?\n/).length : 0;
     return { chars, words, lines };
   }, [text]);
 
+  // ✅ Case conversion logic
   const transform: Record<string, string> = {
     UPPER: text.toUpperCase(),
     lower: text.toLowerCase(),
-    Capitalized: text.replace(/\bw/g, (c) => c.toUpperCase()), // FIX: \bw
+    Capitalized: text.replace(/\b\w/g, (c) => c.toUpperCase()),
     "Title Case": text
       .toLowerCase()
-      .replace(/\bw+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1)), // FIX: \bw+
+      .replace(/\b\w+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1)),
     "Sentence case": text
       .toLowerCase()
-      .replace(/(^s*[a-z])|([.?!]s+[a-z])/g, (m) => m.toUpperCase()), // FIX: escapes
+      .replace(/(^\s*[a-z])|([.?!]\s+[a-z])/g, (m) => m.toUpperCase()),
     "tOGGLE cASE": text
       .split("")
-      .map((ch) => (ch === ch.toLowerCase() ? ch.toUpperCase() : ch.toLowerCase()))
+      .map((ch) =>
+        ch === ch.toLowerCase() ? ch.toUpperCase() : ch.toLowerCase()
+      )
       .join(""),
-    "snake_case": text
+    snake_case: text
       .trim()
-      .replace(/[^ws]|_/g, "") // FIX: use ws and remove underscores
-      .replace(/s+/g, "_")      // FIX: s+
+      .replace(/[^\w\s]/g, "")
+      .replace(/\s+/g, "_")
       .toLowerCase(),
     "kebab-case": text
       .trim()
-      .replace(/[^ws]|_/g, "")
-      .replace(/s+/g, "-")
+      .replace(/[^\w\s]/g, "")
+      .replace(/\s+/g, "-")
       .toLowerCase(),
-    "camelCase": text
+    camelCase: text
       .toLowerCase()
-      .replace(/[^ws]|_/g, "")
-      .split(/s+/)
+      .replace(/[^\w\s]/g, "")
+      .split(/\s+/)
       .map((w, i) => (i === 0 ? w : w.charAt(0).toUpperCase() + w.slice(1)))
       .join(""),
-    "PascalCase": text
+    PascalCase: text
       .toLowerCase()
-      .replace(/[^ws]|_/g, "")
-      .split(/s+/)
+      .replace(/[^\w\s]/g, "")
+      .split(/\s+/)
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(""),
   };
 
+  // ✅ Copy function
   async function copy(val: string) {
     try {
       await navigator.clipboard.writeText(val);
-    } catch {}
+    } catch {
+      alert("Copy failed");
+    }
   }
 
+  // ✅ UI Section
   return (
     <section className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex items-center justify-between mb-2">
@@ -71,7 +75,9 @@ export default function CaseConverterTool() {
         </div>
       </div>
 
-      <label className="block text-sm font-medium text-slate-700 mb-2">Enter text</label>
+      <label className="block text-sm font-medium text-slate-700 mb-2">
+        Enter text
+      </label>
       <textarea
         rows={8}
         value={text}
@@ -83,7 +89,10 @@ export default function CaseConverterTool() {
 
       <div className="grid sm:grid-cols-2 gap-4">
         {Object.entries(transform).map(([label, val]) => (
-          <div key={label} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+          <div
+            key={label}
+            className="bg-slate-50 rounded-lg p-4 border border-slate-200"
+          >
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-semibold text-slate-800">{label}</h3>
               <button
@@ -95,7 +104,9 @@ export default function CaseConverterTool() {
                 📋 Copy
               </button>
             </div>
-            <pre className="whitespace-pre-wrap text-sm text-slate-700">{val}</pre>
+            <pre className="whitespace-pre-wrap text-sm text-slate-700">
+              {val}
+            </pre>
           </div>
         ))}
       </div>
