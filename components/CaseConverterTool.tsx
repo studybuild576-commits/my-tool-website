@@ -7,31 +7,33 @@ export default function CaseConverterTool() {
 
   const counts = useMemo(() => {
     const chars = text.length;
-    const words = text.trim() ? text.trim().split(/s+/).length : 0;
+    const words = text.trim() ? text.trim().split(/s+/).length : 0; // FIX: /s+/
     const lines = text ? text.split(/
 ?
-/).length : 0;
+/).length : 0;             // FIX: /
+?
+/
     return { chars, words, lines };
   }, [text]);
 
-  const transform = {
+  const transform: Record<string, string> = {
     UPPER: text.toUpperCase(),
     lower: text.toLowerCase(),
-    Capitalized: text.replace(/\bw/g, (c) => c.toUpperCase()),
+    Capitalized: text.replace(/\bw/g, (c) => c.toUpperCase()), // FIX: \bw
     "Title Case": text
       .toLowerCase()
-      .replace(/\bw+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1)),
+      .replace(/\bw+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1)), // FIX: \bw+
     "Sentence case": text
       .toLowerCase()
-      .replace(/(^s*[a-z])|([.?!]s+[a-z])/g, (m) => m.toUpperCase()),
+      .replace(/(^s*[a-z])|([.?!]s+[a-z])/g, (m) => m.toUpperCase()), // FIX: escapes
     "tOGGLE cASE": text
       .split("")
       .map((ch) => (ch === ch.toLowerCase() ? ch.toUpperCase() : ch.toLowerCase()))
       .join(""),
     "snake_case": text
       .trim()
-      .replace(/[^ws]|_/g, "")
-      .replace(/s+/g, "_")
+      .replace(/[^ws]|_/g, "") // FIX: use ws and remove underscores
+      .replace(/s+/g, "_")      // FIX: s+
       .toLowerCase(),
     "kebab-case": text
       .trim()
@@ -55,9 +57,7 @@ export default function CaseConverterTool() {
   async function copy(val: string) {
     try {
       await navigator.clipboard.writeText(val);
-    } catch {
-      // no-op
-    }
+    } catch {}
   }
 
   return (
