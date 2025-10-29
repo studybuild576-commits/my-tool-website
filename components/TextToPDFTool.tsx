@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
@@ -9,25 +10,38 @@ interface TextStyle {
   align: "left" | "center" | "right";
 }
 
+function parseHexColor(hex: string) {
+  const m = hex.trim().match(/^#?([0-9a-f]{6})$/i);
+  if (!m) return rgb(0, 0, 0);
+  const n = parseInt(m[1], 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return rgb(r / 255, g / 255, b / 255);
+}
+
 export default function TextToPDFTool() {
   const [text, setText] = useState("");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("");
   const [style, setStyle] = useState<TextStyle>({
     font: "Helvetica",
     size: 12,
     color: "#000000",
-    align: "left",
+    align: "left"
   });
 
   async function handleConvert() {
     if (!text.trim()) return;
     setLoading(true);
+    setStatus("Generating PDF...");
     setPdfUrl(null);
 
     try {
       const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage([595, 842]); // A4
+      const pageSize: [number, number] = [595, 842]; // A4 in points
+      let currentPage = pdfDoc.addPage(pageSize);
 
       const fontName =
         style.font === "Times-Roman"
@@ -37,21 +51,19 @@ export default function TextToPDFTool() {
           : StandardFonts.Helvetica;
 
       const font = await pdfDoc.embedFont(fontName);
-
-      const color = style.color.match(/^#([0-9A-F]{2})([0-9A-F]{2})([0-9A-F]{2})$/i);
-      const textColor = color
-        ? rgb(parseInt(color[1], 16) / 255, parseInt(color[2], 16) / 255, parseInt(color[3], 16) / 255)
-        : rgb(0, 0, 0);
+      const textColor = parseHexColor(style.color);
 
       // layout
       const margin = 48;
-      const maxWidth = page.getWidth() - margin * 2;
-      const words = text.split(/\s+/);
+      const maxWidth = currentPage.getWidth() - margin * 2;
+      const words = text.replace(/
+/g, "
+").split(/s+/);
       const lines: string[] = [];
       let currentLine = "";
 
-      words.forEach((word) => {
-        const testLine = currentLine ? currentLine + " " + word : word;
+      for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
         const width = font.widthOfTextAtSize(testLine, style.size);
         if (width <= maxWidth) {
           currentLine = testLine;
@@ -59,16 +71,15 @@ export default function TextToPDFTool() {
           if (currentLine) lines.push(currentLine);
           currentLine = word;
         }
-      });
+      }
       if (currentLine) lines.push(currentLine);
 
       const lineHeight = style.size * 1.5;
-      let y = page.getHeight() - margin;
-      let currentPage = page;
+      let y = currentPage.getHeight() - margin;
 
       for (const line of lines) {
         if (y < margin) {
-          currentPage = pdfDoc.addPage([595, 842]);
+          currentPage = pdfDoc.addPage(pageSize);
           y = currentPage.getHeight() - margin;
         }
 
@@ -82,18 +93,20 @@ export default function TextToPDFTool() {
           y,
           size: style.size,
           font,
-          color: textColor,
+          color: textColor
         });
 
         y -= lineHeight;
       }
 
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as BlobPart], { type: "application/pdf" });
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
       setPdfUrl(URL.createObjectURL(blob));
+      setStatus("Done");
+      setTimeout(() => setStatus(""), 1200);
     } catch (err) {
       console.error(err);
-      alert("Failed to convert text to PDF: " + String(err));
+      setStatus("Failed to convert text to PDF. Try again.");
     } finally {
       setLoading(false);
     }
@@ -103,18 +116,16 @@ export default function TextToPDFTool() {
     <section className="bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">📝 Text to PDF Converter</h2>
 
-      <div className="mb-6">
-        <p className="text-sm text-slate-600">
-          Convert your text to a professionally formatted PDF document. Supports multiple fonts, colors, and text alignment.
-        </p>
-      </div>
+      <p className="text-sm text-slate-600 mb-6">
+        Convert text to professionally formatted A4 PDFs. Choose font, size, color, and alignment. Runs fully in your browser.
+      </p>
 
       <div className="grid gap-4 md:grid-cols-2 mb-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Font Family:</label>
           <select
             value={style.font}
-            onChange={(e) => setStyle({ ...style, font: e.target.value as TextStyle['font'] })}
+            onChange={(e) => setStyle({ ...style, font: e.target.value as TextStyle["font"] })}
             className="w-full border rounded-lg px-3 py-2"
           >
             <option value="Helvetica">Helvetica</option>
@@ -152,7 +163,7 @@ export default function TextToPDFTool() {
           <label className="block text-sm font-medium text-gray-700 mb-1">Text Alignment:</label>
           <select
             value={style.align}
-            onChange={(e) => setStyle({ ...style, align: e.target.value as TextStyle['align'] })}
+            onChange={(e) => setStyle({ ...style, align: e.target.value as TextStyle["align"] })}
             className="w-full border rounded-lg px-3 py-2"
           >
             <option value="left">Left</option>
@@ -170,11 +181,11 @@ export default function TextToPDFTool() {
         className="w-full border rounded-lg px-4 py-3 mb-4 font-mono text-sm"
       />
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 items-center">
         <button
           onClick={handleConvert}
           disabled={loading || !text.trim()}
-          className="w-full bg-gradient-to-r from-primary-600 to-primary-500 text-white px-6 py-3 rounded-lg font-medium hover:from-primary-700 hover:to-primary-600 disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
@@ -196,7 +207,8 @@ export default function TextToPDFTool() {
           </a>
         )}
       </div>
+
+      {status && <p className="mt-3 text-sm text-slate-600">{status}</p>}
     </section>
   );
 }
-
