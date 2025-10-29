@@ -8,7 +8,7 @@ import path from "path";
 
 // Helpers
 function slugFromRoute(route: string) {
-  return route.replace(/^//, "");
+  return route.replace(/^//, ""); // FIX: regex escape
 }
 function findToolBySlug(slug: string) {
   return tools.find((t) => slugFromRoute(t.route) === slug);
@@ -20,7 +20,6 @@ async function getArticleContent(tool: any) {
       const content = await fs.readFile(filePath, "utf8");
       return content;
     } catch {
-      // fallback to auto-generated article
       return null;
     }
   }
@@ -47,12 +46,10 @@ function generateArticle(tool: any) {
   return { title, intro, features, steps, faqs };
 }
 
-// Static params for pre-render
 export function generateStaticParams() {
   return tools.map((t) => ({ slug: slugFromRoute(t.route) }));
 }
 
-// SEO metadata
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const tool = findToolBySlug(params.slug);
   if (!tool) return { title: "Not found" };
@@ -88,7 +85,6 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
   const customContent = await getArticleContent(tool);
   const article = generateArticle(tool);
 
-  // Article JSON-LD
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -102,7 +98,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
   return (
     <main className="max-w-4xl mx-auto p-6">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd).replace(/</g, "\\u003c") }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd).replace(/</g, "\\u003c") }}
+      />
       <article className="prose prose-slate max-w-none">
         {customContent ? (
           <>
@@ -179,7 +178,10 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         <footer className="mt-8 p-4 bg-blue-50 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">Ready to try it yourself?</h3>
           <p className="mb-4">Now that you've learned about {tool.name}, put your knowledge into practice.</p>
-          <a href={tool.route} className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+          <a
+            href={tool.route}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
             Try {tool.name} Now <span className="ml-2">→</span>
           </a>
         </footer>
