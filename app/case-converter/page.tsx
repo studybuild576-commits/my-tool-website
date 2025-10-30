@@ -1,6 +1,7 @@
 // app/case-converter/page.tsx
 import type { Metadata } from "next";
 import CaseConverterToolWrapper from "@/components/client/CaseConverterToolWrapper";
+import CaseConverterToolWrapper from "@/components/client/CaseConverterToolWrapper";
 
 export const metadata: Metadata = {
   title: "Free Case Converter: Uppercase, Lowercase, Capitalize (In‑Browser) | PDF Maker AI",
