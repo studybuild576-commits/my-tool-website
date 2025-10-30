@@ -54,7 +54,7 @@ export default function Page() {
     operatingSystem: "Web",
     url: "https://pdfmakerai.shop/case-converter",
     isAccessibleForFree: true,
-    offers: { "@type": "Offer", price: "0", priceCurrency": "USD" },
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     featureList: [
       "UPPERCASE, lowercase, Capitalized",
       "Title Case, Sentence case",
