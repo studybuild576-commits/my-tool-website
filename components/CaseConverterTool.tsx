@@ -1,11 +1,9 @@
-// components/CaseConverterTool.tsx
 "use client";
 import { useMemo, useState } from "react";
 
 export default function CaseConverterTool() {
   const [text, setText] = useState("");
 
-  // ✅ Word, Char, Line count fix
   const counts = useMemo(() => {
     const chars = text.length;
     const words = text.trim() ? text.trim().split(/\s+/).length : 0;
@@ -13,7 +11,6 @@ export default function CaseConverterTool() {
     return { chars, words, lines };
   }, [text]);
 
-  // ✅ Case conversion logic
   const transform: Record<string, string> = {
     UPPER: text.toUpperCase(),
     lower: text.toLowerCase(),
@@ -54,7 +51,6 @@ export default function CaseConverterTool() {
       .join(""),
   };
 
-  // ✅ Copy function
   async function copy(val: string) {
     try {
       await navigator.clipboard.writeText(val);
@@ -63,7 +59,6 @@ export default function CaseConverterTool() {
     }
   }
 
-  // ✅ UI Section
   return (
     <section className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex items-center justify-between mb-2">
