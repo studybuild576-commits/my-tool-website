@@ -1,9 +1,7 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import Layout from "@/components/Layout";
 import Script from "next/script";
-// Optional: next/font for font loading without CLS
 import { Inter, Poppins } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
@@ -14,7 +12,7 @@ const siteUrl = "https://pdfmakerai.shop";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "PDF Maker AI: Advanced AI‑Powered Online PDF Tools Suite",
+    default: "PDF Maker AI: Advanced AI-Powered Online PDF Tools Suite",
     template: "%s | PDF Maker AI",
   },
   description:
@@ -67,11 +65,10 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Consent note: GA ko consent banner ke baad enable karein agar ads/analytics policies follow karni hain.
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        {/* Google Analytics (load afterInteractive; gate behind consent in production) */}
+        {/* Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-V0R7FENN5V" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
@@ -85,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
-        {/* Organization + WebSite JSON-LD (site-wide). Page-specific JSON-LD ko page.tsx me add karein. */}
+        {/* Schema JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -96,8 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   "@type": "WebSite",
                   "url": `${siteUrl}/`,
                   "name": "PDF Maker AI",
-                  "description":
-                    "AI-powered PDF tools: merge, split, compress, OCR and more.",
+                  "description": "AI-powered PDF tools: merge, split, compress, OCR and more.",
                   "publisher": { "@id": `${siteUrl}/#organization` }
                 },
                 {
