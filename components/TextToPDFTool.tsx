@@ -56,9 +56,8 @@ export default function TextToPDFTool() {
       // layout
       const margin = 48;
       const maxWidth = currentPage.getWidth() - margin * 2;
-      const words = text.replace(/
-/g, "
-").split(/s+/);
+      // Normalize line breaks to spaces, split on whitespace
+      const words = text.replace(/\r?\n/g, " ").split(/\s+/).filter(Boolean);
       const lines: string[] = [];
       let currentLine = "";
 
@@ -99,8 +98,8 @@ export default function TextToPDFTool() {
         y -= lineHeight;
       }
 
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  const pdfBytes = await pdfDoc.save();
+  const blob = new Blob([pdfBytes as any], { type: "application/pdf" });
       setPdfUrl(URL.createObjectURL(blob));
       setStatus("Done");
       setTimeout(() => setStatus(""), 1200);

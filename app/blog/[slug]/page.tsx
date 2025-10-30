@@ -7,7 +7,7 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 type PageProps = { params: { slug: string } };
 
 function slugFromRoute(route: string) {
-  return route.replace(/^//, ""); // FIX: escape forward-slash
+  return route.replace(/^\//, ""); // remove leading forward slash
 }
 
 export function generateStaticParams() {

@@ -7,15 +7,11 @@ export default function WordCounterTool() {
 
   const stats = useMemo(() => {
     const trimmed = text.trim();
-    const words = trimmed ? trimmed.split(/s+/).filter(Boolean).length : 0;
+    const words = trimmed ? trimmed.split(/\s+/).filter(Boolean).length : 0;
     const chars = text.length;
-    const charsNoSpaces = text.replace(/s+/g, "").length;
-    const lines = text ? text.split(/
-|
-|
-/).length : 0;
-    const paragraphs = trimmed ? trimmed.split(/
-{2,}/).length : 0;
+    const charsNoSpaces = text.replace(/\s+/g, "").length;
+    const lines = text ? text.split(/\r?\n/).length : 0;
+    const paragraphs = trimmed ? trimmed.split(/\r?\n{2,}/).length : 0;
     const wpm = 200; // typical reading speed
     const readingMinutes = words ? Math.max(1, Math.round(words / wpm)) : 0;
 

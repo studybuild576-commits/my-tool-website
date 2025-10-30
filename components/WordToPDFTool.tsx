@@ -138,21 +138,18 @@ export default function WordToPDFTool() {
       const pdfDoc = await PDFDocument.create();
       const font = await pdfDoc.embedFont(settings.fontName);
 
-      // Text conversion
-      const textContent = container.innerText || "";
-      const lines = textContent.split(/
-|
-|
-/);
+  // Text conversion
+  const textContent = container.innerText || "";
+  const lines = textContent.split(/\r?\n/);
 
-      let page = pdfDoc.addPage([595, 842]);
+  let page = pdfDoc.addPage([595, 842]);
       let y = page.getHeight() - settings.marginSize;
       const lineHeight = settings.fontSize * settings.lineSpacing;
       const x = settings.marginSize;
       const maxWidth = page.getWidth() - settings.marginSize * 2;
 
       for (const raw of lines) {
-        const line = raw.replace(/s+$/g, ""); // trim end spaces
+  const line = raw.replace(/\s+$/g, ""); // trim end spaces
         if (!line.trim()) {
           y -= lineHeight;
           if (y < settings.marginSize) {
@@ -163,7 +160,7 @@ export default function WordToPDFTool() {
         }
 
         // Wrap long lines roughly by splitting on spaces
-        const words = line.split(/s+/);
+  const words = line.split(/\s+/);
         let current = "";
         for (const w of words) {
           const test = current ? `${current} ${w}` : w;
@@ -207,9 +204,9 @@ export default function WordToPDFTool() {
         await convertImagesToPDF(images, pdfDoc);
       }
 
-      const bytes = await pdfDoc.save();
-      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
-      const blob = new Blob([bytes], { type: "application/pdf" });
+  const bytes = await pdfDoc.save();
+  if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+  const blob = new Blob([bytes as any], { type: "application/pdf" });
       setPdfUrl(URL.createObjectURL(blob));
 
       setStats({
@@ -411,7 +408,7 @@ export default function WordToPDFTool() {
             <div className="text-center">
               <a
                 href={pdfUrl}
-                download={(file?.name.replace(/.docx?$/i, "") || "document") + ".pdf"}
+                download={(file?.name.replace(/\.docx?$/i, "") || "document") + ".pdf"}
                 className="inline-flex items-center gap-2 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
               >
                 <span>📥</span>

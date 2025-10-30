@@ -20,7 +20,7 @@ function normRoute(path: string) {
 }
 
 export function toolSlug(route: string) {
-  return normRoute(route).replace(/^//, "");
+  return normRoute(route).replace(/^\//, "");
 }
 
 export const tools: Tool[] = [
