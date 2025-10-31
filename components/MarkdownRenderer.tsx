@@ -1,4 +1,3 @@
-// components/MarkdownRenderer.tsx
 "use client";
 
 import React from "react";
@@ -16,7 +15,7 @@ import json from "refractor/lang/json";
 import jsx from "refractor/lang/jsx";
 import tsx from "refractor/lang/tsx";
 
-// Register light langs only to keep bundle small
+// ✅ Register only light languages to keep bundle small
 refractor.register(js);
 refractor.register(ts);
 refractor.register(bash);
@@ -24,14 +23,20 @@ refractor.register(json);
 refractor.register(jsx);
 refractor.register(tsx);
 
+// ✅ CodeBlock component (Fixed regex + rendering)
 function CodeBlock({ className, children }: { className?: string; children: any }) {
-  const lang = /language-(w+)/.exec(className || "")?.[1] || "";
+  const lang = /language-(\w+)/.exec(className || "")?.[1] || "";
   const code = String(children || "");
-  let nodes;
+  let html = "";
+
   try {
-    nodes = lang ? refractor.highlight(code, lang) : refractor.highlight(code, "javascript");
+    const nodes = lang
+      ? refractor.highlight(code, lang)
+      : refractor.highlight(code, "javascript");
+    html = refractor.stringify(nodes);
   } catch {
-    nodes = refractor.highlight(code, "javascript");
+    const nodes = refractor.highlight(code, "javascript");
+    html = refractor.stringify(nodes);
   }
 
   const copy = async () => {
@@ -42,19 +47,13 @@ function CodeBlock({ className, children }: { className?: string; children: any 
 
   return (
     <div className="relative group my-4">
-      <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-x-auto">
-        <code className={className}>
-          {nodes.map((n: any, i: number) => (
-            <span key={i} dangerouslySetInnerHTML={{ __html: refractor.stringify ? "" : "" }}>
-              {/* refractor returns hast syntax tree; easiest is to set innerHTML on container.
-                 But to avoid raw HTML here, serialize as plain text segments: */}
-              {typeof n === "string" ? n : (n.value ?? "")}
-            </span>
-          ))}
-          {/* Fallback plain text if above serialization simplified */}
-          {!nodes?.length && code}
-        </code>
+      <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-x-auto text-sm leading-relaxed">
+        <code
+          className={className}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
       </pre>
+
       <button
         type="button"
         onClick={copy}
@@ -69,7 +68,7 @@ function CodeBlock({ className, children }: { className?: string; children: any 
 }
 
 export default function MarkdownRenderer({ content }: { content: string }) {
-  // Extend sanitize schema to allow className on code blocks and tables
+  // ✅ Extend sanitize schema to allow more attributes
   const schema = {
     ...defaultSchema,
     attributes: {
@@ -89,7 +88,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         ["decoding"],
         ["width"],
         ["height"],
-        ["alt"]
+        ["alt"],
       ],
       a: [...(defaultSchema.attributes?.a || []), ["rel"], ["target"], ["className"]],
     },
@@ -99,7 +98,6 @@ export default function MarkdownRenderer({ content }: { content: string }) {
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       rehypePlugins={[
-        // Allow inline HTML but sanitize rigorously
         rehypeRaw,
         [rehypeSanitize, schema],
         rehypeSlug,
@@ -121,8 +119,12 @@ export default function MarkdownRenderer({ content }: { content: string }) {
             <table className="min-w-full border-collapse text-sm" {...props} />
           </div>
         ),
-        th: ({ node, ...props }) => <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold" {...props} />,
-        td: ({ node, ...props }) => <td className="border-b border-slate-100 px-3 py-2 align-top" {...props} />,
+        th: ({ node, ...props }) => (
+          <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold" {...props} />
+        ),
+        td: ({ node, ...props }) => (
+          <td className="border-b border-slate-100 px-3 py-2 align-top" {...props} />
+        ),
 
         blockquote: ({ node, ...props }) => (
           <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-slate-600" {...props} />
@@ -140,7 +142,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         },
 
         a: ({ node, href, children, ...props }) => {
-          const isExternal = href && /^https?:///i.test(href);
+          const isExternal = href && /^https?:\/\//i.test(href);
           return (
             <a
               href={href as string}
@@ -159,12 +161,13 @@ export default function MarkdownRenderer({ content }: { content: string }) {
             loading="lazy"
             decoding="async"
             className="max-w-full h-auto rounded-md my-3"
-            width={props.width || 800 as any}
-            height={props.height || 450 as any}
+            width={(props.width as any) || 800}
+            height={(props.height as any) || 450}
             alt={(props.alt as string) || ""}
             {...props}
           />
         ),
+
         hr: () => <hr className="my-8 border-slate-200" />,
       }}
     >
