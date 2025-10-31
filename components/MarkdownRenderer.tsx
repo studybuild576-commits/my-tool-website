@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { ExtraProps } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
@@ -14,8 +14,9 @@ import bash from "refractor/lang/bash";
 import json from "refractor/lang/json";
 import jsx from "refractor/lang/jsx";
 import tsx from "refractor/lang/tsx";
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
-// ✅ Register supported languages
+// Register highlight languages
 refractor.register(js);
 refractor.register(ts);
 refractor.register(bash);
@@ -23,38 +24,32 @@ refractor.register(json);
 refractor.register(jsx);
 refractor.register(tsx);
 
-// ✅ Syntax-highlighted code block renderer
-function CodeBlock({ className, children }: { className?: string; children: any }) {
-  const lang = /language-(\w+)/.exec(className || "")?.[1] || "";
-  const code = String(children || "");
+// Syntax-highlighted code block renderer
+function CodeBlock({ className, children }: { className?: string; children: React.ReactNode }) {
+  const lang = /language-(w+)/.exec(className || "")?.[1] || "";
+  const code = String(children ?? "");
   let html = "";
 
   try {
-    const nodes = lang
-      ? refractor.highlight(code, lang)
-      : refractor.highlight(code, "javascript");
-
-    // @ts-ignore – refractor.stringify exists but not typed
+    const nodes = lang ? refractor.highlight(code, lang) : refractor.highlight(code, "javascript");
     html = (refractor as any).stringify(nodes);
   } catch {
     const nodes = refractor.highlight(code, "javascript");
-    // @ts-ignore – refractor.stringify exists but not typed
     html = (refractor as any).stringify(nodes);
   }
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(code);
-    } catch {}
+    } catch {
+      // ignore
+    }
   };
 
   return (
     <div className="relative group my-4">
       <pre className="bg-slate-900 text-slate-100 rounded-lg p-4 overflow-x-auto text-sm leading-relaxed">
-        <code
-          className={className}
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+        <code className={className} dangerouslySetInnerHTML={{ __html: html }} />
       </pre>
 
       <button
@@ -70,8 +65,15 @@ function CodeBlock({ className, children }: { className?: string; children: any 
   );
 }
 
+// Proper typing for code props (adds inline?: boolean)
+type CodeProps = DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> &
+  ExtraProps & {
+    inline?: boolean;
+    node?: any;
+  };
+
 export default function MarkdownRenderer({ content }: { content: string }) {
-  // ✅ Extended sanitize schema
+  // Extended sanitize schema
   const schema = {
     ...defaultSchema,
     attributes: {
@@ -91,10 +93,10 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         ["decoding"],
         ["width"],
         ["height"],
-        ["alt"],
+        ["alt"]
       ],
-      a: [...(defaultSchema.attributes?.a || []), ["rel"], ["target"], ["className"]],
-    },
+      a: [...(defaultSchema.attributes?.a || []), ["rel"], ["target"], ["className"]]
+    }
   };
 
   return (
@@ -104,31 +106,17 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         rehypeRaw,
         [rehypeSanitize, schema],
         rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: "no-underline" } }],
+        [rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: "no-underline" } }]
       ]}
       components={{
-        h1: ({ node, ...props }) => (
-          <h1 className="text-4xl font-bold mb-6 scroll-mt-24" {...props} />
-        ),
-        h2: ({ node, ...props }) => (
-          <h2 className="text-3xl font-semibold mt-8 mb-4 scroll-mt-24" {...props} />
-        ),
-        h3: ({ node, ...props }) => (
-          <h3 className="text-2xl font-semibold mt-6 mb-3 scroll-mt-24" {...props} />
-        ),
-        h4: ({ node, ...props }) => (
-          <h4 className="text-xl font-semibold mt-4 mb-2 scroll-mt-24" {...props} />
-        ),
+        h1: ({ node, ...props }) => <h1 className="text-4xl font-bold mb-6 scroll-mt-24" {...props} />,
+        h2: ({ node, ...props }) => <h2 className="text-3xl font-semibold mt-8 mb-4 scroll-mt-24" {...props} />,
+        h3: ({ node, ...props }) => <h3 className="text-2xl font-semibold mt-6 mb-3 scroll-mt-24" {...props} />,
+        h4: ({ node, ...props }) => <h4 className="text-xl font-semibold mt-4 mb-2 scroll-mt-24" {...props} />,
 
-        p: ({ node, ...props }) => (
-          <p className="text-slate-700 mb-4 leading-relaxed" {...props} />
-        ),
-        ul: ({ node, ...props }) => (
-          <ul className="list-disc pl-6 mb-4 text-slate-700" {...props} />
-        ),
-        ol: ({ node, ...props }) => (
-          <ol className="list-decimal pl-6 mb-4 text-slate-700" {...props} />
-        ),
+        p: ({ node, ...props }) => <p className="text-slate-700 mb-4 leading-relaxed" {...props} />,
+        ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-4 text-slate-700" {...props} />,
+        ol: ({ node, ...props }) => <ol className="list-decimal pl-6 mb-4 text-slate-700" {...props} />,
         li: ({ node, ...props }) => <li className="mb-2" {...props} />,
 
         table: ({ node, ...props }) => (
@@ -137,26 +125,15 @@ export default function MarkdownRenderer({ content }: { content: string }) {
           </div>
         ),
         th: ({ node, ...props }) => (
-          <th
-            className="border-b border-slate-200 px-3 py-2 text-left font-semibold"
-            {...props}
-          />
+          <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold" {...props} />
         ),
-        td: ({ node, ...props }) => (
-          <td
-            className="border-b border-slate-100 px-3 py-2 align-top"
-            {...props}
-          />
-        ),
+        td: ({ node, ...props }) => <td className="border-b border-slate-100 px-3 py-2 align-top" {...props} />,
 
         blockquote: ({ node, ...props }) => (
-          <blockquote
-            className="border-l-4 border-blue-500 pl-4 italic my-4 text-slate-600"
-            {...props}
-          />
+          <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-slate-600" {...props} />
         ),
 
-        code({ inline, className, children, ...props }) {
+        code({ inline, className, children, ...props }: CodeProps) {
           if (inline) {
             return (
               <code className="bg-slate-100 rounded px-1 py-0.5 text-slate-800" {...props}>
@@ -164,14 +141,15 @@ export default function MarkdownRenderer({ content }: { content: string }) {
               </code>
             );
           }
-          return <CodeBlock className={className}>{children}</CodeBlock>;
+          return <CodeBlock className={className}>{children as React.ReactNode}</CodeBlock>;
         },
 
         a: ({ node, href, children, ...props }) => {
-          const isExternal = href && /^https?:\/\//i.test(href);
+          const url = typeof href === "string" ? href : "";
+          const isExternal = /^https?:///i.test(url);
           return (
             <a
-              href={href as string}
+              href={url}
               target={isExternal ? "_blank" : undefined}
               rel={isExternal ? "noopener noreferrer" : undefined}
               className="text-indigo-600 hover:text-indigo-700 underline underline-offset-2"
@@ -182,19 +160,22 @@ export default function MarkdownRenderer({ content }: { content: string }) {
           );
         },
 
-        img: ({ node, ...props }) => (
-          <img
-            loading="lazy"
-            decoding="async"
-            className="max-w-full h-auto rounded-md my-3"
-            width={(props.width as any) || 800}
-            height={(props.height as any) || 450}
-            alt={(props.alt as string) || ""}
-            {...props}
-          />
-        ),
+        img: ({ node, ...props }) => {
+          const p = props as any;
+          return (
+            <img
+              loading="lazy"
+              decoding="async"
+              className="max-w-full h-auto rounded-md my-3"
+              width={Number(p.width) || 800}
+              height={Number(p.height) || 450}
+              alt={typeof p.alt === "string" ? p.alt : ""}
+              {...props}
+            />
+          );
+        },
 
-        hr: () => <hr className="my-8 border-slate-200" />,
+        hr: () => <hr className="my-8 border-slate-200" />
       }}
     >
       {content}
