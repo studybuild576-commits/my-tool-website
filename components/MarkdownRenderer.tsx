@@ -15,7 +15,7 @@ import json from "refractor/lang/json";
 import jsx from "refractor/lang/jsx";
 import tsx from "refractor/lang/tsx";
 
-// ✅ Register only light languages to keep bundle small
+// ✅ Register supported languages
 refractor.register(js);
 refractor.register(ts);
 refractor.register(bash);
@@ -23,7 +23,7 @@ refractor.register(json);
 refractor.register(jsx);
 refractor.register(tsx);
 
-// ✅ CodeBlock component (Fixed regex + rendering)
+// ✅ Syntax-highlighted code block renderer
 function CodeBlock({ className, children }: { className?: string; children: any }) {
   const lang = /language-(\w+)/.exec(className || "")?.[1] || "";
   const code = String(children || "");
@@ -33,10 +33,13 @@ function CodeBlock({ className, children }: { className?: string; children: any 
     const nodes = lang
       ? refractor.highlight(code, lang)
       : refractor.highlight(code, "javascript");
-    html = refractor.stringify(nodes);
+
+    // @ts-ignore – refractor.stringify exists but not typed
+    html = (refractor as any).stringify(nodes);
   } catch {
     const nodes = refractor.highlight(code, "javascript");
-    html = refractor.stringify(nodes);
+    // @ts-ignore – refractor.stringify exists but not typed
+    html = (refractor as any).stringify(nodes);
   }
 
   const copy = async () => {
@@ -68,7 +71,7 @@ function CodeBlock({ className, children }: { className?: string; children: any 
 }
 
 export default function MarkdownRenderer({ content }: { content: string }) {
-  // ✅ Extend sanitize schema to allow more attributes
+  // ✅ Extended sanitize schema
   const schema = {
     ...defaultSchema,
     attributes: {
@@ -104,14 +107,28 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         [rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: "no-underline" } }],
       ]}
       components={{
-        h1: ({ node, ...props }) => <h1 className="text-4xl font-bold mb-6 scroll-mt-24" {...props} />,
-        h2: ({ node, ...props }) => <h2 className="text-3xl font-semibold mt-8 mb-4 scroll-mt-24" {...props} />,
-        h3: ({ node, ...props }) => <h3 className="text-2xl font-semibold mt-6 mb-3 scroll-mt-24" {...props} />,
-        h4: ({ node, ...props }) => <h4 className="text-xl font-semibold mt-4 mb-2 scroll-mt-24" {...props} />,
+        h1: ({ node, ...props }) => (
+          <h1 className="text-4xl font-bold mb-6 scroll-mt-24" {...props} />
+        ),
+        h2: ({ node, ...props }) => (
+          <h2 className="text-3xl font-semibold mt-8 mb-4 scroll-mt-24" {...props} />
+        ),
+        h3: ({ node, ...props }) => (
+          <h3 className="text-2xl font-semibold mt-6 mb-3 scroll-mt-24" {...props} />
+        ),
+        h4: ({ node, ...props }) => (
+          <h4 className="text-xl font-semibold mt-4 mb-2 scroll-mt-24" {...props} />
+        ),
 
-        p: ({ node, ...props }) => <p className="text-slate-700 mb-4 leading-relaxed" {...props} />,
-        ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-4 text-slate-700" {...props} />,
-        ol: ({ node, ...props }) => <ol className="list-decimal pl-6 mb-4 text-slate-700" {...props} />,
+        p: ({ node, ...props }) => (
+          <p className="text-slate-700 mb-4 leading-relaxed" {...props} />
+        ),
+        ul: ({ node, ...props }) => (
+          <ul className="list-disc pl-6 mb-4 text-slate-700" {...props} />
+        ),
+        ol: ({ node, ...props }) => (
+          <ol className="list-decimal pl-6 mb-4 text-slate-700" {...props} />
+        ),
         li: ({ node, ...props }) => <li className="mb-2" {...props} />,
 
         table: ({ node, ...props }) => (
@@ -120,14 +137,23 @@ export default function MarkdownRenderer({ content }: { content: string }) {
           </div>
         ),
         th: ({ node, ...props }) => (
-          <th className="border-b border-slate-200 px-3 py-2 text-left font-semibold" {...props} />
+          <th
+            className="border-b border-slate-200 px-3 py-2 text-left font-semibold"
+            {...props}
+          />
         ),
         td: ({ node, ...props }) => (
-          <td className="border-b border-slate-100 px-3 py-2 align-top" {...props} />
+          <td
+            className="border-b border-slate-100 px-3 py-2 align-top"
+            {...props}
+          />
         ),
 
         blockquote: ({ node, ...props }) => (
-          <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-slate-600" {...props} />
+          <blockquote
+            className="border-l-4 border-blue-500 pl-4 italic my-4 text-slate-600"
+            {...props}
+          />
         ),
 
         code({ inline, className, children, ...props }) {
