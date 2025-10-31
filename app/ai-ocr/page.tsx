@@ -4,66 +4,80 @@ import Link from "next/link";
 import AIOCRFormWrapper from "@/components/client/AIOCRFormWrapper";
 
 export const metadata: Metadata = {
-  title: "Free AI OCR Online: PDF/Image to Text (Private, In‑Browser) | PDF Maker AI",
+  title: "Free AI OCR Online — PDF/Image to Text Converter | PDF Maker AI",
   description:
-    "Use a free AI OCR online tool to convert scanned PDFs and images to editable text in your browser. No signup, privacy‑first, fast and accurate.",
+    "Convert scanned PDFs and images to editable text with AI OCR — free, private, in-browser, and accurate. No signup needed.",
   keywords: [
-    "free ai ocr online",
-    "ocr pdf to text",
-    "image to text converter",
-    "in‑browser ocr",
-    "no signup ocr",
-    "private ocr",
+    "AI OCR online",
+    "PDF to text converter",
+    "image to text",
+    "in-browser OCR",
+    "private OCR tool",
+    "free OCR app",
+    "AI text extraction",
   ],
   alternates: { canonical: "https://pdfmakerai.shop/ai-ocr" },
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     url: "https://pdfmakerai.shop/ai-ocr",
-    title: "Free AI OCR Online: PDF/Image to Text (Private, In‑Browser)",
+    title: "Free AI OCR Online — Convert PDF & Image to Text Instantly",
     description:
-      "Convert PDFs and images to text with an AI OCR that runs fully in your browser—free, private, and accurate.",
+      "AI-powered OCR tool that runs in your browser — converts PDFs and images to text quickly, privately, and for free.",
     siteName: "PDF Maker AI",
     images: [
       {
         url: "/og/ai-ocr-1200x630.png",
         width: 1200,
         height: 630,
-        alt: "Free AI OCR Online converting PDF to text in browser",
+        alt: "Free AI OCR converting scanned PDF and images to text online",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free AI OCR Online — PDF/Image to Text (Private)",
+    title: "Free AI OCR Online — PDF/Image to Text Converter",
     description:
-      "Extract text from scanned PDFs and images with an in‑browser AI OCR—no signup, fast, and private.",
+      "Extract text from PDFs and images directly in your browser — 100% private, accurate, and free.",
   },
 };
 
 export default function AIOCRPage() {
-  // SoftwareApplication + FAQPage JSON‑LD (sanitized)
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://pdfmakerai.shop" },
+      { "@type": "ListItem", position: 2, name: "AI OCR", item: "https://pdfmakerai.shop/ai-ocr" },
+    ],
+  };
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Free AI OCR Online — PDF/Image to Text",
+    name: "Free AI OCR Online — PDF/Image to Text Converter",
+    operatingSystem: "Web",
     applicationCategory: "UtilityApplication",
     applicationSubCategory: "DocumentConversion",
-    operatingSystem: "Web",
     url: "https://pdfmakerai.shop/ai-ocr",
     isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     featureList: [
       "OCR PDF to text",
-      "Image to text",
-      "In‑browser processing",
-      "No signup",
-      "Privacy‑first",
-      "Fast and accurate",
+      "Image to text converter",
+      "In-browser AI OCR",
+      "No signup required",
+      "Privacy-first",
+      "Fast and accurate text extraction",
     ],
     keywords:
-      "free ai ocr online, ocr pdf to text, image to text converter, in‑browser ocr, no signup ocr, private ocr",
-    publisher: { "@type": "Organization", name: "PDF Maker AI", url: "https://pdfmakerai.shop" },
+      "AI OCR online, free OCR app, PDF to text, image text converter, private OCR, browser OCR tool",
+    publisher: {
+      "@type": "Organization",
+      name: "PDF Maker AI",
+      url: "https://pdfmakerai.shop",
+      logo: "https://pdfmakerai.shop/logo.png",
+    },
   };
 
   const faqLd = {
@@ -75,7 +89,7 @@ export default function AIOCRPage() {
         name: "Kya AI OCR bina upload ke browser mein chalta hai?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Haan, processing aapke browser mein hoti hai; files server par upload nahi hoti.",
+          text: "Haan, yeh AI OCR tool poori tarah browser mein hi chalta hai — koi file server par upload nahi hoti.",
         },
       },
       {
@@ -83,7 +97,7 @@ export default function AIOCRPage() {
         name: "Kya yeh tool bilkul free hai?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Haan, 100% free aur bina account ke use kar sakte hain.",
+          text: "Bilkul, yeh 100% free hai aur signup ki zarurat nahi padti.",
         },
       },
       {
@@ -91,90 +105,116 @@ export default function AIOCRPage() {
         name: "Kaunse formats supported hain?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "PDF, JPG, PNG jaise formats commonly supported hain.",
+          text: "PDF, JPG aur PNG jaise formats fully supported hain.",
         },
       },
       {
         "@type": "Question",
-        name: "Accuracy kaisi rahegi?",
+        name: "AI OCR ki accuracy kaisi rahegi?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "AI‑based OCR high accuracy deta hai; clear scans par best results milte hain.",
+          text: "Clear scans aur high-quality images par yeh AI OCR 95%+ accuracy deta hai.",
         },
       },
     ],
   };
 
   return (
-    <section className="max-w-4xl mx-auto py-10 px-4">
+    <section className="max-w-5xl mx-auto py-10 px-4">
+      {/* ✅ JSON-LD for Google Rich Results */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbLd).replace(/</g, "\\u003c"),
+        }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd).replace(/</g, "\\u003c") }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqLd).replace(/</g, "\\u003c"),
+        }}
       />
 
-      <header className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">
-          🧠 Free AI OCR Online: PDF/Image to Text (Private, In‑Browser)
+      {/* ✅ Page Header */}
+      <header className="text-center mb-10">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3">
+          🧠 Free AI OCR Online — Convert PDF & Images to Text
         </h1>
-        <p className="text-gray-600">
-          Convert scanned PDFs and images to editable text—no signup, no upload, 100% free.
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Convert scanned PDFs and images into editable text instantly — 100% private, in-browser,
+          and free. No signup or upload needed.
         </p>
-        {/* Example hero image with keyword‑rich alt */}
         <img
           src="/images/ai-ocr-hero.png"
-          alt="AI OCR online tool converting scanned PDF and images to text in browser"
+          alt="Free AI OCR converting scanned PDF and image to text online"
           width={960}
           height={480}
           loading="eager"
           decoding="async"
-          className="mx-auto mt-4 rounded-lg shadow"
+          className="mx-auto mt-5 rounded-xl shadow-lg"
         />
       </header>
 
-      <h2 className="text-xl font-semibold mb-3">Why use this OCR?</h2>
-      <ul className="grid sm:grid-cols-2 gap-3 mb-8 text-sm">
-        <li>• In‑browser processing (privacy‑first)</li>
-        <li>• No signup, no watermark</li>
-        <li>• PDF, JPG, PNG support</li>
-        <li>• Fast and accurate AI OCR</li>
+      {/* ✅ Features Section */}
+      <h2 className="text-2xl font-semibold mb-4">Why Choose Our AI OCR?</h2>
+      <ul className="grid sm:grid-cols-2 gap-3 mb-8 text-sm leading-relaxed">
+        <li>• 100% Private — Everything runs in your browser</li>
+        <li>• Free forever — No signup or watermark</li>
+        <li>• Supports PDF, JPG, PNG formats</li>
+        <li>• Fast, accurate, AI-powered OCR engine</li>
       </ul>
 
+      {/* ✅ Main Form */}
       <AIOCRFormWrapper />
 
-      <aside className="mt-10 border-t pt-6">
-        <h2 className="text-xl font-semibold mb-3">Related tools</h2>
-        <nav className="flex flex-wrap gap-3 text-sm">
-          <Link prefetch={false} href="/pdf-reader">PDF Reader (extract text)</Link>
-          <Link prefetch={false} href="/pdf-to-jpg">PDF to JPG converter</Link>
-          <Link prefetch={false} href="/compress-pdf">Compress PDF online</Link>
-          <Link prefetch={false} href="/merge-pdf">Merge PDF files</Link>
-          <Link prefetch={false} href="/split-pdf">Split PDF pages</Link>
+      {/* ✅ Related Tools */}
+      <aside className="mt-12 border-t border-gray-200 pt-6">
+        <h2 className="text-xl font-semibold mb-3">Try More Free PDF Tools</h2>
+        <nav className="flex flex-wrap gap-4 text-sm text-blue-600">
+          <Link href="/pdf-reader">📖 PDF Reader (Extract Text)</Link>
+          <Link href="/pdf-to-jpg">🖼️ PDF to JPG Converter</Link>
+          <Link href="/compress-pdf">🗜️ Compress PDF Online</Link>
+          <Link href="/merge-pdf">🧩 Merge PDF Files</Link>
+          <Link href="/split-pdf">✂️ Split PDF Pages</Link>
         </nav>
       </aside>
 
-      <section className="mt-8">
-        <h3 className="text-lg font-semibold mb-2">FAQs</h3>
-        <details className="mb-2">
-          <summary>Browser mein hi processing hoti hai?</summary>
+      {/* ✅ FAQs Section */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-semibold mb-4">FAQs — AI OCR Tool</h2>
+
+        <details className="mb-3">
+          <summary className="cursor-pointer font-medium">
+            Browser mein hi processing hoti hai?
+          </summary>
           <p className="text-gray-600">
-            Haan, sab kuchh local browser environment mein hota hai—privacy safe.
+            Haan, sab kuchh aapke local browser mein hota hai — privacy 100% safe.
           </p>
         </details>
-        <details className="mb-2">
-          <summary>Tool free hai?</summary>
-          <p className="text-gray-600">Haan, 100% free aur bina account ke.</p>
+
+        <details className="mb-3">
+          <summary className="cursor-pointer font-medium">Tool free hai?</summary>
+          <p className="text-gray-600">
+            Bilkul, yeh tool 100% free hai aur bina signup ke use kiya ja sakta hai.
+          </p>
         </details>
-        <details className="mb-2">
-          <summary>Kaunse formats support hain?</summary>
-          <p className="text-gray-600">PDF, JPG, PNG commonly supported.</p>
+
+        <details className="mb-3">
+          <summary className="cursor-pointer font-medium">Kaunse formats supported hain?</summary>
+          <p className="text-gray-600">PDF, JPG, PNG — sabhi common formats supported hain.</p>
         </details>
-        <details className="mb-2">
-          <summary>Accuracy kaisi rahegi?</summary>
-          <p className="text-gray-600">Clear scans par best results milte hain; blur se bachien.</p>
+
+        <details className="mb-3">
+          <summary className="cursor-pointer font-medium">Accuracy kaisi rahegi?</summary>
+          <p className="text-gray-600">
+            High-quality scans par AI OCR 95%+ accurate results deta hai.
+          </p>
         </details>
       </section>
     </section>
