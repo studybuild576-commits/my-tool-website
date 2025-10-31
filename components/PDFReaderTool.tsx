@@ -1,4 +1,3 @@
-// components/PDFReaderTool.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 
@@ -26,21 +25,26 @@ export default function PDFReaderTool() {
 
   useEffect(() => {
     let mounted = true;
-    // Dynamic import of pdfjs-dist (esm build)
-    import("pdfjs-dist/build/pdf").then((mod: any) => {
-      if (!mounted) return;
-      pdfjsLib = mod;
-      // Worker set — version pin karein
-      (pdfjsLib as any).GlobalWorkerOptions.workerSrc =
-        "https://unpkg.com/pdfjs-dist@5.4.296/build/pdf.worker.min.js";
-    }).catch((e) => {
-      setError("PDF library load nahi hui: " + String(e));
-    });
+
+    // ✅ Correct dynamic import (modern pdfjs-dist)
+    import("pdfjs-dist")
+      .then((mod: any) => {
+        if (!mounted) return;
+        pdfjsLib = mod;
+
+        // ✅ Set worker from CDN
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
+      })
+      .catch((e) => {
+        setError("PDF library load nahi hui: " + String(e));
+      });
 
     return () => {
       mounted = false;
       if (pdfDocRef.current) {
-        try { pdfDocRef.current.destroy(); } catch {}
+        try {
+          pdfDocRef.current.destroy();
+        } catch {}
       }
     };
   }, []);
@@ -55,19 +59,23 @@ export default function PDFReaderTool() {
     setProgress("Loading PDF...");
     setTextContent([]);
     setCurrentPage(1);
+
     try {
       const data = await f.arrayBuffer();
-      const loadingTask = (pdfjsLib as any).getDocument({ data });
+      const loadingTask = pdfjsLib.getDocument({ data });
       pdfDocRef.current = await loadingTask.promise;
       setTotalPages(pdfDocRef.current.numPages);
 
-      // Extract text (basic, non-layout preserving)
+      // Extract text from all pages
       const content: PageContent[] = [];
       for (let i = 1; i <= pdfDocRef.current.numPages; i++) {
         setProgress(`Extracting text: ${i}/${pdfDocRef.current.numPages}...`);
         const page = await pdfDocRef.current.getPage(i);
         const txt = await page.getTextContent();
-        content.push({ text: txt.items.map((it: any) => it.str).join(" "), pageNum: i });
+        content.push({
+          text: txt.items.map((it: any) => it.str).join(" "),
+          pageNum: i,
+        });
       }
       setTextContent(content);
 
@@ -103,7 +111,9 @@ export default function PDFReaderTool() {
       return;
     }
     const q = searchQuery.toLowerCase();
-    const results = textContent.filter((c) => c.text.toLowerCase().includes(q)).map((c) => c.pageNum);
+    const results = textContent
+      .filter((c) => c.text.toLowerCase().includes(q))
+      .map((c) => c.pageNum);
     setSearchResults(results);
     if (results.length) {
       setCurrentPage(results[0]);
@@ -122,14 +132,16 @@ export default function PDFReaderTool() {
       <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl p-6 mb-6">
         <h2 className="text-xl font-bold text-slate-800 mb-2">📚 PDF Reader</h2>
         <p className="text-sm text-slate-600">
-          Browser me PDF read, search aur text extract karein — sab kuch client‑side.
+          Browser me PDF read, search aur text extract karein — sab kuch client-side.
         </p>
       </div>
 
       <div className="space-y-6">
         {/* Upload */}
         <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-blue-400 transition">
-          <label className="block text-sm font-medium text-slate-700 mb-2">PDF chunen</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            PDF chunen
+          </label>
           <input
             type="file"
             accept="application/pdf"
@@ -154,9 +166,25 @@ export default function PDFReaderTool() {
         {loading && progress && (
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
             <div className="flex items-center gap-3">
-              <svg className="animate-spin h-5 w-5 text-blue-600" viewBox="0 0 24 24" aria-hidden="true">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              <svg
+                className="animate-spin h-5 w-5 text-blue-600"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
               </svg>
               <p className="text-sm text-blue-700">{progress}</p>
             </div>
@@ -164,9 +192,14 @@ export default function PDFReaderTool() {
         )}
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4" role="alert">
+          <div
+            className="bg-red-50 border border-red-200 rounded-xl p-4"
+            role="alert"
+          >
             <div className="flex items-start gap-3">
-              <span className="text-red-500 text-xl" aria-hidden="true">⚠️</span>
+              <span className="text-red-500 text-xl" aria-hidden="true">
+                ⚠️
+              </span>
               <div>
                 <p className="font-semibold text-red-800">Error</p>
                 <p className="text-sm text-red-600">{error}</p>
@@ -187,7 +220,9 @@ export default function PDFReaderTool() {
                 >
                   ←
                 </button>
-                <span className="text-sm">Page {currentPage} of {totalPages}</span>
+                <span className="text-sm">
+                  Page {currentPage} of {totalPages}
+                </span>
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage >= totalPages}
@@ -198,9 +233,19 @@ export default function PDFReaderTool() {
               </div>
 
               <div className="flex items-center gap-2">
-                <button onClick={() => setScale((s) => Math.max(0.5, s - 0.25))} className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200">-</button>
+                <button
+                  onClick={() => setScale((s) => Math.max(0.5, s - 0.25))}
+                  className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200"
+                >
+                  -
+                </button>
                 <span className="text-sm">{Math.round(scale * 100)}%</span>
-                <button onClick={() => setScale((s) => Math.min(3, s + 0.25))} className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200">+</button>
+                <button
+                  onClick={() => setScale((s) => Math.min(3, s + 0.25))}
+                  className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200"
+                >
+                  +
+                </button>
               </div>
             </div>
 
@@ -214,26 +259,36 @@ export default function PDFReaderTool() {
                 placeholder="Search in document..."
                 className="flex-1 border rounded-lg px-3 py-2"
               />
-              <button onClick={handleSearch} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              <button
+                onClick={handleSearch}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
                 Search
               </button>
             </div>
 
             {searchResults.length > 0 && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-sm text-yellow-800">Found matches on pages: {searchResults.join(", ")}</p>
+                <p className="text-sm text-yellow-800">
+                  Found matches on pages: {searchResults.join(", ")}
+                </p>
               </div>
             )}
 
             {/* PDF Viewer */}
             <div className="max-w-full overflow-x-auto">
-              <canvas ref={canvasRef} className="border rounded-lg shadow-sm mx-auto" />
+              <canvas
+                ref={canvasRef}
+                className="border rounded-lg shadow-sm mx-auto"
+              />
             </div>
 
             {/* Text Content */}
             {textContent[currentPage - 1] && (
               <div className="mt-4 p-4 bg-slate-50 rounded-lg">
-                <h3 className="font-medium mb-2">Page {currentPage} Text Content:</h3>
+                <h3 className="font-medium mb-2">
+                  Page {currentPage} Text Content:
+                </h3>
                 <p className="text-sm text-slate-700 whitespace-pre-wrap">
                   {textContent[currentPage - 1].text}
                 </p>
