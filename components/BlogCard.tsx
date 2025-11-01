@@ -23,7 +23,6 @@ export default function BlogCard({
     <a
       href={href}
       className="block group rounded-2xl overflow-hidden border border-gray-200 shadow-md hover:shadow-xl transition-all bg-white hover:-translate-y-1 duration-300"
-      loading="lazy"
     >
       <div className="p-6 sm:p-8">
         {/* Header Section */}
