@@ -39,9 +39,37 @@ export const metadata: Metadata = {
   }
 };
 
+// ✅ JSON-LD FAQ Schema (SEO Boost)
+const metadataScript = {
+  __html: JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I add a watermark to a PDF for free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use the PDF Maker AI Watermark Tool to add text watermarks directly in your browser. No upload or signup required."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is my PDF safe when adding a watermark?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. All processing is done locally in your browser — your files never leave your device."
+        }
+      }
+    ]
+  })
+};
+
 export default function Page() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
+      {/* ✅ FAQ Schema Script */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={metadataScript} />
       <PDFWatermarkTool />
     </main>
   );
