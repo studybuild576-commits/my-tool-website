@@ -27,6 +27,8 @@ export const metadata: Metadata = {
     "split pdf",
     "compress pdf",
     "online pdf editor",
+    "office to pdf",
+    "pdf to word converter",
   ],
   authors: [{ name: "PDF Maker AI" }],
   robots: {
@@ -46,18 +48,18 @@ export const metadata: Metadata = {
     url: siteUrl,
     title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
     description:
-      "PDF Maker AI is the ultimate online suite for PDF lovers. Use our powerful AI OCR, Merge, Split, Compress, Office to PDF, PDF to JPG tools and more—completely free and easy to use.",
+      "PDF Maker AI is the ultimate online suite for PDF lovers. Merge, Split, Compress, Convert and Edit PDFs using AI — secure, fast, and 100% free.",
     images: [
       { url: `${siteUrl}/og-image.svg`, width: 1200, height: 630 },
-      { url: `${siteUrl}/logo.png`, width: 512, height: 512 }
+      { url: `${siteUrl}/logo.png`, width: 512, height: 512 },
     ],
   },
   twitter: {
     card: "summary_large_image",
     site: "@pdfmakerai",
-    title: "PDF Maker AI — Online PDF Tools for PDF Lovers",
+    title: "PDF Maker AI — Smart PDF Tools for Everyone",
     description:
-      "PDF Maker AI is the ultimate online suite for PDF lovers. Use our powerful AI OCR, Merge, Split, Compress, Office to PDF, PDF to JPG tools and more—completely free and easy to use.",
+      "Merge, Split, Compress, Convert and Edit PDFs using AI — secure, fast, and 100% free.",
     images: [`${siteUrl}/og-image.svg`, `${siteUrl}/logo.png`],
   },
   manifest: "/manifest.json",
@@ -68,7 +70,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        {/* Google Analytics */}
+        {/* ✅ Mobile Friendly Meta */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        {/* ✅ Google Analytics */}
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-V0R7FENN5V" strategy="afterInteractive" />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
@@ -82,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
 
-        {/* Schema JSON-LD */}
+        {/* ✅ Combined Schema JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -93,7 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   "@type": "WebSite",
                   "url": `${siteUrl}/`,
                   "name": "PDF Maker AI",
-                  "description": "AI-powered PDF tools: merge, split, compress, OCR and more.",
+                  "description": "AI-powered PDF tools: merge, split, compress, OCR, convert, and edit PDFs easily.",
                   "publisher": { "@id": `${siteUrl}/#organization` }
                 },
                 {
@@ -102,14 +107,56 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   "name": "PDF Maker AI",
                   "url": `${siteUrl}/`,
                   "logo": `${siteUrl}/logo.png`,
-                  "sameAs": []
+                  "sameAs": [
+                    "https://twitter.com/pdfmakerai",
+                    "https://www.facebook.com/pdfmakerai",
+                    "https://www.linkedin.com/company/pdfmakerai"
+                  ]
+                },
+                {
+                  "@type": "FAQPage",
+                  "mainEntity": [
+                    {
+                      "@type": "Question",
+                      "name": "How can I merge PDFs using PDF Maker AI?",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Simply upload your PDF files to the Merge PDF tool and click 'Merge Now'. It combines your PDFs instantly in high quality."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Is PDF Maker AI completely free?",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, all PDF Maker AI tools are 100% free with no registration or hidden charges."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Does PDF Maker AI support AI-based OCR?",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, it supports advanced AI OCR to extract text from scanned documents accurately."
+                      }
+                    }
+                  ]
+                },
+                {
+                  "@type": "BreadcrumbList",
+                  "itemListElement": [
+                    { "@type": "ListItem", "position": 1, "name": "Home", "item": `${siteUrl}/` },
+                    { "@type": "ListItem", "position": 2, "name": "Tools", "item": `${siteUrl}/tools` },
+                    { "@type": "ListItem", "position": 3, "name": "Merge PDF", "item": `${siteUrl}/merge-pdf` }
+                  ]
                 }
               ]
             }).replace(/</g, "\\u003c")
           }}
         />
       </head>
-      <body className="bg-gray-50 text-slate-900 font-sans">
+
+      <body className="bg-gray-50 text-slate-900 font-sans antialiased">
         <Layout>{children}</Layout>
       </body>
     </html>
