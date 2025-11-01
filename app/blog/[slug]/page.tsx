@@ -1,6 +1,5 @@
 // app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
-import { tools } from "@/lib/tools";
 import { notFound } from "next/navigation";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 
