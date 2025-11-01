@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { tools } from "@/lib/tools";
 import * as LucideIcons from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
