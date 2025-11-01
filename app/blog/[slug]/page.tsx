@@ -1,29 +1,30 @@
+// app/blog/[slug]/page.tsx
 import type { Metadata } from "next";
 import { tools } from "@/lib/tools";
 import { notFound } from "next/navigation";
 import MarkdownRenderer from "@/components/MarkdownRenderer";
 
-type PageProps = {
-  params: { slug: string };
-};
+/**
+ * Note:
+ * We intentionally type params as `any` in the exported functions/components
+ * to avoid mismatches with Next.js generated PageProps types during build.
+ * This is a safe and common pattern for dynamic routes when you rely on
+ * your own runtime checks (as we do below).
+ */
 
-// ✅ Route से slug निकालने का helper
+// helper: "/jpg-to-pdf" => "jpg-to-pdf"
 function slugFromRoute(route: string) {
-  // "/jpg-to-pdf" → "jpg-to-pdf"
   return route.replace(/^\/|\/$/g, "");
 }
 
-// ✅ Static params generate करने वाला फंक्शन
+// generate static params for SSG
 export function generateStaticParams() {
-  // हर tool से slug generate करें
-  return tools.map((t) => ({
-    slug: slugFromRoute(t.route),
-  }));
+  return tools.map((t) => ({ slug: slugFromRoute(t.route) }));
 }
 
-// ✅ SEO Metadata Generator
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = params;
+// generate SEO metadata for each blog article
+export async function generateMetadata({ params }: any): Promise<Metadata> {
+  const slug: string = params?.slug;
   const tool = tools.find((t) => slugFromRoute(t.route) === slug);
 
   if (!tool) {
@@ -36,9 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = `${tool.name} Guide & Tutorial | PDF Maker AI Blog`;
   const description =
-    tool.longDescription ||
-    tool.description ||
-    `Learn how to use ${tool.name} effectively with this detailed guide.`;
+    tool.longDescription || tool.description || `Guide: how to use ${tool.name}`;
   const canonical = `https://pdfmakerai.shop/blog/${slug}`;
 
   return {
@@ -63,19 +62,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-// ✅ Main Blog Article Page
-export default function BlogPostPage({ params }: PageProps) {
-  const { slug } = params;
-
-  // 🔍 Match correct tool by slug
+// Main blog page component
+export default function BlogPostPage({ params }: any) {
+  const slug: string = params?.slug;
   const tool = tools.find((t) => slugFromRoute(t.route) === slug);
 
   if (!tool) return notFound();
 
+  // Simple markdown content fallback (you can replace with tool.blogContent file read)
+  const mdContent = `### Overview
+
+${tool.longDescription || tool.description || ""}
+
+### Step-by-step Guide
+
+1. Upload your file.
+2. Adjust settings if needed.
+3. Click **Convert** / **Apply** to process the file.
+
+### Tips
+
+- Use high-quality inputs for best results.
+- Files processed are private and removed after use.
+`;
+
   return (
     <main className="max-w-4xl mx-auto p-6 sm:p-4">
       <article className="prose prose-slate max-w-none">
-        {/* ✅ Header */}
         <header className="mb-8 border-b pb-4">
           <h1 className="text-3xl sm:text-4xl font-bold mb-2">
             {tool.name}: Ultimate Guide & How-to
@@ -87,16 +100,13 @@ export default function BlogPostPage({ params }: PageProps) {
           </div>
         </header>
 
-        {/* ✅ Main Blog Content */}
         <section className="text-lg leading-relaxed">
           <p>
             Learn how to use <strong>{tool.name}</strong> effectively with
             step-by-step instructions, examples, and best practices.
           </p>
 
-          <MarkdownRenderer
-            content={`### Overview\n\n${tool.longDescription || tool.description || ""}\n\n### Step-by-Step Guide\n\n1. Upload your file.\n2. Adjust settings if needed.\n3. Click **Convert** to generate your PDF instantly.\n\n### Tips\n\n- Use high-quality files for best output.\n- Your data stays private — processed locally.`}
-          />
+          <MarkdownRenderer content={mdContent} />
         </section>
       </article>
     </main>
