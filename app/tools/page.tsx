@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { tools } from "@/lib/tools";
 import ToolCard from "@/components/ToolCard";
 
 const keywords = [
