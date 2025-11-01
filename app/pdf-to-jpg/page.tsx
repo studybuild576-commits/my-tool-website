@@ -18,7 +18,7 @@ const keywords: string[] = [
 export const metadata: Metadata = {
   title: "PDF to JPG — Free, Private Converter",
   description:
-    "Convert PDF pages to high‑quality JPG images directly in your browser. Fast, private, and free—no uploads required.",
+    "Convert PDF pages to high-quality JPG images directly in your browser. Fast, private, and free—no uploads required.",
   keywords,
   alternates: { canonical: "https://pdfmakerai.shop/pdf-to-jpg" },
   robots: { index: true, follow: true },
@@ -39,8 +39,77 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  // ✅ JSON-LD for Web App Schema
+  const appLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "PDF to JPG Converter",
+    applicationCategory: "UtilityApplication",
+    operatingSystem: "Web",
+    url: "https://pdfmakerai.shop/pdf-to-jpg",
+    isAccessibleForFree: true,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD"
+    },
+    description:
+      "Convert PDF pages into JPG images directly in your browser. Free, fast, and private—no uploads required.",
+    creator: {
+      "@type": "Organization",
+      name: "PDF Maker AI",
+      url: "https://pdfmakerai.shop"
+    }
+  };
+
+  // ✅ JSON-LD for FAQ Rich Snippets
+  const faqLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Is this PDF to JPG converter safe?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, all conversions happen in your browser. No files are uploaded to any server, ensuring privacy and data security."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I convert multiple PDF pages at once?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, each page in your PDF will be automatically converted into a separate high-quality JPG image."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does this tool work on mobile devices?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, PDF Maker AI tools are optimized for both desktop and mobile browsers — no installation required."
+        }
+      }
+    ]
+  };
+
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
+      {/* ✅ Inject SEO Schemas */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(appLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      {/* ✅ Main Tool Component */}
       <PDFToJPGTool />
     </main>
   );
