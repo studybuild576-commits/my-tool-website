@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { tools } from "@/lib/tools";
 import Link from "next/link";
 import * as LucideIcons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
