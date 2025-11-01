@@ -1,4 +1,3 @@
-"use client";
 import type { Metadata } from "next";
 import { tools } from "@/lib/tools";
 import Hero from "@/components/Hero";
