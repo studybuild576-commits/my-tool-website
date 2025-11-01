@@ -12,7 +12,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-// Lazy load pdf.js only when needed
+// Lazy load pdf.js
 const loadPdfJs = async () => {
   const pdfjsLib = await import("pdfjs-dist");
   (pdfjsLib as any).GlobalWorkerOptions.workerSrc =
@@ -34,7 +34,7 @@ export default function AIOCRForm() {
   const [statusText, setStatusText] = useState("");
   const workerRef = useRef<Worker | null>(null);
 
-  // Initialize Tesseract worker
+  // Worker init
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -55,14 +55,13 @@ export default function AIOCRForm() {
         setError("❌ Failed to initialize OCR engine. Please reload.");
       }
     })();
-
     return () => {
       cancelled = true;
       workerRef.current?.terminate();
     };
   }, []);
 
-  // Convert image to base64
+  // Image to base64
   async function processImage(file: File): Promise<string> {
     const img = await createImageBitmap(file);
     const dpr = window.devicePixelRatio || 1;
@@ -70,13 +69,13 @@ export default function AIOCRForm() {
     canvas.width = img.width * dpr;
     canvas.height = img.height * dpr;
     const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Canvas context missing");
+    if (!ctx) throw new Error("Canvas error");
     ctx.scale(dpr, dpr);
     ctx.drawImage(img, 0, 0);
     return canvas.toDataURL("image/png");
   }
 
-  // Convert PDF to image
+  // ✅ FIXED: PDF to image
   async function processPDF(file: File): Promise<string> {
     const pdfjsLib = await loadPdfJs();
     const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
@@ -85,20 +84,27 @@ export default function AIOCRForm() {
     const dpr = window.devicePixelRatio || 1;
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Canvas context missing");
+    if (!ctx) throw new Error("Canvas context not found");
+
     canvas.width = viewport.width * dpr;
     canvas.height = viewport.height * dpr;
     ctx.scale(dpr, dpr);
-    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    // ✅ Correct render parameters
+    await page.render({
+      canvasContext: ctx,
+      canvas,
+      viewport,
+    }).promise;
+
     return canvas.toDataURL("image/png");
   }
 
-  // Handle file upload + OCR
+  // Handle form
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const worker = workerRef.current;
     const file = (e.currentTarget.elements.namedItem("file") as HTMLInputElement)?.files?.[0];
-
     if (!worker) return setError("Engine not ready. Please wait.");
     if (!file) return setError("Please choose a file first.");
 
@@ -107,10 +113,8 @@ export default function AIOCRForm() {
       setError(null);
       setProgress(0);
       setStatusText("Preparing file...");
-
       const dataUrl =
         file.type === "application/pdf" ? await processPDF(file) : await processImage(file);
-
       const { data } = await worker.recognize(dataUrl);
       setResult(data.text);
     } catch (err: any) {
@@ -120,7 +124,6 @@ export default function AIOCRForm() {
     }
   }
 
-  // Download extracted text
   function downloadText() {
     if (!result) return;
     const blob = new Blob([result], { type: "text/plain" });
@@ -132,7 +135,7 @@ export default function AIOCRForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      {/* Upload Box */}
+      {/* Upload box */}
       <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-indigo-400 transition-all">
         <Upload className="w-8 h-8 mx-auto mb-2 text-indigo-500" />
         <input
@@ -148,7 +151,7 @@ export default function AIOCRForm() {
         </p>
       </div>
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         className="w-full flex justify-center items-center gap-2 bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
@@ -158,7 +161,7 @@ export default function AIOCRForm() {
         {loading ? statusText || "Processing..." : "Extract Text"}
       </button>
 
-      {/* Progress Bar */}
+      {/* Progress bar */}
       {loading && (
         <div className="w-full bg-gray-200 rounded-full h-2 mt-2 overflow-hidden">
           <div
@@ -168,14 +171,14 @@ export default function AIOCRForm() {
         </div>
       )}
 
-      {/* Error Message */}
+      {/* Error */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2 text-red-700 text-sm">
           <AlertTriangle className="w-4 h-4" /> {error}
         </div>
       )}
 
-      {/* Result Section */}
+      {/* Result */}
       {result && (
         <section className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-300 rounded-xl p-5">
           <div className="flex items-center justify-between mb-3">
